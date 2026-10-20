@@ -49,8 +49,8 @@ The instrumentation was removed before the commit.
 
 ## Evidence
 
-`artifacts/h31/verify-title.mjs` — a real Chromium run against the app on a scratch database,
-**11/11**. It stores the site name through the profile editor, then reads what the document reports:
+`artifacts/h31/verify-title.mjs` — a real Chromium run against the production build on a scratch
+database, **11/11**. It stores the site name through the profile editor, then reads what the document reports:
 
 | Check | Observed |
 | --- | --- |
@@ -68,6 +68,13 @@ The instrumentation was removed before the commit.
 Screenshots in `screenshots/`, machine-readable results in `verification.json`.
 
 `pnpm run ready` is green, including the full `vp check` (formatting included).
+
+## Companion change
+
+`/settings/admin` joins `redirectTargets` in `apps/web/src/app/login/page.tsx` (the captain asked for
+it with this task): being sent to sign-in from the admin index now lands back on `/settings/admin`
+instead of `/settings/admin/posts`. That is the only line touched there; the admin index page itself
+belongs to content's H32 and was left alone.
 
 ## Notes
 

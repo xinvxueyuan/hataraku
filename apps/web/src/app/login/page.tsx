@@ -9,6 +9,7 @@ import { getSession } from "#src/server/session.ts";
 const redirectTargets: Route[] = [
   "/",
   "/todos",
+  "/settings/admin",
   "/settings/admin/posts",
   "/settings/admin/profile",
   "/settings/password",

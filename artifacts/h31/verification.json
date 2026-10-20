@@ -1,6 +1,6 @@
 {
   "base": "http://localhost:3302",
-  "checkedAt": "2026-10-20T20:34:04.791Z",
+  "checkedAt": "2026-10-20T20:45:58.349Z",
   "checks": [
     {
       "name": "the settings navigation links to the profile editor",
