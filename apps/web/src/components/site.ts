@@ -1,31 +1,12 @@
-/**
- * Site-wide constants and formatting helpers shared by the shell and the machine endpoints.
- *
- * The site address is deployment configuration rather than content: feeds and the sitemap must
- * emit absolute URLs, and `metadataBase` needs the same origin. `NEXT_PUBLIC_SITE_URL` wins; the
- * fallback is the address the migrated content was published under.
- */
-const FALLBACK_SITE_URL = "https://www.xinvstar.xyz";
+import { headers } from "next/headers";
 
 /**
- * The configured origin, validated once.
+ * Site identity and the formatting helpers shared by the shell and the machine endpoints.
  *
- * Feeds, the sitemap and `metadataBase` all paste paths onto this value; a trailing slash or an
- * accidental path in the env var would produce `//` and `/foo/bar` URLs, so only the parsed origin
- * is kept. A malformed value falls back rather than taking every page down.
+ * Nothing here names a domain: the public address is deployment configuration. `BETTER_AUTH_URL`
+ * is the configured origin, and a request that carries no configured origin falls back to the host
+ * the reader actually used, so a domain change is an environment change, not a code change.
  */
-const resolveSiteUrl = (): string => {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? "";
-  const candidate = configured === "" ? FALLBACK_SITE_URL : configured;
-
-  try {
-    return new URL(candidate).origin;
-  } catch {
-    return FALLBACK_SITE_URL;
-  }
-};
-
-export const SITE_URL = resolveSiteUrl();
 export const SITE_NAME = "夜行栈";
 const SITE_NAME_EN = "NightStack";
 export const SITE_TITLE = `${SITE_NAME} ${SITE_NAME_EN}`;
@@ -49,8 +30,59 @@ const SITE_TIME_ZONE = "Asia/Shanghai";
 /** Shanghai has been a fixed +08:00 since 1991, so the offset is a constant, not a lookup. */
 const SHANGHAI_OFFSET = "+0800";
 
-export const absoluteUrl = (path: string): string =>
-  SITE_URL + (path.startsWith("/") ? path : "/" + path);
+const normalizeOrigin = (value: string | undefined): string | null => {
+  const configured = value?.trim() ?? "";
+
+  if (configured === "") {
+    return null;
+  }
+
+  try {
+    return new URL(configured).origin;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * The configured origin, for callers that run without a request (the static `robots.txt` route).
+ * `null` means this deployment has not named its address yet, and a caller must not invent one.
+ */
+export const siteOriginFromEnv = (): string | null =>
+  normalizeOrigin(process.env.BETTER_AUTH_URL);
+
+/**
+ * The origin this request is served from.
+ *
+ * The configured origin wins because it is trusted configuration; the forwarded host is the
+ * fallback for previews and local runs, where the deployment may not set one yet. An unknown
+ * origin is an error rather than a relative URL, because feeds and the sitemap must be absolute.
+ */
+export const siteOrigin = async (): Promise<string> => {
+  const configured = siteOriginFromEnv();
+
+  if (configured !== null) {
+    return configured;
+  }
+
+  const requestHeaders = await headers();
+
+  const host =
+    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+
+  if (host !== null && host !== "") {
+    const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
+
+    return `${protocol}://${host}`;
+  }
+
+  throw new Error(
+    "Set BETTER_AUTH_URL (or serve the site through a host header) so its public origin is known."
+  );
+};
+
+export const absoluteUrl = (origin: string, path: string): string =>
+  origin + (path.startsWith("/") ? path : "/" + path);
 
 const XML_ENTITIES = new Map([
   ["&", "&amp;"],

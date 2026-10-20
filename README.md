@@ -40,6 +40,13 @@ server variables too — `DATABASE_URL`, `BETTER_AUTH_SECRET` and `BETTER_AUTH_U
 
 ```dotenv
 SERVER_URL=http://localhost:3001
+# The site's public origin: canonical links, OpenGraph URLs, the feeds and the sitemap are built from
+# it. Unset, the app uses Vercel's own VERCEL_PROJECT_PRODUCTION_URL, then http://localhost:3000, so a
+# domain move is an environment change rather than a code change. See docs/domain-migration.md.
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+# Public host that serves R2 object keys (album covers, post images). Unset, media paths stay
+# root-relative against the current host.
+NEXT_PUBLIC_MEDIA_BASE_URL=
 ```
 
 `apps/server/.env`
