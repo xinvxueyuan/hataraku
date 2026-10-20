@@ -9,7 +9,7 @@
   },
   "scripts": {
     "android": "expo run:android",
-    "build": "expo export --platform ios --platform android",
+    "build:mobile": "expo export --platform ios --platform android",
     "ios": "expo run:ios",
     "start": "expo start"
   },

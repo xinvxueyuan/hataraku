@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vp run -r --parallel dev",
     "build": "vp run -r build",
+    "build:mobile": "vp run --filter @hataraku/mobile build:mobile",
     "ready": "vp run typegen && vp check && vp run knip && vp test && vp run test:e2e && vp run -r build",
     "prepare": "vp config",
     "typegen": "vp run --filter @hataraku/web typegen",

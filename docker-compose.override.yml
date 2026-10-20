@@ -1,0 +1,7 @@
+# 本机（Windows）专用的端口覆盖：宿主 5432 落在 Windows 保留端口段内
+# （被 svchost 占用），Docker 无法绑定，故改用 55432。
+# 用 !override 覆盖 base 的 ports 列表（Compose 默认是「追加」而非「替换」）。
+services:
+  db:
+    ports: !override
+      - "127.0.0.1:55432:5432"
