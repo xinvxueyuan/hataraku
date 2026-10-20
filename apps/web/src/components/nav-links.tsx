@@ -167,9 +167,7 @@ const MoreMenu = ({ currentPath }: { currentPath: string }) => {
         更多
         <ChevronDown aria-hidden="true" className="size-3.5" />
       </summary>
-      <div
-        className="bg-popover absolute top-full left-0 z-30 mt-2 w-40 rounded-lg border p-2 shadow-lg"
-      >
+      <div className="bg-popover absolute top-full left-0 z-30 mt-2 w-40 rounded-lg border p-2 shadow-lg">
         <ul className="flex flex-col gap-1 text-sm">
           {BROWSE.map((link) => (
             <li key={link.href}>
