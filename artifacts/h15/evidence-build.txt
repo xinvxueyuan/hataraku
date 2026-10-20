@@ -1,0 +1,215 @@
+~/apps/web$ velite ⊘ cache disabled
+[32m[VELITE][0m build finished in 216.40ms
+
+~/apps/web$ next build ⊘ cache disabled
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 76ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.2s
+  Running TypeScript ...
+  Finished TypeScript in 3.3s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/18) ...
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (4/18) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (8/18) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (13/18) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+✓ Generating static pages using 7 workers (18/18) in 809ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /albums
+├ ƒ /albums/[slug]
+├ ƒ /api/[[...rest]]
+├ ƒ /archive
+├ ƒ /article
+├ ƒ /atom.xml
+├ ƒ /docs
+├ ƒ /docs/[slug]
+├ ƒ /llms-full.txt
+├ ƒ /llms.txt
+├ ƒ /login
+├ ƒ /posts/[slug]
+├ ○ /robots.txt
+├ ƒ /rpc/[[...rest]]
+├ ƒ /rss.xml
+├ ƒ /search
+├ ƒ /settings/admin/posts
+├ ƒ /settings/admin/posts/[id]
+├ ƒ /settings/two-factor
+├ ƒ /sitemap.xml
+├ ƒ /taxonomy
+├ ƒ /taxonomy/[type]/[slug]
+└ ƒ /todos
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+---
+vp run: 2/2 successful. (Run `vp run --last-details` for full details)

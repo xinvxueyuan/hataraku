@@ -1,0 +1,2 @@
+$ knip ⊘ cache disabled
+

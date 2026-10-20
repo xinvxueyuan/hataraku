@@ -1,0 +1,70 @@
+### curl -sS -D - http://localhost:3300/rss.xml
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, s-maxage=1800
+content-type: application/rss+xml; charset=utf-8
+Date: Tue, 20 Oct 2026 16:45:26 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### curl -sS -D - http://localhost:3300/atom.xml
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, s-maxage=1800
+content-type: application/atom+xml; charset=utf-8
+Date: Tue, 20 Oct 2026 16:45:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### curl -sS -D - http://localhost:3300/sitemap.xml
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, must-revalidate
+content-type: application/xml
+Date: Tue, 20 Oct 2026 16:45:27 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### curl -sS -D - http://localhost:3300/llms.txt
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, s-maxage=1800
+content-type: text/plain; charset=utf-8
+Date: Tue, 20 Oct 2026 16:45:28 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### curl -sS -D - http://localhost:3300/llms-full.txt
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, s-maxage=1800
+content-type: text/plain; charset=utf-8
+Date: Tue, 20 Oct 2026 16:45:29 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### curl -sS -D - http://localhost:3300/robots.txt
+HTTP/1.1 200 OK
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+Date: Tue, 20 Oct 2026 16:45:30 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+### item counts (curl + Select-String)
+/rss.xml <item> count: 38
+/atom.xml <entry> count: 38
+/sitemap.xml <url> count: 149
+
+### database expectations (psql)
+published | dated | categories | tags | albums 
+-----------+-------+------------+------+--------
+        38 |    38 |          7 |   96 |      1
+(1 row)

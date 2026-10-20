@@ -1,0 +1,20 @@
+### Keyboard walk, 390x844 (Playwright page.keyboard, page brought to front)
+
+Focus start: skip link (a[href="#content"]). Tab order observed:
+1. A|夜行栈|/
+2. A|Sign in|/login
+3. BUTTON||Toggle theme
+4. SUMMARY|菜单|
+5. A|2026 年17 篇|#year-2026
+6. A|2025 年16 篇|#year-2025
+7. A|2024 年3 篇|#year-2024
+8. A|2023 年1 篇|#year-2023
+9. A|2022 年1 篇|#year-2022
+10. A|一步步用 Googl|/posts/2026-10-17-google-ai-studio-personal-android-apps
+
+Disclosure: details.open false -> focus summary -> Enter -> details.open true (menus open with Enter, not hover).
+With the menu open, Tab entered the panel: 首页 -> 文章 -> 归档 -> 分类 -> 相册; Enter on 相册 navigated to /albums (title 相册 · 夜行栈).
+
+### Desktop 1280x800
+aria-current="page" resolves to 归档 on /archive (both nav copies carry it; the mobile one is display:none).
+nav[aria-label=主导航] visible with 7 links; details summary is hidden at this width.

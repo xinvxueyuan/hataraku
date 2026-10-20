@@ -1,0 +1,375 @@
+$ turbo run typegen ⊘ cache disabled
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running typegen in 8 packages
+   • Remote caching disabled
+
+@hataraku/web:content: cache hit, replaying logs a4e9ee5c371d0aff
+@hataraku/web:content: $ velite
+@hataraku/web:content: [32m[VELITE][0m build finished in 203.86ms
+@hataraku/web:typegen: cache hit, replaying logs 1ec9a2e6a8180857
+@hataraku/web:typegen: $ next typegen
+@hataraku/web:typegen: Generating route types...
+@hataraku/web:typegen: ✓ Types generated successfully
+
+ Tasks:    2 successful, 2 total
+Cached:    2 cached, 2 total
+  Time:    251ms >>> FULL TURBO
+
+
+$ vp check ⊘ cache disabled
+pass: All 192 files are correctly formatted (2685ms, 8 threads)
+pass: Found no warnings, lint errors, or type errors in 143 files (26.8s, 8 threads)
+
+$ knip ⊘ cache disabled
+
+$ vp test ⊘ cache disabled
+
+ RUN  v5.0.5 C:/dev/dsh/projects/hataraku
+
+ ✓ |integration| packages/api/tests/integration/taxonomy.test.ts (7 tests) 2018ms
+ ✓ |integration| packages/api/tests/integration/media.test.ts (11 tests) 2155ms
+ ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 2154ms
+ ✓ |integration| packages/api/tests/integration/admin-posts.test.ts (17 tests) 2869ms
+   ✓ posts write path (17)
+     ✓ refuses an account outside ADMIN_EMAILS with FORBIDDEN 356ms
+     ✓ keeps a draft off the public read path until it is published 647ms
+ ✓ |integration| packages/api/tests/integration/search.test.ts (12 tests) 2232ms
+ ✓ |integration| packages/api/tests/integration/todos.test.ts (10 tests) 2723ms
+   ✓ todos (10)
+     ✓ creates a todo with a trimmed title, not yet completed 378ms
+     ✓ rejects the title "   " with BAD_REQUEST 347ms
+ ✓ |integration| packages/api/tests/integration/posts.test.ts (21 tests) 2270ms
+ ✓ |unit| packages/api/src/mdx-guard.test.ts (10 tests) 21ms
+ ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 15ms
+ ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 16ms
+ ✓ |unit| apps/web/src/components/sheet-table.test.ts (5 tests) 20ms
+ ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 458ms
+
+ Test Files  12 passed (12)
+      Tests  117 passed (117)
+   Start at  00:53:43
+   Duration  28.51s (import 82%, tests 12%, transform 5%)
+
+
+$ turbo run test:e2e ⊘ cache disabled
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running test:e2e in 8 packages
+   • Remote caching disabled
+
+@hataraku/web:test:e2e: cache bypass, force executing 3642cc528770d5f2
+@hataraku/web:test:e2e: $ e2e run
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
+@hataraku/web:test:e2e:       run 01a15a3c-309a-79c3-bdc4-2c9a6b1815ba · targets: web
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  ✓ target "web" command ready 19.30s
+@hataraku/web:test:e2e:  ✓ |web| tests/e2e/app.e2e.ts (7 tests) 36.08s
+@hataraku/web:test:e2e:    ✓ the home page reports the API as connected 2.49s
+@hataraku/web:test:e2e:    ✓ visitors are sent to sign in before seeing todos 1.76s
+@hataraku/web:test:e2e:    ✓ a new user signs up and manages todos that persist across reloads 12.36s
+@hataraku/web:test:e2e:    ✓ an existing user signs in and returns to the page they asked for 4.31s
+@hataraku/web:test:e2e:    ✓ a wrong password is rejected 3.12s
+@hataraku/web:test:e2e:    ✓ signing out ends the session 6.99s
+@hataraku/web:test:e2e:    ✓ the dark theme survives a reload 5.05s
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  Test Files  1 passed (1)
+@hataraku/web:test:e2e:       Tests  7 passed (7)
+@hataraku/web:test:e2e:    Start at  00:54:21
+@hataraku/web:test:e2e:    Duration  62.36s (1m 2s, startup 19.30s)
+@hataraku/web:test:e2e: 
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1m12.933s 
+
+
+$ turbo run build ⊘ cache disabled
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running build in 8 packages
+   • Remote caching disabled
+
+@hataraku/web:build: cache miss, executing 14dcee20f3142232
+@hataraku/server:build: cache miss, executing 33c812000f300fd8
+@hataraku/web:build: $ velite && next build
+@hataraku/server:build: $ vp pack
+@hataraku/web:build: [32m[VELITE][0m build finished in 278.86ms
+@hataraku/server:build: ℹ entry: src/index.ts, src/migrate.ts
+@hataraku/server:build: ℹ tsconfig: tsconfig.json
+@hataraku/server:build: ℹ Build start
+@hataraku/server:build: ℹ Cleaning 30 files
+@hataraku/web:build: ▲ Next.js 16.4.2 (Turbopack)
+@hataraku/web:build: - Environments: .env
+@hataraku/web:build: ✓ Running next.config.ts took 164ms
+@hataraku/server:build: ℹ Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+@hataraku/server:build: See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+@hataraku/server:build: Detected dependencies in bundle:
+@hataraku/server:build: - @hono/node-server
+@hataraku/server:build: - hono
+@hataraku/server:build: - @better-auth/core
+@hataraku/server:build: - drizzle-orm
+@hataraku/server:build: - @better-auth/drizzle-adapter
+@hataraku/server:build: - zod
+@hataraku/server:build: - @better-auth/expo
+@hataraku/server:build: - @better-auth/utils
+@hataraku/server:build: - better-call
+@hataraku/server:build: - rou3
+@hataraku/server:build: - better-auth
+@hataraku/server:build: - @noble/hashes
+@hataraku/server:build: - jose
+@hataraku/server:build: - @noble/ciphers
+@hataraku/server:build: - defu
+@hataraku/server:build: - @better-fetch/fetch
+@hataraku/server:build: - @better-auth/telemetry
+@hataraku/server:build: - @orpc/shared
+@hataraku/server:build: - @orpc/client
+@hataraku/server:build: - @orpc/standard-server
+@hataraku/server:build: - @orpc/standard-server-fetch
+@hataraku/server:build: - @orpc/server
+@hataraku/server:build: - @orpc/contract
+@hataraku/server:build: - @orpc/openapi-client
+@hataraku/server:build: - @orpc/openapi
+@hataraku/server:build: - json-schema-typed
+@hataraku/server:build: - @orpc/json-schema
+@hataraku/server:build: - @orpc/zod
+@hataraku/server:build: - @better-auth/kysely-adapter
+@hataraku/server:build: - kysely
+@hataraku/server:build: - @better-auth/memory-adapter
+@hataraku/server:build: - postgres
+@hataraku/server:build: - @t3-oss/env-core
+@hataraku/server:build: ℹ dist\index.mjs                                        1.17 MB
+@hataraku/server:build: ℹ dist\migrate.mjs                                      2.11 kB │ gzip:  0.93 kB
+@hataraku/server:build: ℹ dist\env-BUdD9o8Q.mjs                               373.96 kB │ gzip: 76.24 kB
+@hataraku/server:build: ℹ dist\sqlite-introspector-DSCAP82F-W5ob3GWe.mjs      288.65 kB │ gzip: 47.65 kB
+@hataraku/server:build: ℹ dist\dist-gFvRlSfC.mjs                              226.55 kB │ gzip: 40.54 kB
+@hataraku/server:build: ℹ dist\schemas-nCZOtFhF.mjs                           184.16 kB │ gzip: 40.31 kB
+@hataraku/server:build: ℹ dist\factory-CGE8KDY7.mjs                            79.15 kB │ gzip: 19.01 kB
+@hataraku/server:build: ℹ dist\get-model-name-C68Z2akK.mjs                     27.40 kB │ gzip:  7.08 kB
+@hataraku/server:build: ℹ dist\generate-drizzle-schema-iWvrXnu0-bSg9DDFx.mjs   17.84 kB │ gzip:  4.64 kB
+@hataraku/server:build: ℹ dist\dist-DYe9_U3j.mjs                               14.89 kB │ gzip:  4.12 kB
+@hataraku/server:build: ℹ dist\d1-sqlite-dialect-m0f01-4z-C1OsgVNy.mjs          5.27 kB │ gzip:  1.78 kB
+@hataraku/server:build: ℹ dist\bun-sqlite-dialect-DoOVo4ja-Dxttzacj.mjs         3.19 kB │ gzip:  1.14 kB
+@hataraku/server:build: ℹ dist\node-sqlite-dialect-kUCLCwJf.mjs                 3.19 kB │ gzip:  1.13 kB
+@hataraku/server:build: ℹ dist\sqlite-adapter-CXJLB6fj.mjs                      2.25 kB │ gzip:  0.87 kB
+@hataraku/server:build: ℹ dist\compiled-query-B6dql7eT.mjs                      0.45 kB │ gzip:  0.30 kB
+@hataraku/server:build: ℹ dist\kysely-adapter-CrrhQo-h.mjs                      0.08 kB │ gzip:  0.09 kB
+@hataraku/server:build: ℹ 16 files, total: 2.39 MB
+@hataraku/server:build: ✔ Build complete in 3286ms
+@hataraku/web:build: 
+@hataraku/web:build:   Creating an optimized production build ...
+@hataraku/web:build: ✓ Compiled successfully in 6.3s
+@hataraku/web:build:   Running TypeScript ...
+@hataraku/web:build:   Finished TypeScript in 6.1s ...
+@hataraku/web:build:   Collecting page data using 7 workers ...
+@hataraku/web:build:   Generating static pages using 7 workers (0/18) ...
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build:   Generating static pages using 7 workers (4/18) 
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build:   Generating static pages using 7 workers (8/18) 
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build:   Generating static pages using 7 workers (13/18) 
+@hataraku/web:build: ❌ Invalid environment variables: [
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_SECRET' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'BETTER_AUTH_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   },
+@hataraku/web:build:   {
+@hataraku/web:build:     expected: 'string',
+@hataraku/web:build:     code: 'invalid_type',
+@hataraku/web:build:     path: [ 'DATABASE_URL' ],
+@hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
+@hataraku/web:build:   }
+@hataraku/web:build: ]
+@hataraku/web:build: ✓ Generating static pages using 7 workers (18/18) in 1484ms
+@hataraku/web:build:   Finalizing page optimization ...
+@hataraku/web:build: 
+@hataraku/web:build: Route (app)
+@hataraku/web:build: ┌ ƒ /
+@hataraku/web:build: ├ ƒ /_not-found
+@hataraku/web:build: ├ ƒ /about
+@hataraku/web:build: ├ ƒ /albums
+@hataraku/web:build: ├ ƒ /albums/[slug]
+@hataraku/web:build: ├ ƒ /api/[[...rest]]
+@hataraku/web:build: ├ ƒ /archive
+@hataraku/web:build: ├ ƒ /article
+@hataraku/web:build: ├ ƒ /atom.xml
+@hataraku/web:build: ├ ƒ /docs
+@hataraku/web:build: ├ ƒ /docs/[slug]
+@hataraku/web:build: ├ ƒ /llms-full.txt
+@hataraku/web:build: ├ ƒ /llms.txt
+@hataraku/web:build: ├ ƒ /login
+@hataraku/web:build: ├ ƒ /posts/[slug]
+@hataraku/web:build: ├ ○ /robots.txt
+@hataraku/web:build: ├ ƒ /rpc/[[...rest]]
+@hataraku/web:build: ├ ƒ /rss.xml
+@hataraku/web:build: ├ ƒ /search
+@hataraku/web:build: ├ ƒ /settings/admin/posts
+@hataraku/web:build: ├ ƒ /settings/admin/posts/[id]
+@hataraku/web:build: ├ ƒ /settings/two-factor
+@hataraku/web:build: ├ ƒ /sitemap.xml
+@hataraku/web:build: ├ ƒ /taxonomy
+@hataraku/web:build: ├ ƒ /taxonomy/[type]/[slug]
+@hataraku/web:build: └ ƒ /todos
+@hataraku/web:build: 
+@hataraku/web:build: 
+@hataraku/web:build: ○  (Static)   prerendered as static content
+@hataraku/web:build: ƒ  (Dynamic)  server-rendered on demand
+@hataraku/web:build: 
+
+ Tasks:    2 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    29.347s 
+
+
+---
+vp run: 6/6 successful. (Run `vp run --last-details` for full details)

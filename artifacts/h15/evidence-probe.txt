@@ -1,0 +1,246 @@
+ok - /rss.xml returns 200
+ok - /rss.xml content type is application/rss+xml; charset=utf-8
+ok - /rss.xml is XML
+ok - /rss.xml declares RSS 2.0
+ok - /rss.xml declares the atom namespace
+ok - /rss.xml channel title
+ok - /rss.xml item count equals published+dated rows
+ok - /rss.xml item elements are balanced
+ok - /rss.xml items link to the article pages
+ok - /rss.xml items carry guid
+ok - /rss.xml items carry pubDate
+ok - /rss.xml items carry description
+ok - /rss.xml pubDate uses RFC 822 in +0800
+ok - /rss.xml has lastBuildDate
+ok - /rss.xml advertises itself
+ok - /atom.xml returns 200
+ok - /atom.xml content type is application/atom+xml; charset=utf-8
+ok - /atom.xml is XML
+ok - /atom.xml declares Atom 1.0
+ok - /atom.xml entry count equals published+dated rows
+ok - /atom.xml entry elements are balanced
+ok - /atom.xml entries link to the article pages
+ok - /atom.xml entries carry an id
+ok - /atom.xml entries carry published
+ok - /atom.xml entries carry updated
+ok - /atom.xml entries carry summary
+ok - /atom.xml timestamps use RFC 3339 in +08:00
+ok - /sitemap.xml returns 200
+ok - /sitemap.xml content type is application/xml
+ok - /sitemap.xml uses the sitemap namespace
+ok - /sitemap.xml url count
+ok - /sitemap.xml url elements are balanced
+ok - /sitemap.xml lists the home page
+ok - /sitemap.xml lists /article
+ok - /sitemap.xml lists /archive
+ok - /sitemap.xml lists /taxonomy
+ok - /sitemap.xml lists /albums
+ok - /sitemap.xml lists /about
+ok - /sitemap.xml lists /docs
+ok - /sitemap.xml lists every article
+ok - /sitemap.xml lists every category
+ok - /sitemap.xml lists every tag
+ok - /sitemap.xml lists every album
+ok - /sitemap.xml locs are absolute
+ok - /llms.txt returns 200
+ok - /llms.txt content type is text/plain; charset=utf-8
+ok - /llms.txt starts with the site heading
+ok - /llms.txt states the tagline
+ok - /llms.txt lists the machine endpoints
+ok - /llms.txt lists every article
+ok - /llms.txt lists every category
+ok - /llms.txt lists every tag
+ok - /llms.txt lists every album
+ok - /llms-full.txt returns 200
+ok - /llms-full.txt content type is text/plain; charset=utf-8
+ok - /llms-full.txt starts with the site heading
+ok - /llms-full.txt has one section per article
+ok - /llms-full.txt gives every article its URL
+ok - /llms-full.txt includes body excerpts
+ok - /llms-full.txt includes summaries
+ok - /robots.txt returns 200
+ok - /robots.txt content type
+ok - /robots.txt points at the sitemap
+ok - /robots.txt closes the app routes
+ok - / returns 200
+ok - / sets lang=zh-CN
+ok - / has a title with the site name
+ok - / has a description
+ok - / has og:title
+ok - / has og:description
+ok - / has og:url for this page
+ok - / has og:site_name
+ok - / has a canonical URL
+ok - / links the feeds
+ok - / renders the skip link
+ok - / marks the main landmark
+ok - / has the desktop nav
+ok - / has the mobile nav disclosure
+ok - / has the footer
+ok - / links the machine endpoints in the footer
+ok - / has exactly one nav item per label
+ok - / marks the current nav item
+ok - /article returns 200
+ok - /article sets lang=zh-CN
+ok - /article has a title with the site name
+ok - /article has a description
+ok - /article has og:title
+ok - /article has og:description
+ok - /article has og:url for this page
+ok - /article has og:site_name
+ok - /article has a canonical URL
+ok - /article links the feeds
+ok - /article renders the skip link
+ok - /article marks the main landmark
+ok - /article has the desktop nav
+ok - /article has the mobile nav disclosure
+ok - /article has the footer
+ok - /article links the machine endpoints in the footer
+ok - /article has exactly one nav item per label
+ok - /article marks the current nav item
+ok - /archive returns 200
+ok - /archive sets lang=zh-CN
+ok - /archive has a title with the site name
+ok - /archive has a description
+ok - /archive has og:title
+ok - /archive has og:description
+ok - /archive has og:url for this page
+ok - /archive has og:site_name
+ok - /archive has a canonical URL
+ok - /archive links the feeds
+ok - /archive renders the skip link
+ok - /archive marks the main landmark
+ok - /archive has the desktop nav
+ok - /archive has the mobile nav disclosure
+ok - /archive has the footer
+ok - /archive links the machine endpoints in the footer
+ok - /archive has exactly one nav item per label
+ok - /archive marks the current nav item
+ok - /taxonomy returns 200
+ok - /taxonomy sets lang=zh-CN
+ok - /taxonomy has a title with the site name
+ok - /taxonomy has a description
+ok - /taxonomy has og:title
+ok - /taxonomy has og:description
+ok - /taxonomy has og:url for this page
+ok - /taxonomy has og:site_name
+ok - /taxonomy has a canonical URL
+ok - /taxonomy links the feeds
+ok - /taxonomy renders the skip link
+ok - /taxonomy marks the main landmark
+ok - /taxonomy has the desktop nav
+ok - /taxonomy has the mobile nav disclosure
+ok - /taxonomy has the footer
+ok - /taxonomy links the machine endpoints in the footer
+ok - /taxonomy has exactly one nav item per label
+ok - /taxonomy marks the current nav item
+ok - /taxonomy/category/frontend returns 200
+ok - /taxonomy/category/frontend sets lang=zh-CN
+ok - /taxonomy/category/frontend has a title with the site name
+ok - /taxonomy/category/frontend has a description
+ok - /taxonomy/category/frontend has og:title
+ok - /taxonomy/category/frontend has og:description
+ok - /taxonomy/category/frontend has og:url for this page
+ok - /taxonomy/category/frontend has og:site_name
+ok - /taxonomy/category/frontend has a canonical URL
+ok - /taxonomy/category/frontend links the feeds
+ok - /taxonomy/category/frontend renders the skip link
+ok - /taxonomy/category/frontend marks the main landmark
+ok - /taxonomy/category/frontend has the desktop nav
+ok - /taxonomy/category/frontend has the mobile nav disclosure
+ok - /taxonomy/category/frontend has the footer
+ok - /taxonomy/category/frontend links the machine endpoints in the footer
+ok - /taxonomy/category/frontend has exactly one nav item per label
+ok - /taxonomy/category/frontend marks the current nav item
+ok - /albums returns 200
+ok - /albums sets lang=zh-CN
+ok - /albums has a title with the site name
+ok - /albums has a description
+ok - /albums has og:title
+ok - /albums has og:description
+ok - /albums has og:url for this page
+ok - /albums has og:site_name
+ok - /albums has a canonical URL
+ok - /albums links the feeds
+ok - /albums renders the skip link
+ok - /albums marks the main landmark
+ok - /albums has the desktop nav
+ok - /albums has the mobile nav disclosure
+ok - /albums has the footer
+ok - /albums links the machine endpoints in the footer
+ok - /albums has exactly one nav item per label
+ok - /albums marks the current nav item
+ok - /about returns 200
+ok - /about sets lang=zh-CN
+ok - /about has a title with the site name
+ok - /about has a description
+ok - /about has og:title
+ok - /about has og:description
+ok - /about has og:url for this page
+ok - /about has og:site_name
+ok - /about has a canonical URL
+ok - /about links the feeds
+ok - /about renders the skip link
+ok - /about marks the main landmark
+ok - /about has the desktop nav
+ok - /about has the mobile nav disclosure
+ok - /about has the footer
+ok - /about links the machine endpoints in the footer
+ok - /about has exactly one nav item per label
+ok - /about marks the current nav item
+ok - /search returns 200
+ok - /search sets lang=zh-CN
+ok - /search has a title with the site name
+ok - /search has a description
+ok - /search has og:title
+ok - /search has og:description
+ok - /search has og:url for this page
+ok - /search has og:site_name
+ok - /search has a canonical URL
+ok - /search links the feeds
+ok - /search renders the skip link
+ok - /search marks the main landmark
+ok - /search has the desktop nav
+ok - /search has the mobile nav disclosure
+ok - /search has the footer
+ok - /search links the machine endpoints in the footer
+ok - /search has exactly one nav item per label
+ok - /search marks the current nav item
+ok - /docs returns 200
+ok - /docs sets lang=zh-CN
+ok - /docs has a title with the site name
+ok - /docs has a description
+ok - /docs has og:title
+ok - /docs has og:description
+ok - /docs has og:url for this page
+ok - /docs has og:site_name
+ok - /docs has a canonical URL
+ok - /docs links the feeds
+ok - /docs renders the skip link
+ok - /docs marks the main landmark
+ok - /docs has the desktop nav
+ok - /docs has the mobile nav disclosure
+ok - /docs has the footer
+ok - /docs links the machine endpoints in the footer
+ok - /docs has exactly one nav item per label
+ok - /docs has no current nav item
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps returns 200
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps sets lang=zh-CN
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has a title with the site name
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has a description
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has og:title
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has og:description
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has og:url for this page
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has og:site_name
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has a canonical URL
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps links the feeds
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps renders the skip link
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps marks the main landmark
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has the desktop nav
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has the mobile nav disclosure
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has the footer
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps links the machine endpoints in the footer
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps has exactly one nav item per label
+ok - /posts/2026-10-17-google-ai-studio-personal-android-apps marks the current nav item
+
+PASS http://localhost:3300
