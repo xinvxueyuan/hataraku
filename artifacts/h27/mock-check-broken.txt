@@ -1,0 +1,5 @@
+bucket: mock-bucket
+upload origins (2): ["http://localhost:3300","https://example.com"]
+mode: check (read-only)
+error: the API returned a non-JSON body (HTTP 200)
+

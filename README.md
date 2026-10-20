@@ -74,6 +74,30 @@ ADMIN_EMAILS=
 EXPO_PUBLIC_API_URL=
 ```
 
+## Media uploads and R2 CORS
+
+The browser uploads images straight to R2 with a presigned PUT, so the bucket's CORS policy is a
+deployment prerequisite: without a PUT rule whose allowed origins include the site, the preflight
+fails and the uploader only reports `Failed to fetch`. The policy lives outside the repository, so
+`scripts/configure-r2-cors.ts` checks it and applies it declaratively.
+
+The expected policy has two rules: a public `GET, HEAD` rule open to any origin (fonts and images are
+loaded cross-origin), and a `PUT` rule limited to the origins in `R2_UPLOAD_ALLOWED_ORIGINS`. A
+wildcard is rejected there on purpose: a leaked presigned URL must not be replayable from any site.
+
+```sh
+# read-only: exit 0 when the bucket matches, 1 when it needs repair, 2 on a configuration/API error
+node scripts/configure-r2-cors.ts --check
+# apply the expected policy and read it back; idempotent, writes only when it drifts
+node scripts/configure-r2-cors.ts
+```
+
+It reads `CLOUDFLARE_API_TOKEN`, `R2_ACCOUNT_ID`, `R2_BUCKET` and `R2_UPLOAD_ALLOWED_ORIGINS` from
+the environment (never printed), and takes the bucket name from `R2_BUCKET` with no default: a shared
+env file may point at another project's bucket, so set it for this deployment. `R2_UPLOAD_ALLOWED_ORIGINS`
+is a comma separated list such as `https://example.com,http://localhost:3300`; it is compared exactly,
+so an origin added to the bucket but not to the variable fails the check rather than passing quietly.
+
 ## Task orchestration
 
 Turborepo runs the workspace tasks. Each package owns its own script; the root only delegates, so

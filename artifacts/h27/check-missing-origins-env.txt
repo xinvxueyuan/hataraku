@@ -1,0 +1,2 @@
+configuration error: R2_UPLOAD_ALLOWED_ORIGINS is not set; the script reads every value from the environment and has no default
+

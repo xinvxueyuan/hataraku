@@ -1,0 +1,2 @@
+configuration error: R2_UPLOAD_ALLOWED_ORIGINS entries must be origins without a path: "https://a.example/path"
+

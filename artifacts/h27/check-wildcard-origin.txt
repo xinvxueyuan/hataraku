@@ -1,0 +1,2 @@
+configuration error: R2_UPLOAD_ALLOWED_ORIGINS must not contain "*": a wildcard lets any site replay a presigned upload
+
