@@ -32,6 +32,9 @@ catalog:
   server-only: ^0.0.1
   tailwindcss: ^4.3.3
 
+  # writing
+  "@mdxeditor/editor": ^4.3.3
+
   # sheet (read-only Univer embed)
   "@univerjs/preset-sheets-core": 1.1.0
   "@univerjs/presets": 1.1.0
@@ -103,6 +106,9 @@ overrides:
 
 allowBuilds:
   esbuild: false
+  # Univer pulls protobufjs in transitively. Its postinstall only prints a notice, so it stays
+  # unbuilt; listing it keeps pnpm 12 from treating the omission as an error.
+  protobufjs: false
   sharp: false
   unrs-resolver: false
 
