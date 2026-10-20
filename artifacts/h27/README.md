@@ -84,6 +84,7 @@ put rule2: methods=PUT origins=http://127.0.0.1:3000/http://127.0.0.1:3300/http:
 - `pnpm run ready`：**未通过**，但红点全部是**他人未提交改动**，在本任务写范围（`scripts/**`、`README.md`、`artifacts/h27/**`）之外，且随并发任务推进而变化：
   - 第 1–2 次：`vp check` 报 `apps/web/src/app/settings/admin/posts/[id]/page.tsx`（工作区 M）格式未整理；`knip` 报 `packages/api/src/schemas.ts` 的 `publishedDateSchema` 未被使用（工作区 M）。
   - 第 3–5 次：格式已由对方修好（232 个文件全绿），新的红点是 `packages/api/tests/integration/admin-posts.test.ts:306` 的 `vitest(prefer-strict-equal)`（对方未提交的测试改动）。
+  - 第 6 次：`vp check`、`knip`、`vp test` 全部通过，停在 e2e：`tests/e2e/app.e2e.ts > a wrong password is rejected` 找不到文案 `Invalid email or password`——对方正在改 `apps/web/src/components/auth-form.tsx` 与登录页的错误提示，属其未提交改动。
   - `vp run build` 曾因另一个 `next build` 并发占用而失败（Another next build process is already running）。
   每次尝试的原始输出在 `gate-ready*.txt` / `gate-build.txt` / `gate-test.txt`。待 H24/H25/H26 落地后重跑 `pnpm run ready` 即可；本任务自身文件不构成任何红点。
 
