@@ -7,6 +7,8 @@ coverage
 *.log
 .next
 .turbo
+# GitNexus writes its skills here on every analyze; treat it as tool output.
+.claude/
 .velite
 .next-test-*
 next-env.d.ts
