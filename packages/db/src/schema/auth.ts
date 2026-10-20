@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   snakeCase,
   text,
   timestamp,
@@ -20,6 +21,8 @@ export const user = snakeCase.table("user", {
   id: text().primaryKey(),
   image: text(),
   name: text().notNull(),
+  // Better Auth's two-factor plugin owns this column; it is not user input.
+  twoFactorEnabled: boolean().notNull().default(false),
   ...timestamps,
 });
 
@@ -58,6 +61,30 @@ export const account = snakeCase.table(
     ...timestamps,
   },
   (table) => [index("account_user_id_idx").on(table.userId)]
+);
+
+/**
+ * Better Auth's `twoFactor` plugin model: one row per enrolled second factor.
+ * Field set and defaults mirror the plugin's own schema.
+ */
+export const twoFactor = snakeCase.table(
+  "two_factor",
+  {
+    backupCodes: text().notNull(),
+    failedVerificationCount: integer().notNull().default(0),
+    id: text().primaryKey(),
+    lockedUntil: timestamp({ withTimezone: true }),
+    secret: text().notNull(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    verified: boolean().notNull().default(true),
+    ...timestamps,
+  },
+  (table) => [
+    index("two_factor_secret_idx").on(table.secret),
+    index("two_factor_user_id_idx").on(table.userId),
+  ]
 );
 
 export const verification = snakeCase.table(

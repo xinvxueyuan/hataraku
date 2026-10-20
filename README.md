@@ -46,6 +46,13 @@ BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=
 NODE_ENV=development
 PORT=3001
+# Cloudflare Turnstile secret for the sign-up and sign-in forms. Leave it empty and no captcha
+# is enforced (the e2e stack relies on that). The official test secret
+# 1x0000000000000000000000000000000AA always passes and is what local runs use.
+TURNSTILE_SECRET_KEY=
+# Comma separated allowlist. Leave it empty and anyone may create an account; set it and the
+# deployment accepts only those addresses.
+ADMIN_EMAILS=
 ```
 
 `apps/mobile/.env`
