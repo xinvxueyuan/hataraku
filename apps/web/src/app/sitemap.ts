@@ -27,13 +27,22 @@ interface StaticPage {
   priority: number;
 }
 
-/** Login, todos, settings and search are utility routes, not indexable content. */
+/**
+ * Login, todos, settings and search are utility routes, not indexable content.
+ *
+ * List pages appear once, without `?page=` variants: their canonical URL drops the query, so a
+ * paged copy is the same page to a crawler, and an unbounded set of page numbers is not a sitemap.
+ */
 const STATIC_PAGES: StaticPage[] = [
   { changeFrequency: "daily", path: "/", priority: 1 },
   { changeFrequency: "daily", path: "/article", priority: 0.9 },
+  { changeFrequency: "daily", path: "/micro", priority: 0.8 },
+  { changeFrequency: "weekly", path: "/projects", priority: 0.8 },
   { changeFrequency: "weekly", path: "/archive", priority: 0.7 },
-  { changeFrequency: "weekly", path: "/taxonomy", priority: 0.6 },
   { changeFrequency: "weekly", path: "/albums", priority: 0.7 },
+  { changeFrequency: "weekly", path: "/taxonomy", priority: 0.6 },
+  { changeFrequency: "weekly", path: "/toolbox", priority: 0.6 },
+  { changeFrequency: "weekly", path: "/changelog", priority: 0.6 },
   { changeFrequency: "monthly", path: "/docs", priority: 0.6 },
   { changeFrequency: "monthly", path: "/about", priority: 0.7 },
 ];

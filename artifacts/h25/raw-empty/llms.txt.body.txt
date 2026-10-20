@@ -1,0 +1,210 @@
+# 夜行栈 NightStack
+
+> 昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思
+
+把代码、学习与生活编排成一片可阅读的个人星图
+
+## 站点信息
+
+- URL: http://localhost:3302/
+- 语言: zh-CN
+- 作者: xinvStar
+- 联系: xinvxueyuan@yeah.net
+- 已发布文章: 38 篇
+- 分类: 7 个
+- 标签: 96 个
+- 相册: 1 本
+- 微文: 0 条
+- 项目: 2 个
+- 更新日志: 0 条
+
+## 机器可读端点
+
+- RSS 2.0: http://localhost:3302/rss.xml
+- Atom 1.0: http://localhost:3302/atom.xml
+- Sitemap: http://localhost:3302/sitemap.xml
+- robots.txt: http://localhost:3302/robots.txt
+- LLMs 全量: http://localhost:3302/llms-full.txt
+
+## 主要页面
+
+- [首页](http://localhost:3302/): 最新文章、分类概览与站点自述
+- [文章列表](http://localhost:3302/article): 按时间排列并支持分类、标签筛选的文章列表
+- [归档](http://localhost:3302/archive): 全部文章按发布月份归档
+- [微文](http://localhost:3302/micro): 短句、代码片段、图片与对话组成的碎片流
+- [项目](http://localhost:3302/projects): 正在维护和已经交付的项目
+- [分类与标签](http://localhost:3302/taxonomy): 全部分类与标签的索引
+- [相册](http://localhost:3302/albums): 生活碎片与视觉练习的影像集
+- [工具箱](http://localhost:3302/toolbox): 常用工具、设备与技能清单
+- [更新日志](http://localhost:3302/changelog): 站点与项目的版本变更记录
+- [文档](http://localhost:3302/docs): 站点的实现说明
+- [关于](http://localhost:3302/about): 站点介绍、内容概览与联系方式
+- [搜索](http://localhost:3302/search): 按关键词检索文章正文
+
+## 分类
+
+- [Frontend](http://localhost:3302/taxonomy/category/frontend): 12 篇
+- [Technology](http://localhost:3302/taxonomy/category/technology): 12 篇
+- [DevOps](http://localhost:3302/taxonomy/category/devops): 6 篇
+- [Examples](http://localhost:3302/taxonomy/category/examples): 4 篇
+- [AI](http://localhost:3302/taxonomy/category/ai): 2 篇
+- [安全](http://localhost:3302/taxonomy/category/安全): 1 篇
+- [Guides](http://localhost:3302/taxonomy/category/guides): 1 篇
+
+## 标签
+
+- [Performance](http://localhost:3302/taxonomy/tag/performance): 4 篇
+- [Blogging](http://localhost:3302/taxonomy/tag/blogging): 3 篇
+- [CSS](http://localhost:3302/taxonomy/tag/css): 3 篇
+- [Markdown](http://localhost:3302/taxonomy/tag/markdown): 3 篇
+- [React](http://localhost:3302/taxonomy/tag/react): 3 篇
+- [Security](http://localhost:3302/taxonomy/tag/security): 3 篇
+- [Async](http://localhost:3302/taxonomy/tag/async): 2 篇
+- [CI/CD](http://localhost:3302/taxonomy/tag/cicd): 2 篇
+- [Database](http://localhost:3302/taxonomy/tag/database): 2 篇
+- [Docker](http://localhost:3302/taxonomy/tag/docker): 2 篇
+- [Example](http://localhost:3302/taxonomy/tag/example): 2 篇
+- [JavaScript](http://localhost:3302/taxonomy/tag/javascript): 2 篇
+- [Next.js](http://localhost:3302/taxonomy/tag/next-js): 2 篇
+- [Node.js](http://localhost:3302/taxonomy/tag/node-js): 2 篇
+- [Privacy](http://localhost:3302/taxonomy/tag/privacy): 2 篇
+- [xinStar](http://localhost:3302/taxonomy/tag/xinstar): 2 篇
+- [AI](http://localhost:3302/taxonomy/tag/ai): 1 篇
+- [AI安全](http://localhost:3302/taxonomy/tag/ai安全): 1 篇
+- [Android](http://localhost:3302/taxonomy/tag/android): 1 篇
+- [Animation](http://localhost:3302/taxonomy/tag/animation): 1 篇
+- [API](http://localhost:3302/taxonomy/tag/api): 1 篇
+- [Architecture](http://localhost:3302/taxonomy/tag/architecture): 1 篇
+- [asyncio](http://localhost:3302/taxonomy/tag/asyncio): 1 篇
+- [Automation](http://localhost:3302/taxonomy/tag/automation): 1 篇
+- [Build](http://localhost:3302/taxonomy/tag/build): 1 篇
+- [Cache](http://localhost:3302/taxonomy/tag/cache): 1 篇
+- [Channel](http://localhost:3302/taxonomy/tag/channel): 1 篇
+- [Claude](http://localhost:3302/taxonomy/tag/claude): 1 篇
+- [Claude Code](http://localhost:3302/taxonomy/tag/claude-code): 1 篇
+- [Container](http://localhost:3302/taxonomy/tag/container): 1 篇
+- [Customization](http://localhost:3302/taxonomy/tag/customization): 1 篇
+- [Demo](http://localhost:3302/taxonomy/tag/demo): 1 篇
+- [Design Pattern](http://localhost:3302/taxonomy/tag/design-pattern): 1 篇
+- [DevOps](http://localhost:3302/taxonomy/tag/devops): 1 篇
+- [Distributed](http://localhost:3302/taxonomy/tag/distributed): 1 篇
+- [Email Tracking](http://localhost:3302/taxonomy/tag/email-tracking): 1 篇
+- [Encryption](http://localhost:3302/taxonomy/tag/encryption): 1 篇
+- [Event Loop](http://localhost:3302/taxonomy/tag/event-loop): 1 篇
+- [Generics](http://localhost:3302/taxonomy/tag/generics): 1 篇
+- [Git](http://localhost:3302/taxonomy/tag/git): 1 篇
+- [GitHub Actions](http://localhost:3302/taxonomy/tag/github-actions): 1 篇
+- [Go](http://localhost:3302/taxonomy/tag/go): 1 篇
+- [Google AI Studio](http://localhost:3302/taxonomy/tag/google-ai-studio): 1 篇
+- [Google Play](http://localhost:3302/taxonomy/tag/google-play): 1 篇
+- [Goroutine](http://localhost:3302/taxonomy/tag/goroutine): 1 篇
+- [GraphQL](http://localhost:3302/taxonomy/tag/graphql): 1 篇
+- [Grid](http://localhost:3302/taxonomy/tag/grid): 1 篇
+- [History](http://localhost:3302/taxonomy/tag/history): 1 篇
+- [Jetpack Compose](http://localhost:3302/taxonomy/tag/jetpack-compose): 1 篇
+- [Kotlin](http://localhost:3302/taxonomy/tag/kotlin): 1 篇
+- [Kubernetes](http://localhost:3302/taxonomy/tag/kubernetes): 1 篇
+- [LangChain](http://localhost:3302/taxonomy/tag/langchain): 1 篇
+- [Layout](http://localhost:3302/taxonomy/tag/layout): 1 篇
+- [Linux](http://localhost:3302/taxonomy/tag/linux): 1 篇
+- [LLM](http://localhost:3302/taxonomy/tag/llm): 1 篇
+- [Load Balancing](http://localhost:3302/taxonomy/tag/load-balancing): 1 篇
+- [Memory](http://localhost:3302/taxonomy/tag/memory): 1 篇
+- [Mermaid](http://localhost:3302/taxonomy/tag/mermaid): 1 篇
+- [Microservices](http://localhost:3302/taxonomy/tag/microservices): 1 篇
+- [Modules](http://localhost:3302/taxonomy/tag/modules): 1 篇
+- [MongoDB](http://localhost:3302/taxonomy/tag/mongodb): 1 篇
+- [Nginx](http://localhost:3302/taxonomy/tag/nginx): 1 篇
+- [NoSQL](http://localhost:3302/taxonomy/tag/nosql): 1 篇
+- [Optimization](http://localhost:3302/taxonomy/tag/optimization): 1 篇
+- [Ownership](http://localhost:3302/taxonomy/tag/ownership): 1 篇
+- [PostgreSQL](http://localhost:3302/taxonomy/tag/postgresql): 1 篇
+- [Proxy](http://localhost:3302/taxonomy/tag/proxy): 1 篇
+- [Python](http://localhost:3302/taxonomy/tag/python): 1 篇
+- [Reactivity](http://localhost:3302/taxonomy/tag/reactivity): 1 篇
+- [Redis](http://localhost:3302/taxonomy/tag/redis): 1 篇
+- [REST](http://localhost:3302/taxonomy/tag/rest): 1 篇
+- [RSC](http://localhost:3302/taxonomy/tag/rsc): 1 篇
+- [Runes](http://localhost:3302/taxonomy/tag/runes): 1 篇
+- [Rust](http://localhost:3302/taxonomy/tag/rust): 1 篇
+- [Server](http://localhost:3302/taxonomy/tag/server): 1 篇
+- [Source Analysis](http://localhost:3302/taxonomy/tag/source-analysis): 1 篇
+- [SSR](http://localhost:3302/taxonomy/tag/ssr): 1 篇
+- [State](http://localhost:3302/taxonomy/tag/state): 1 篇
+- [Stream](http://localhost:3302/taxonomy/tag/stream): 1 篇
+- [Svelte](http://localhost:3302/taxonomy/tag/svelte): 1 篇
+- [Tailwind](http://localhost:3302/taxonomy/tag/tailwind): 1 篇
+- [Test](http://localhost:3302/taxonomy/tag/test): 1 篇
+- [Tracking Pixel](http://localhost:3302/taxonomy/tag/tracking-pixel): 1 篇
+- [Types](http://localhost:3302/taxonomy/tag/types): 1 篇
+- [TypeScript](http://localhost:3302/taxonomy/tag/typescript): 1 篇
+- [UI](http://localhost:3302/taxonomy/tag/ui): 1 篇
+- [Video](http://localhost:3302/taxonomy/tag/video): 1 篇
+- [Vite](http://localhost:3302/taxonomy/tag/vite): 1 篇
+- [Web](http://localhost:3302/taxonomy/tag/web): 1 篇
+- [Webpack](http://localhost:3302/taxonomy/tag/webpack): 1 篇
+- [Workflow](http://localhost:3302/taxonomy/tag/workflow): 1 篇
+- [Zustand](http://localhost:3302/taxonomy/tag/zustand): 1 篇
+- [供应链攻击](http://localhost:3302/taxonomy/tag/供应链攻击): 1 篇
+- [安全报告](http://localhost:3302/taxonomy/tag/安全报告): 1 篇
+- [开源安全](http://localhost:3302/taxonomy/tag/开源安全): 1 篇
+- [漏洞分析](http://localhost:3302/taxonomy/tag/漏洞分析): 1 篇
+
+## 相册
+
+- [一些可爱的图片](http://localhost:3302/albums/acg-example): 2025-08-01 — 一组 ACG 插画收藏。
+
+## 项目
+
+- xinvStar: wip — 个人博客与技术内容站点。 — https://www.xinvstar.xyz/
+- Lingchu Bot: wip — 基于 NoneBot2 的开源 QQ 群管理机器人。 — https://github.com/xinvxueyuan/lingchu-bot
+
+（全部项目见 http://localhost:3302/projects。）
+
+## 工具箱
+
+- iQOO Neo 10 Pro+: phone — active
+- ZTE U25S: network — active
+
+（全部工具与设备见 http://localhost:3302/toolbox。）
+
+## 文章
+
+- [一步步用 Google AI Studio 做出并部署自己的 Android 应用](http://localhost:3302/posts/2026-10-17-google-ai-studio-personal-android-apps): 2026-10-17 — 从规划功能、生成 Kotlin 应用、模拟器测试，到 USB 安装和 Google Play 私密部署，手把手走一遍 Google AI Studio 的 Android 应用流程。
+- [2026年开源安全威胁态势全景报告](http://localhost:3302/posts/2026-07-07-开源安全威胁态势报告): 2026-07-07 — 综合 Black Duck OSSRA、Cloudflare 全球威胁形势、Phoenix Security 供应链攻击、FIRST 年度漏洞预测等多份权威报告，全面解析 2026 年开源安全威胁的最新态势与应对策略。
+- [一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议](http://localhost:3302/posts/2026-07-05-claude-封禁邮件-追踪像素分析): 2026-07-05 — 追踪像素（Tracking Pixel）是什么？Anthropic 真的在封禁邮件中用它定位中国用户吗？本文从技术原理出发，还原事实与误解。
+- [深度源码解析：Claude Code 隐藏的反向代理检测与隐写标记机制](http://localhost:3302/posts/2026-07-04-claude-code-隐写标记-源码解析): 2026-07-04 — 从 51 万行泄露源码中还原 Anthropic 如何通过隐写术标记中国开发者
+- [Next.js 14 App Router 完全指南](http://localhost:3302/posts/2026-03-29-nextjs-14-app-router完全指南): 2026-03-29 — Next.js 14 的 App Router 带来了全新的开发体验。Server Componen...
+- [CI/CD 实战：GitHub Actions 自动化工作流](http://localhost:3302/posts/2026-03-22-cicd实战-github-actions): 2026-03-22 — GitHub Actions 让 CI/CD 变得简单而强大。从自动测试到自动部署，一切都可以自动化...
+- [MongoDB 最佳实践：Schema 设计、索引与聚合管道](http://localhost:3302/posts/2026-03-15-mongodb最佳实践-schema设计): 2026-03-15 — MongoDB 的灵活性是一把双刃剑。不当的 Schema 设计会导致严重的性能问题。...
+- [Web 性能优化全景指南：从 Core Web Vitals 到实战](http://localhost:3302/posts/2026-03-08-web性能优化全景指南): 2026-03-08 — Web 性能直接影响用户体验和 SEO 排名。Google 的 Core Web Vitals 是衡...
+- [LLM 应用开发实战：用 LangChain 构建 AI 助手](http://localhost:3302/posts/2026-03-01-llm应用开发实战-langchain): 2026-03-01 — 大语言模型（LLM）正在改变软件开发的方式。本文通过实例展示如何用 LangChain 构建实用的 ...
+- [JavaScript 模块化演进史：IIFE 到 ES Modules](http://localhost:3302/posts/2026-02-22-javascript模块化演进史): 2026-02-22 — JavaScript 的模块化之路走得异常曲折。从全局污染到标准化 ES Modules，这条路走了...
+- [现代 CSS 动画完全指南：从 Transition 到 Web Animations API](http://localhost:3302/posts/2026-02-15-现代css动画完全指南): 2026-02-15 — 动画是提升用户体验的关键。本文涵盖从基础 CSS 过渡到高性能 Web Animations API...
+- [设计模式实战：在 Node.js 中应用经典模式](http://localhost:3302/posts/2026-02-08-设计模式实战-nodejs): 2026-02-08 — 设计模式不是僵化的模板，而是经过验证的解决方案。以下是在 Node.js 中最实用的几种经典设计模式...
+- [深入 React Server Components：新一代 React 架构](http://localhost:3302/posts/2026-02-01-react-server-components-新一代架构): 2026-02-01 — React Server Components (RSC) 是 React 18 引入的范式转换，从...
+- [GraphQL vs REST：现代 API 设计的选择](http://localhost:3302/posts/2026-01-25-graphql-vs-rest-现代api设计的选择): 2026-01-25 — 这是一篇关于GraphQL的深度技术文章
+- [Kubernetes 入门到实战：部署你的第一个微服务](http://localhost:3302/posts/2026-01-18-kubernetes-入门到实战-部署你的第一个微服务): 2026-01-18 — 这是一篇关于Kubernetes的深度技术文章
+- [Redis 深度实战：缓存、队列与分布式锁](http://localhost:3302/posts/2026-01-11-redis-深度实战缓存队列与分布式锁): 2026-01-11 — 这是一篇关于 Redis 的深度技术文章
+- [Webpack 到 Vite：前端构建工具演进之路](http://localhost:3302/posts/2026-01-04-webpack-到-vite-前端构建工具演进之路): 2026-01-04 — 这是一篇关于Vite的深度技术文章
+- [Svelte 5 Runes 深入解析：新一代响应式原语](http://localhost:3302/posts/2025-12-28-svelte-5-runes-深入解析新一代响应式原语): 2025-12-28 — 这是一篇关于Svelte的深度技术文章
+- [PostgreSQL 性能优化实战：索引、查询与配置调优](http://localhost:3302/posts/2025-12-21-postgresql-性能优化实战索引查询与配置调优): 2025-12-21 — 这是一篇关于PostgreSQL的深度技术文章
+- [深入 Node.js  Stream 流：处理大数据的利器](http://localhost:3302/posts/2025-12-14-深入-nodejs--stream-流处理大数据的利器): 2025-12-14 — 这是一篇关于Node.js的深度技术文章
+- [Git 工作流最佳实践：从 Feature Branch 到 GitFlow](http://localhost:3302/posts/2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow): 2025-12-07 — 这是一篇关于Git的深度技术文章
+- [Tailwind CSS 实战技巧：构建现代化 UI 的 20 个模式](http://localhost:3302/posts/2025-11-30-tailwind-css-实战技巧构建现代化-ui-的-20-个模式): 2025-11-30 — 这是一篇关于Tailwind的深度技术文章
+- [CSS Grid 完全指南：告别 Flexbox 局限](http://localhost:3302/posts/2025-11-23-css-grid-完全指南告别-flexbox-局限): 2025-11-23 — 这是一篇关于CSS的深度技术文章
+- [Go 语言并发编程：goroutine 和 channel 深度解析](http://localhost:3302/posts/2025-11-16-go-语言并发编程goroutine-和-channel-深度解析): 2025-11-16 — 这是一篇关于Go的深度技术文章
+- [Nginx 反向代理与负载均衡实战](http://localhost:3302/posts/2025-11-09-nginx-反向代理与负载均衡实战): 2025-11-09 — 这是一篇关于Nginx的深度技术文章
+- [构建一个完整的 React 状态管理方案：从 Context 到 Zustand](http://localhost:3302/posts/2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand): 2025-11-02 — 这是一篇关于React的深度技术文章
+- [Python 异步编程完全指南：async/await 深入剖析](http://localhost:3302/posts/2025-10-27-python-异步编程完全指南async-await-深入剖析): 2025-10-27 — 这是一篇关于Python的深度技术文章
+- [Linux 服务器安全加固指南：15 个必做配置](http://localhost:3302/posts/2025-10-20-linux-服务器安全加固指南15-个必做配置): 2025-10-20 — 这是一篇关于Linux的深度技术文章
+- [TypeScript 高级类型体操：你真的会用泛型吗？](http://localhost:3302/posts/2025-10-12-typescript-高级类型体操你真的会用泛型吗): 2025-10-12 — 这是一篇关于TypeScript的深度技术文章
+- [Docker 容器化最佳实践：从开发到生产](http://localhost:3302/posts/2025-10-05-docker-容器化最佳实践从开发到生产): 2025-10-05 — 这是一篇关于Docker的深度技术文章
+- [Rust 所有权系统详解：从入门到实践](http://localhost:3302/posts/2025-09-28-rust-所有权系统详解从入门到实践): 2025-09-28 — 这是一篇关于Rust的深度技术文章
+- [深入理解 JavaScript 事件循环：从宏任务到微任务](http://localhost:3302/posts/2025-09-21-深入理解-javascript-事件循环从宏任务到微任务): 2025-09-21 — 这是一篇关于JavaScript的深度技术文章
+- [Markdown 教程](http://localhost:3302/posts/markdown-tutorial): 2025-01-20 — 一个简单的隐藏博客文章的例子。
+- [Markdown 扩展功能](http://localhost:3302/posts/markdown-extended): 2024-05-01 — 在 xinStar 中了解更多 Markdown 功能
+- [xinStar 简易指南](http://localhost:3302/posts/guide-index): 2024-04-01 — 如何使用这个博客模板。
+- [加密文章](http://localhost:3302/posts/encrypted-post): 2024-01-15 — 这是一篇用于测试页面加密功能的文章
+- [Markdown Mermaid 图表](http://localhost:3302/posts/markdown-mermaid): 2023-10-01 — 一个使用Mermaid的Markdown博客文章简单示例。
+- [在帖子中包含视频](http://localhost:3302/posts/video): 2022-08-01 — 这篇文章演示了如何在博客文章中包含嵌入式视频。

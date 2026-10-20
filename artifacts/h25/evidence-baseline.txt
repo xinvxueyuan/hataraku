@@ -1,0 +1,38 @@
+ok - sitemap.xml is 200
+ok - sitemap.xml keeps application/xml
+ok - sitemap.xml url count matches the database
+ok - sitemap.xml lists /micro
+ok - sitemap.xml lists /projects
+ok - sitemap.xml lists /toolbox
+ok - sitemap.xml lists /changelog
+ok - sitemap.xml keeps pagination out of the sitemap
+ok - sitemap.xml uses one origin
+ok - /llms.txt is 200 and text/plain
+ok - /llms.txt links /micro
+ok - /llms.txt links /projects
+ok - /llms.txt links /toolbox
+ok - /llms.txt links /changelog
+ok - /llms.txt reports the article count
+ok - /llms.txt lists projects
+ok - /llms.txt lists the toolbox
+ok - /llms.txt lists articles
+ok - /llms.txt omits an empty micro section
+ok - /llms.txt omits an empty changelog section
+ok - /llms.txt still reports zero counts
+ok - /llms-full.txt is 200 and text/plain
+ok - /llms-full.txt no longer prints excerpts
+ok - /llms-full.txt states included/available counts
+ok - /llms-full.txt carries a body tail beyond any excerpt
+ok - /llms-full.txt reports empty micro
+ok - /llms-full.txt reports empty changelog
+ok - /llms-full.txt omits absent micro rows
+ok - /rss.xml keeps its content type
+ok - /rss.xml caps items like v2
+ok - /rss.xml declares the content namespace
+ok - /rss.xml carries full bodies
+ok - /rss.xml carries a body tail beyond the description
+ok - /atom.xml keeps its content type
+ok - /atom.xml caps entries like v2
+ok - /atom.xml carries full bodies
+
+PASS http://localhost:3302 (empty)

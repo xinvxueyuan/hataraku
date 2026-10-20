@@ -81,6 +81,43 @@ export const siteOrigin = async (): Promise<string> => {
   );
 };
 
+interface PagedRows<T> {
+  items: T[];
+  totalPages: number;
+}
+
+/**
+ * Drains a paged list procedure before an endpoint claims to describe the whole site.
+ *
+ * A page boundary must not silently truncate a feed, sitemap or index, so every page is read. Ten
+ * pages is 1000 rows; past that the caller caps the output itself rather than turning one request
+ * into an unbounded scan. Rows are deduplicated by id because a concurrent write can shift a
+ * boundary between two reads.
+ */
+export const loadAllRows = async <T extends { id: string }>(
+  loadPage: (page: number) => Promise<PagedRows<T>>
+): Promise<T[]> => {
+  const first = await loadPage(1);
+  const pageCount = Math.min(first.totalPages, 10);
+
+  const rest = await Promise.all(
+    Array.from(
+      { length: Math.max(pageCount - 1, 0) },
+      async (_unused, index) => await loadPage(index + 2)
+    )
+  );
+
+  const byId = new Map<string, T>();
+
+  for (const page of [first, ...rest]) {
+    for (const row of page.items) {
+      byId.set(row.id, row);
+    }
+  }
+
+  return [...byId.values()];
+};
+
 export const absoluteUrl = (origin: string, path: string): string =>
   origin + (path.startsWith("/") ? path : "/" + path);
 

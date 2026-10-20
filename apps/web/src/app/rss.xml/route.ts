@@ -1,6 +1,7 @@
 import {
   describeSite,
   loadDatedPosts,
+  loadPostBody,
   loadSiteProfile,
   newestStamp,
 } from "#src/components/site-content.ts";
@@ -8,12 +9,18 @@ import {
   absoluteUrl,
   siteOrigin,
   escapeXml,
+  excerptOf,
   rfc822,
   SITE_LANGUAGE,
 } from "#src/components/site.ts";
 
 /**
  * RSS 2.0, one item per published article that has a publish date.
+ *
+ * `content:encoded` carries the article body, matching v2: a subscriber that has to open the site to
+ * read a post is not being served by the feed. The body is escaped markdown text, not raw HTML, so
+ * the document stays well-formed for any parser. The item count is capped like v2 (20) to keep the
+ * full-text feed a reasonable size.
  *
  * The feed is rendered per request (`force-dynamic`): its content is the database, and a stale
  * feed is worse than a slightly slower request. Timestamps are RFC 822 in the site's +08:00 zone,
@@ -23,6 +30,7 @@ import {
 export const dynamic = "force-dynamic";
 
 const FEED_PATH = "/rss.xml";
+const FEED_ITEM_LIMIT = 20;
 
 const GET = async (): Promise<Response> => {
   const origin = await siteOrigin();
@@ -33,12 +41,21 @@ const GET = async (): Promise<Response> => {
   ]);
 
   const site = describeSite(profile);
+  const latest = posts.slice(0, FEED_ITEM_LIMIT);
 
-  const newest = newestStamp(posts);
+  const bodies = new Map(
+    await Promise.all(
+      latest.map(
+        async (post) => [post.slug, await loadPostBody(post.slug)] as const
+      )
+    )
+  );
+
+  const newest = newestStamp(latest);
 
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">',
     "  <channel>",
     `    <title>${escapeXml(site.title)}</title>`,
     `    <link>${escapeXml(absoluteUrl(origin, "/"))}</link>`,
@@ -64,9 +81,12 @@ const GET = async (): Promise<Response> => {
     `    <webMaster>${escapeXml(`${site.email} (${site.author})`)}</webMaster>`
   );
 
-  for (const post of posts) {
+  for (const post of latest) {
     const link = absoluteUrl(origin, `/posts/${post.slug}`);
-    const summary = post.description ?? "";
+    const body = bodies.get(post.slug)?.trim() ?? "";
+
+    const summary =
+      post.description ?? (body === "" ? "" : excerptOf(body, 240));
 
     lines.push(
       "    <item>",
@@ -83,6 +103,10 @@ const GET = async (): Promise<Response> => {
 
     for (const tag of post.tags) {
       lines.push(`      <category>${escapeXml(tag)}</category>`);
+    }
+
+    if (body !== "") {
+      lines.push(`      <content:encoded>${escapeXml(body)}</content:encoded>`);
     }
 
     lines.push("    </item>");

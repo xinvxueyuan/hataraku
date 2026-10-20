@@ -1,0 +1,24 @@
+$ turbo run typegen && vp check && knip && vp test && turbo run test:e2e && turbo run build
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running typegen in 8 packages
+   • Remote caching disabled
+
+@hataraku/web:content: cache hit, replaying logs d7ffe0a8e7e90a63
+@hataraku/web:content: $ velite
+@hataraku/web:content: [32m[VELITE][0m build finished in 152.57ms
+@hataraku/web:typegen: cache hit, replaying logs 7c0e260ae48ed97a
+@hataraku/web:typegen: $ next typegen
+@hataraku/web:typegen: Generating route types...
+@hataraku/web:typegen: ✓ Types generated successfully
+
+ Tasks:    2 successful, 2 total
+Cached:    2 cached, 2 total
+  Time:    151ms >>> FULL TURBO
+
+apps/web/src/app/settings/admin/posts/[id]/page.tsx (11ms)
+error: Formatting issues found
+
+Found formatting issues in 1 file (1591ms, 8 threads). Run `vp check --fix` to fix them.
+[ELIFECYCLE] Command failed with exit code 1.

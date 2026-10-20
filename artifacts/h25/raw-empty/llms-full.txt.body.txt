@@ -1,0 +1,6421 @@
+# 夜行栈 NightStack
+
+> 昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思
+
+把代码、学习与生活编排成一片可阅读的个人星图
+
+站点: http://localhost:3302/
+语言: zh-CN
+作者: xinvStar
+文章数: 38 / 全站 38
+微文: 0 / 全站 0
+更新日志: 0 / 全站 0
+
+---
+
+## 一步步用 Google AI Studio 做出并部署自己的 Android 应用
+
+- URL: http://localhost:3302/posts/2026-10-17-google-ai-studio-personal-android-apps
+- 发布时间: 2026-10-17
+- 分类: ai
+- 标签: android, google-ai-studio, google-play, jetpack-compose, kotlin
+- 阅读时长: 12 分钟
+
+> 从规划功能、生成 Kotlin 应用、模拟器测试，到 USB 安装和 Google Play 私密部署，手把手走一遍 Google AI Studio 的 Android 应用流程。
+
+# 一步步用 Google AI Studio 做出并部署自己的 Android 应用
+
+想做一个 Android 小工具，以前通常要先装开发环境、熟悉项目结构，再解决编译、安装和分发。Google AI Studio 现在可以从自然语言描述生成原生 Android 项目，并在浏览器里的模拟器中预览；如果要装到真实手机，可以走 USB 安装，也可以在符合条件的地区使用 Google Play 新推出的个人应用私密部署流程。
+
+这几条路很容易混为一谈，先把边界说清楚：**USB 安装只把应用装到你连接的手机；Google Play 的个人应用流程不需要开发者账号，但目前只给创建者自己的设备使用；面向测试者或公众的常规 Play 发布仍需要开发者账号。**下面按“先做出来、再测试、最后选择安装方式”的顺序走一遍。
+
+## 开始前：挑一个范围明确的小应用
+
+第一次做，最好选一个核心流程简单、能在本地完成的工具，例如习惯打卡、学习小测验或活动行程单。先写清楚四件事：
+
+1. **用户要完成什么事。**例如“每天记录一次习惯，并查看本周完成情况”。
+2. **需要哪些页面。**例如记录页和历史页，不必一开始就做复杂导航。
+3. **数据要存在哪里。**如果只是个人小工具，可以先要求本机保存；不要默认加入账号系统或云端同步。
+4. **是否真的需要设备权限。**只有用到相机、位置或蓝牙时才要求对应权限，并明确说明用途。
+
+范围越清楚，AI 越不容易把简单工具扩写成一套过度复杂的产品。把“做一个习惯 App”改成“首页显示今天的习惯清单，点一下记录完成，数据保存在本机，历史页按日期查看”，会更容易得到可测试的结果。
+
+## 第一步：先让 AI 帮你写一份构建计划
+
+打开 [Google AI Studio Playground](https://aistudio.google.com/prompts/new_chat)，先不要急着生成代码。可以把下面这段提示词里的方括号内容换成自己的想法：
+
+```text
+请先为一个原生 Android 应用写清晰的构建计划，不要直接写代码。
+
+应用名称：[习惯记录]
+要解决的问题：[我想每天记录几项习惯，并查看本周完成情况]
+目标用户：[只供我自己使用]
+核心功能：
+1. 首页显示今天的习惯清单
+2. 点选习惯后记录完成状态
+3. 历史页按日期查看记录
+数据要求：[先保存在本机，不需要账号和云端同步]
+界面要求：[简洁、中文、适合手机竖屏]
+
+请列出页面、每页内容、主要交互、本地数据结构、需要的 Android 权限和可能的边界情况。
+如果某项功能需要服务器、账号或敏感权限，请先说明，不要擅自加入。
+```
+
+检查计划时，重点看页面和数据有没有遗漏：重复点击会不会重复记一条、跨天后怎样显示、空记录时看到什么。如果计划太大，就先删掉非核心功能。你可以继续追问，例如“把云同步删掉，只保留本机记录”，直到计划符合实际需求，再复制最终计划。
+
+## 第二步：在 Build mode 创建 Android 项目
+
+进入 [Google AI Studio Build mode](https://aistudio.google.com/apps)，新建应用，并在平台选择器中选 **Android**。把刚才确认的计划贴进输入框，然后运行构建。
+
+Google AI Studio 会生成 Kotlin 和 Jetpack Compose 项目，并启动浏览器内的 Android 模拟器。生成后的项目不是网页套壳：它使用 Android 原生项目结构，但目前采用单 Activity、单模块和 Jetpack Compose 的方式。
+
+构建时可以把“先做什么”说得更具体一些：
+
+```text
+请按下面的计划生成 Android 应用。
+先实现今天的习惯清单、本机保存和历史记录三个核心功能。
+不要加入登录、云同步、广告、付费或未提到的权限。
+生成完成后说明主要文件分别负责什么，并列出我应该在模拟器里验证的流程。
+
+[粘贴最终构建计划]
+```
+
+这里的关键不是堆很多技术名词，而是明确目标、页面、数据边界和暂不需要的功能。对于初次尝试，先让应用完成一条完整流程，比一次要求几十个功能更容易发现问题。
+
+## 第三步：在浏览器模拟器里测试主流程
+
+构建完成后，AI Studio 会自动打开浏览器版 Android 模拟器。先按真实使用顺序走一遍：
+
+1. 第一次打开应用，页面是否能正常显示？
+2. 添加或勾选一条习惯后，记录有没有立刻更新？
+3. 离开页面再回来，数据是否还在？
+4. 没有任何记录时，空页面是否清楚说明下一步怎么做？
+5. 连续点击、旋转屏幕或重新构建后，状态有没有意外丢失？
+
+模拟器适合验证布局、导航和普通交互，但不能替代真机。Google 官方列出的限制包括：模拟器不支持相机拍摄、NFC、蓝牙；GPS 位置是模拟的；Google Play 服务也不能完整运行。因此，依赖这些硬件或服务的功能，要在真实 Android 设备上验证。
+
+如果构建失败，先使用聊天面板里的修复入口，查看 AI Studio 给出的错误，再让它针对问题修复。不要只说“坏了”，可以把可观察到的现象讲清楚：
+
+```text
+在历史页点“返回”后，今天的完成状态消失了。
+请检查数据状态的保存与恢复，只修复这个问题，并保留现有页面布局。
+修复后重新构建，并说明我应该怎样复测。
+```
+
+每次只改一个主要问题，复测同一条流程，比较容易判断修复是否有效。要理解代码，可以打开预览区的 **Code** 标签，查看 Kotlin、Gradle 配置和 Android 资源；不熟悉某个文件时，直接让 AI 解释它的作用。
+
+## 第四步：把应用装到自己的 Android 手机上
+
+如果只是想马上在自己的手机上体验，不一定要经过 Google Play。AI Studio 支持通过浏览器 USB 功能把 APK 安装到连接的 Android 设备上。需要一台 Android 手机、一根支持数据传输的 USB 线，以及支持 WebUSB 的 Chrome 或 Edge 浏览器。
+
+1. 在手机设置里打开“开发者选项”。常见做法是在“关于手机”里连续点按“版本号”七次；不同品牌菜单名称可能略有差异。
+2. 在“开发者选项”中启用 **USB 调试**。
+3. 用 USB 线把手机连接到运行 AI Studio 的电脑，并确认线缆支持数据传输，不只是充电。
+4. 在 AI Studio 的应用预览面板点击 **Install on Device**（有些界面或教程会显示 Install/Install via USB），在浏览器设备选择器里选中手机。
+5. 第一次连接时，手机会弹出“允许 USB 调试”提示；核对设备后点允许。安装完成后，应用会在手机上启动。
+
+这条路径不需要本地安装 Android Studio 或 Android SDK，但它适用于连接到电脑的实体 Android 设备，不适用于 iPhone。后续在 AI Studio 里修改应用后，可以重复安装最新构建。
+
+## 第五步：需要自用分发时，了解 Google Play 的新个人流程
+
+2026 年 10 月，Google Play 宣布开始推出个人应用功能：使用 Google AI Studio 创建的应用可以通过 Google Play 部署到创建者自己的设备，只需要普通 Google 账号，不要求先注册 Play 开发者账号。
+
+这个个人流程有明确限制：应用与公开商店目录隔离，不会出现在公开搜索或应用详情页，其他人也不能通过链接下载。当前从美国等部分市场开始推出，面向 18 岁及以上用户；开放进度是分阶段的，所以如果账号暂时看不到入口，不一定是你漏了某个设置。Google 表示未来计划逐步加入向亲友小范围分享的能力，但目前不要把这个计划当成已经开放的分发功能。
+
+**需要留意官方文档的时间差。**Google AI Studio 的 Android 指南在 2026 年 8 月更新，介绍的是传统 Play 内部测试流程：在 Settings > Publish 里发布到内部测试轨道，前提是拥有开发者账号。10 月推出的个人应用私密部署是另一条新路径。若你想把应用只装给自己用，确认页面提供的是“个人应用/自用”选项；如果页面要求 Play Console 开发者账号、内部测试者名单或测试轨道，那就是传统测试发布流程，不是免开发者账号的个人部署。
+
+## 第六步：要给测试者或公众使用，就走常规发布
+
+如果目标是邀请别人测试，或者公开上架，就不能把“个人私密部署”当成替代品。Google AI Studio 的常规 Play 发布流程要求 Google Play Developer Account；官方教程说明需要一次性支付 25 美元注册费，并完成开发者资料和身份验证。AI Studio 会把应用签名并发布到内部测试轨道，供最多 100 位测试者安装；正式生产发布仍要在 Play Console 管理。
+
+这两种分发方式可以简单记成：
+
+- **只在自己的设备使用：**符合条件时选 Google Play 个人应用私密流程；没有入口时可以用 USB 直接安装。
+- **邀请测试者：**使用 Play Console 内部测试流程，需要开发者账号。
+- **公开给所有人下载：**走正式开发者发布流程，准备好商店资料、审核和持续维护。
+
+别因为页面上都出现了“Google Play”就把它们当成同一条路；判断依据是应用是否公开、可供谁安装，以及发布流程要求什么账号。
+
+## 适合什么，不适合什么
+
+AI Studio 的原生 Android 构建适合把一个想法迅速变成可交互的手机原型，也适合做本地记录、简单工具和个人实验。当前能力边界则要提前考虑：Android 应用采用客户端结构，不包含服务端运行环境；Firebase、Google Workspace API、密钥管理和多人协作等依赖服务器的能力不适用于这类 Android 项目。它目前面向手机和平板，不支持 Wear OS、Android TV、NDK 原生 C/C++，也不支持 Java/XML 视图体系。
+
+如果项目需要登录、云端数据库、多人同步或必须保密的 API 密钥，就不要把密钥直接写进客户端代码。先确认功能是否属于 Android 构建的支持范围；必要时把 AI Studio 生成的项目导出为 ZIP，交给 Android Studio 或其他开发环境继续完成服务端与安全设计。Android 项目目前以 ZIP 下载为外部开发入口，GitHub 导出并非当前文档列出的 Android 方案。
+
+## 发布前的快速检查清单
+
+- 核心流程已在模拟器里从头到尾走通。
+- 依赖硬件、定位或 Google Play 服务的部分已在真机上复测。
+- 应用请求的每项权限都确实需要，并能向用户说明用途。
+- 不把 API 密钥、密码或私人数据硬编码进应用。
+- 个人私密部署、内部测试和公开发布没有混淆。
+- 如果没有计划公开上架，就不必为了个人使用误走传统 Play 开发者发布流程。
+
+这条新流程真正降低的是个人应用从原型走到“自己手机上能用”的门槛。把问题拆小、先做一条主流程、在模拟器和真机分别验证，再根据使用体验继续迭代，才是让 AI 生成应用变得可靠的办法。
+
+**参考资料：**
+
+- [Google 官方 Codelab：Build and publish your first Android app with AI Studio](https://codelabs.developers.google.com/build-with-ai/build-and-publish-android-app-with-ai-studio)
+- [Google AI Studio 官方文档：Build Android apps](https://ai.google.dev/gemini-api/docs/aistudio-android)
+- [Google AI Studio Build mode 文档](https://ai.google.dev/gemini-api/docs/aistudio-build-mode)
+- [Google Play 2026 年 10 月官方公告](https://blog.google/products-and-platforms/platforms/google-play/google-play-updates-october-2026/)
+- [Android Developers：Build native Android apps in Google AI Studio](https://developer.android.com/blog/posts/build-native-android-apps-in-google-ai-studio)
+- [蓝点网原文](https://www.landian.news/archives/127348.html)
+
+---
+
+## 2026年开源安全威胁态势全景报告
+
+- URL: http://localhost:3302/posts/2026-07-07-开源安全威胁态势报告
+- 发布时间: 2026-07-07
+- 分类: 安全
+- 标签: ai安全, 供应链攻击, 安全报告, 开源安全, 漏洞分析
+- 阅读时长: 7 分钟
+
+> 综合 Black Duck OSSRA、Cloudflare 全球威胁形势、Phoenix Security 供应链攻击、FIRST 年度漏洞预测等多份权威报告，全面解析 2026 年开源安全威胁的最新态势与应对策略。
+
+> **核心发现：** 2026 年开源安全威胁已从「可修补的漏洞」全面转向「供应链信任攻击 + AI 加速放大」的双重危机。零 CVE 不等于零风险。
+
+## 一、漏洞数量创历史新高
+
+根据 FIRST 国际安全应急组织在丹佛年会上发布的 **2026 年中漏洞预测报告**，今年 CVE 揭露数量将达到前所未有的 **66,000 个**，对安全团队的评估、优先级排序和修复能力提出了严峻挑战。
+
+| 关键指标 | 数据 | 同比变化 |
+|:---------|:----|:---------|
+| 2026 年预计 CVE 总数 | **66,000 个** | 历史新高 |
+| 每个代码库平均漏洞数 | **581 个** | 翻倍 ↑ |
+| 代码库平均文件数 | **84,000+ 文件** | 5 年翻了 4 倍 |
+| 每个应用组件数 | — | 增长 30% |
+
+Black Duck 的 **《2026 开源安全与风险分析报告》（OSSRA）** 还指出，2024 年 Linux Kernel 团队成为 CVE 编号授权机构后，仅此一项变更就为内核相关代码新增了数千个 CVE 分配，进一步推高了数字。
+
+> 65% 的受访组织在 2025 年报告遭遇过软件供应链攻击。（Black Duck 调研）
+
+## 二、供应链攻击已「工业化」
+
+Phoenix Security 的恶意软件包情报（MPI）体系追踪了 **2024年6月 至 2026年6月** 的 **59 起** 供应链攻击活动，索引了 **657 个** 独立恶意包版本。按月度绘制，曲线不是「增长」，而是**「点火」**：
+
+| 时期 | 攻击活动 | 恶意包数量 |
+|:----|:-------:|:---------:|
+| 2025 全年 | 14 起 | 111 个 |
+| 2026 上半年 | **37 起** (↑2.6×) | **497 个** (↑4.5×) |
+| 2026 年 5 月（单月） | **14 起** | **346 个** |
+
+5 月创纪录的峰值直接来源于一个**自传播蠕虫事件** —— 该蠕虫将单个被盗维护者 token 转化为数百个中毒包，无需人工干预即可自动传播，成为这一时期最具标志性的技术突破。
+
+### 注册表层面：npm 已成重灾区
+
+- npm 承载了约 **90%** 的开源恶意软件
+- npm 恶意软件在 2025 年**翻倍增长**
+- PyPI 和 NuGet 在强制推行 **2FA 和受信任发布** 后，恶意软件分别下降了 **43%** 和 **60%**——这反向证明了**攻击者会绕开摩擦点，而不是硬碰硬**
+
+### 0 个 CVE，0 条补丁路径
+
+在所有 59 起追踪到的攻击活动中，**零 CVEs 被分配**。这些攻击不是利用代码缺陷，而是利用**信任假设**——这意味着没有补丁可以打。攻击面是信任关系本身。
+
+## 三、2026年6月：Red Hat npm 供应链攻击
+
+2026年6月1日，Unit 42 披露了一起重大事件：Red Hat Cloud Services 的 `@redhat-cloud-services` npm 命名空间下 **至少 32 个包被攻陷**。
+
+攻击链如下：
+
+1. **VS Code 扩展被植入恶意软件** → 攻陷开发者 GitHub 账户
+2. 攻击者利用该账户**注入恶意代码**到 Red Hat 的 npm 包中
+3. 恶意包在 `npm install` 时**执行后门代码**，窃取凭证与 token
+
+受影响的具体包列表和修复建议可参考 [Red Hat 安全公告 RHSB-2026-006](https://access.redhat.com/security/vulnerabilities/RHSB-2026-006)。
+
+## 四、AI 编码代理：被忽视的新攻击面
+
+AI 辅助开发正在以史无前例的规模放大开源风险：
+
+- **67%** 的组织已在用 AI 编码助手（Copilot、Cursor、Claude Code 等）
+- **71%** 的禁止使用AI编码助手的公司，员工仍在违规使用
+- AI agent 工具链正在成为新的攻击入口
+
+### 新型攻击媒介已投入实战
+
+| 攻击面 | 描述 |
+|:------|:----|
+| **MCP 服务器注入** | 向 Model Context Protocol 服务中注入恶意指令 |
+| **`.cursorrules` 下毒** | 编辑项目级 AI 指令文件，诱导 AI 生成带后门的代码 |
+| **`CLAUDE.md` 隐藏指令** | 在 AI agent 配置中嵌入恶意行为 |
+| **SessionStart 钩子** | AI 编码助手启动时自动执行的攻击代码 |
+
+在 59 起追踪活动中，至少有 **14 起** 涉及 AI agent 工具链。
+
+### Cloudflare 的自我攻防实验
+
+Cloudflare 的 Cloudforce One 团队让一个 AI 编码代理进行自我漏洞分析，结果发现了 **CVE-2026-22813（CVSS 9.4）**——Markdown 渲染管道中的严重缺陷，可导致未经身份验证的远程代码执行。
+
+## 五、攻击者战术转型：MOE（效果衡量）优先
+
+Cloudflare 在 **《2026 年全球威胁形势报告》** 中提出了一个新概念：**MOE（Measure of Effectiveness）**——攻击者不再追求「复杂度」，而是追求**投入产出比的最大化**。
+
+| 旧的策略 | 新的策略（高 MOE） |
+|:---------|:------------------|
+| 昂贵的 0-day 漏洞利用 | 直接盗取会话 token（绕过 MFA） |
+| 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 |
+| 手动编写攻击代码 | AI 自动发现敏感数据链 |
+
+### 2026 年 8 大关键威胁趋势
+
+1. **AI 驱动的高速攻击自动化** —— 实时网络测绘、漏洞利用开发、深度伪造
+2. **国家支持的预定位攻击** —— 中国威胁行为者（Salt Typhoon、Flax Typhoon）优先定位北美电信和基础设施
+3. **权限过高的 SaaS 整合** —— 单一受损的第三方 API 可引发数百个企业受影响
+4. **武器化的云工具** —— 攻击者利用 Google Drive、Dropbox、GitHub 等可信工具隐藏恶意流量
+5. **深度伪造嵌入西方企业** —— 朝鲜利用假身份+深度伪造将国家支持的操作员嵌入西方公司薪资系统
+6. **Token 盗窃淘汰 MFA** —— 信息窃取木马（如 LummaC2）收集活动会话 token，直接绕过多因素认证
+7. **Relay 盲点助长品牌钓鱼** —— 近 **46%** 的分析邮件未通过 DMARC 验证
+8. **超流量 DDoS 攻击** —— 31.4 Tbps 基准水平，完全关闭人类响应窗口
+
+### 其他惊人数据
+
+- **94%** 的登录尝试来自机器人
+- **63%** 的登录涉及已泄露的凭证
+- 过去 3 个月所有登录中，近三分之二使用了在别处泄露的凭证
+
+## 六、应对建议
+
+在攻击已进入「机器速度」的 2026 年，组织需要结构性转型：
+
+| 优先级 | 措施 | 说明 |
+|:------|:----|:-----|
+| ⚠️ 高 | **SBOM 软件物料清单** | 必须准确跟踪每个开源组件的来源和依赖关系 |
+| ⚠️ 高 | **SCA 软件组成分析** | 不能仅依赖 CVE 数据库，需要可被利用性上下文和修复指引 |
+| ⚠️ 高 | **强制 2FA + 受信任发布** | PyPI/NuGet 已验证有效，npm 急需跟进 |
+| ⚡ 中 | **AI 编码安全审查** | 检查 AI 生成的代码和依赖注入风险 |
+| ⚡ 中 | **AI agent 配置审计** | `claude.md`、`.cursorrules`、MCP 服务已成新的持久化攻击面 |
+| ⚡ 中 | **自动化防御体系** | 手检清单已失效，需要即时可见度和自动响应能力 |
+
+> Cloudflare 总结：防御者必须转向**自主防御模型**（Autonomous Defense），将对攻击者的 MOE 降至零。目标的本质不再是建更好的墙，而是确保系统能在无人监控下比攻击者更快地行动。
+
+## 参考来源
+
+- [Black Duck 2026 OSSRA Report — Open Source Security and Risk Analysis](https://www.blackduck.com/resources/analyst-reports/open-source-security-risk-analysis.html)
+- [Cloudflare 2026 Global Threat Report](https://blog.cloudflare.com/zh-tw/2026-threat-report/)
+- [Phoenix Security — Supply Chain Attacks 2026: npm, PyPI, VS Code, AI Agents](https://phoenix.security/accelerating-supply-chain-attacks-npm-pypi-vsx-ai-enabled-2026/)
+- [Unit 42 — The npm Threat Landscape (Updated June 2, 2026)](https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/)
+- [Red Hat Security Advisory RHSB-2026-006 — @redhat-cloud-services npm compromise](https://access.redhat.com/security/vulnerabilities/RHSB-2026-006)
+- [FIRST 2026 Mid-Year Vulnerability Prediction](https://www.ithome.com.tw/news/176652)
+- [Palo Alto Networks — 2026 Unit 42 Global Incident Response Report](https://www.paloaltonetworks.com/resources/research/unit-42-incident-response-report)
+
+---
+
+## 一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议
+
+- URL: http://localhost:3302/posts/2026-07-05-claude-封禁邮件-追踪像素分析
+- 发布时间: 2026-07-05
+- 分类: technology
+- 标签: claude, email-tracking, privacy, security, tracking-pixel
+- 阅读时长: 12 分钟
+
+> 追踪像素（Tracking Pixel）是什么？Anthropic 真的在封禁邮件中用它定位中国用户吗？本文从技术原理出发，还原事实与误解。
+
+# 一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议
+
+2026 年 6 月底，Claude Code 隐写标记事件尚未平息，另一则消息在网络社区迅速发酵——"Anthropic 在封号通知邮件中内置追踪器，用于定位用户地理位置"。
+
+这则消息在中文开发者社区引发了大量恐慌：Threads 上有用户警告"中国大陆用户请注意，不要打开任何 Anthropic 给你发的邮件"；知乎文章称"细思极恐"；搜狐科技以"在邮件里塞追踪器"为标题进行了报道。
+
+但事实究竟是什么？这是 Anthropic 独有的"阴招"，还是行业通行的标准做法？本文将从技术原理出发，逐层拆解。
+
+## 一、什么是邮件追踪像素？
+
+### 技术原理
+
+邮件追踪像素（Tracking Pixel），又称网络信标（Web Beacon），本质上是一张 **1×1 像素的透明 GIF 图片**，嵌入在邮件 HTML 中。当邮件客户端加载邮件中的图片时，会向托管这张图片的服务器发出 HTTP 请求，服务器可以从请求中提取：
+
+```
+GET https://email.anthropic.com/track/open?user=xxx&campaign=yyy HTTP/1.1
+User-Agent: Mozilla/5.0 ... (邮件客户端标识)
+Accept-Language: zh-CN,zh;q=0.9
+X-Forwarded-For: 203.0.113.x (用户真实 IP)
+```
+
+通过这个请求，发件方可以获知：
+
+| 数据 | 获取方式 | 精度 |
+|------|----------|------|
+| 邮件被打开的时间 | 服务器收到请求的时间戳 | 精确到秒 |
+| 收件人的 IP 地址 | HTTP 请求来源 IP | 精确到城市级 |
+| 邮件客户端类型 | User-Agent 头部 | 精确到版本 |
+| 操作系统信息 | User-Agent 头部 | 精确到版本 |
+| 粗略地理位置 | IP 地址地理数据库 | 城市级 |
+| 设备类型 | User-Agent 头部 | 桌面/移动/平板 |
+
+### 行业普及程度
+
+追踪像素并非 Anthropic 的发明。它在商业邮件中的使用率据估计 **超过 95%**，几乎所有的邮件营销平台（Mailchimp、SendGrid、AWS SES、HubSpot、Salesforce Marketing Cloud）都默认集成了这一功能。
+
+这是 **行业通行做法**，而非某家公司的特殊手段。
+
+| 公司 | 邮件追踪像素 | 是否默认开启 |
+|------|-------------|-------------|
+| Anthropic | ✅ 有 | 是 |
+| OpenAI | ✅ 有 | 是 |
+| Google (Gmail) | ✅ 有 | 是 |
+| Microsoft (Outlook) | ✅ 有 | 是 |
+| GitHub | ✅ 有 | 是 |
+| Slack | ✅ 有 | 是 |
+| Stripe | ✅ 有 | 是 |
+
+几乎所有面向用户的互联网服务都在使用邮件追踪——你收到的密码重置确认、订阅账单通知、活动邀请邮件，大概率都包含跟踪像素。
+
+### 为什么不直接追踪？
+
+追踪像素能够工作的前提是 **邮件客户端加载了远程图片**。如果用户配置邮件客户端为"不自动加载图片"，追踪像素就会失效。不同的邮件客户端对此的处理方式不同：
+
+| 邮件客户端 | 图片加载策略 | 追踪像素行为 |
+|------------|-------------|-------------|
+| **Gmail Web** | 默认缓存代理图片 | 仍被追踪（Google 缓存了请求） |
+| **Gmail 移动端** | 自动加载 | 直接被追踪 |
+| **Outlook 桌面** | 默认不加载外部图片 | 不受追踪 |
+| **Apple Mail** | 默认加载所有图片 | 直接被追踪 |
+| **Proton Mail** | 默认代理/拦截图片 | 不受追踪 |
+| **Thunderbird** | 默认不加载远程图片 | 不受追踪 |
+
+## 二、Anthropic 封禁邮件中的追踪像素
+
+### 社区发现
+
+中文社区用户在收到 Anthropic 的封号通知邮件后，检查了邮件的原始 HTML 内容。根据社区反馈，邮件中包含指向 Anthropic 邮件服务域的追踪像素链接。
+
+需要明确的是：**到目前为止，没有任何公开的逆向分析证据能证明 Anthropic 使用追踪像素来进行用户定位或封禁决策**。所有指控都基于"邮件中包含追踪像素 → 追踪像素可获取 IP 位置 → Anthropic 用它来封禁中国用户"这一推论链。
+
+### 两种可能的用途
+
+Anthropic 在封禁邮件中使用追踪像素，存在两种完全不同的可能性：
+
+**可能性 A：标准邮件运营指标**
+
+这是最合理的解释。Anthropic 使用追踪像素统计封号邮件的"打开率"（Open Rate），这是邮件运营的标准 KPI：
+
+- 多少人收到了封禁通知？
+- 多少人实际看到了封禁通知？
+- 哪些语言版本的邮件被打开得更多？
+
+这些数据对 Anthropic 的账号安全团队来说是合理的运营指标。
+
+**可能性 B：主动定位追踪**
+
+更令人担忧的解释是，Anthropic 有意使用追踪像素获取收件人的 IP 地址，以：
+
+1. 确认用户的实际地理位置
+2. 将用户 IP 与之前账号活动的 IP 进行交叉比对
+3. 发现使用 VPN 或代理的用户
+4. 作为封禁决定或申诉拒绝的"证据"
+
+### 哪个更可信？
+
+目前 **没有任何公开证据支持可能性 B**。但以下因素让社区倾向于怀疑：
+
+1. **Claude Code 隐写标记事件的前科**：就在同一时期，社区发现 Anthropic 在 Claude Code 中通过隐写术秘密标记中国用户。这种行为模式让社区有理由怀疑 Anthropic 在其他场景中也可能采用类似手段。
+
+2. **大规模封禁行动的背景**：2026 年 6 月底，Anthropic 启动了大规模封禁，大量中国用户的付费账户被无预警封停。这被认为是"打击蒸馏攻击"行动的一部分。在这种背景下，任何数据收集行为都更容易被解读为"为了封禁"。
+
+3. **封禁通知的特殊性**：与一般的营销邮件不同，封号通知是具有法律后果的通知。收件人没有选择退出的权利，却仍然受到追踪。
+
+### Anthropic 的回应
+
+截至 2026 年 7 月 5 日，**Anthropic 尚未就邮件追踪像素问题作出任何官方回应**。这与 Claude Code 隐写标记事件中 Anthropic 快速承认并修复的态度形成对比。
+
+可能的解释包括：
+- Anthropic 不认为这是一个需要回应的"问题"（因为追踪像素是行业标准做法）
+- Anthropic 的法律团队正在评估回应策略
+- Anthropic 认为该指控缺乏实质证据，不值得回应
+
+## 三、关键区分：这是"隐私问题"还是"封禁手段"？
+
+这一争议的核心在于，追踪像素的两个用途需要完全不同的评估框架：
+
+| 维度 | 标准运营追踪（可能性 A） | 主动定位追踪（可能性 B） |
+|------|------------------------|------------------------|
+| **是否常见** | 极其常见（95%+ 邮件） | 有争议但合法 |
+| **是否可见** | 半公开（隐私政策中通常提及） | 半隐蔽 |
+| **道德评价** | 中性（行业通行） | 负面（侵犯式监控） |
+| **对用户的实质影响** | 低（不影响产品使用） | 高（可能导致封禁） |
+| **法律风险** | 低（符合行业实践） | 高（GDPR、PIPL 等法规） |
+| **证据** | ✅ 确凿——邮件中存在追踪像素 | ❌ 推测——无证据表明用于封禁决策 |
+
+### 第三方邮件服务的角色
+
+还有一个常被忽略的因素：Anthropic 可能并非自主管理邮件系统，而是使用 **第三方邮件服务商**（如 SendGrid、AWS SES、Customer.io 等）。这些服务商会 **默认** 添加追踪像素，无需 Anthropic 显式配置。
+
+事实上，很多开发者都有过这样的经历：自己搭建的应用在集成 SendGrid 后，发出的邮件自动就带上了追踪像素——甚至开发者本人最初都可能毫不知情。
+
+## 四、技术防护：如何阻止追踪像素
+
+无论 Anthropic 的追踪像素出于何种目的，如果你希望阻止邮件追踪，有以下实用方法：
+
+### 1. 阻止远程图片加载（最有效）
+
+```bash
+# Gmail Web: 设置 → 常规 → 图片 → "显示外部图片前询问我"
+# Outlook: 文件 → 选项 → 信任中心 → 自动下载 → 勾选"不自动下载图片"
+# Apple Mail: 邮件 → 偏好设置 → 显示 → 关闭"在消息中载入远程内容"
+```
+
+### 2. 使用隐私保护邮箱
+
+| 邮箱服务 | 追踪防护能力 | 备注 |
+|----------|-------------|------|
+| **Proton Mail** | 强 | 默认代理所有图片，阻断追踪像素 |
+| **Tuta (Tutanota)** | 强 | 默认不加载远程内容 |
+| **FastMail** | 中 | 可配置为仅加载联系人图片 |
+| **Hey.com** | 中 | 默认代理图片 |
+| **Gmail** | 弱 | 虽然做了图片缓存代理，但仍可追踪打开行为 |
+
+### 3. 使用邮件代理服务
+
+一些工具如 Apple 的"隐藏我的邮箱"、Firefox Relay、SimpleLogin 等可以生成一次性邮件别名，这些别名收到的邮件会经过服务商的中继处理，可能剥离追踪像素。
+
+### 4. 使用文本模式阅读
+
+```bash
+# Gmail: 在邮件右上角菜单中选择"显示原始邮件"
+# Outlook: 在邮件上右键 → "查看源代码"
+# Thunderbird: 查看 → 消息体为 → 纯文本
+```
+
+## 五、延伸思考：行业标准与伦理边界的冲突
+
+追踪像素争议之所以引发如此大的反响，根源在于一个更深层的矛盾：
+
+**商业邮件追踪是行业标准，但在特定场景下的应用引发了伦理争议。**
+
+类似的例子还有很多：
+
+- 银行发送的催款通知邮件是否应该包含追踪像素？
+- 律师发给客户的解约通知是否应该追踪打开率？
+- 平台发送的封号决定通知是否应该追踪阅读行为？
+
+在绝大多数法律框架下，回答是"可以"——但这些场景的共通点是，**收件人处于弱势地位，没有选择退出的权力**。
+
+### 与 Claude Code 隐写标记的根本区别
+
+需要强调的是，邮件追踪像素与 Claude Code 隐写标记存在 **本质区别**：
+
+| 对比维度 | 邮件追踪像素 | Claude Code 隐写术 |
+|----------|-------------|-------------------|
+| **透明度** | 可查看（邮件源代码可见） | 不可见（XOR 混淆 + Unicode 替换） |
+| **阻断方式** | 客户端设置即可阻断 | 无法技术阻断（需要对二进制反编译） |
+| **行业惯例** | 95%+ 商业邮件使用 | 不存在行业先例 |
+| **数据量** | 一个请求，一次打开 | 每次 API 调用都编码 2 bits |
+| **隐蔽性** | 半公开（了解邮件技术的人知道） | 极隐蔽（需逆向分析才能发现） |
+
+### 社区的反应是否过度？
+
+客观来说，社区对追踪像素的恐慌在技术层面有一定程度的过度反应：
+
+1. **追踪像素是互联网基础设施的一部分**。几乎所有邮件都在使用，突然针对 Anthropic 的封禁邮件特批是不公平的。
+2. **阻止追踪像素极其简单**。只需修改邮件客户端的一个设置。
+3. **追踪像素只能获取 IP 和 User-Agent**。无法获取文件系统数据、账户密码等敏感信息。
+4. **没有证据表明追踪像素用于封禁决策**。
+
+但情绪层面的反应是可以理解的——在一个信任已经破裂的语境下，任何额外的数据收集行为都会被视为"恶意"。**Claude Code 隐写标记事件让社区对 Anthropic 的信任跌到了冰点，这种不信任自然会延伸到其他场景。**
+
+## 六、总结
+
+回到最初的问题：**Anthropic 真的在封禁邮件中使用追踪像素来定位用户吗？**
+
+**事实判断**：✅ 封禁邮件中确实存在追踪像素，这是行业标准做法。
+
+**意图判断**：❓ 目前没有任何公开证据表明 Anthropic 使用追踪像素来定位用户或辅助封禁决策。最可能的解释是标准邮件运营指标统计。
+
+**风险判断**：⚠️ 虽然追踪像素本身危害有限（仅收集 IP、时间、设备信息），但在大规模封禁的敏感时期，任何数据收集都会被放大解读。Anthropic 如果缺乏透明度，只会让社区的猜疑持续发酵。
+
+**行动建议**：无论 Anthropic 的意图如何，建议所有用户默认关闭邮件客户端的远程图片加载——这不仅针对 Anthropic，而是通用的隐私保护习惯。
+
+---
+
+> 本文没有将 Anthropic 使用的追踪像素与 Claude Code 隐写术等同。两者在透明度、可阻断性和行业惯例上存在本质区别。但一个处于信任危机中的公司，如果不能对其数据收集行为给予充分透明的解释，那么引发公众疑虑是不可避免的结果。
+>
+> **参考资料：**
+> - [80aj: 针对 Anthropic 邮件追踪风波：技术层面的防护与规避指南](https://www.80aj.com/2026/06/30/anthropic-email-tracking-guide/)
+> - [知乎: 细思极恐！Claude 封号的原因终于被人找到了](https://zhuanlan.zhihu.com/p/2056410522698962473)
+> - [CSDN: Anthropic 太阴了，为什么你的 Claude 帐号总是被封](https://mcp.csdn.net/6a447556662f9a54cb8722a8.html)
+> - [搜狐: 在邮件里塞追踪器！在 Claude Code 中埋"暗门"！Anthropic](https://www.sohu.com/a/1044432792_122014422)
+> - [Linux.do: 针对 Anthropic 邮件追踪的防护方案（原文）](https://linux.do/t/topic/2503146)
+
+---
+
+## 深度源码解析：Claude Code 隐藏的反向代理检测与隐写标记机制
+
+- URL: http://localhost:3302/posts/2026-07-04-claude-code-隐写标记-源码解析
+- 发布时间: 2026-07-04
+- 分类: technology
+- 标签: claude-code, privacy, security, source-analysis
+- 阅读时长: 16 分钟
+
+> 从 51 万行泄露源码中还原 Anthropic 如何通过隐写术标记中国开发者
+
+# 深度源码解析：Claude Code 隐藏的反向代理检测与隐写标记机制
+
+2026 年 3 月，Anthropic 因一次 npm 构建配置失误，将包含 source map 的调试文件打包进了 Claude Code 的发布版本。这 51 万行 TypeScript 源码的意外泄露，被中国开发者社区称为一次"被动开源"。在随后的源码审查中，社区发现了一段极其隐蔽的代码——它并非 bug，而是一个精心设计的、针对中国用户的隐形标记系统。
+
+## 一、事件时间线
+
+| 时间 | 事件 |
+|------|------|
+| 2026-03-31 | Claude Code v2.1.88 发布，source map 被误打包 |
+| 2026-04-02 | Claude Code v2.1.91 发布，隐写标记代码被静默引入 |
+| 2026-04 初 | 中国开发者社区开始系统性分析泄露源码 |
+| 2026-06-30 | Reddit 用户 LegitMichel777 发表详细技术报告；独立研究者 Thereallo 发布完整逆向分析 |
+| 2026-07-01 | TNW、Cybernews、The Register、Yahoo News 等国际媒体报道 |
+| 2026-07-01 | PR #23770 合并，隐写标记代码被移除 |
+| 2026-07-02 | Claude Code v2.2.0 发布，官方确认移除隐写标记功能 |
+| 2026-07-10 | **阿里巴巴宣布内部禁止使用 Claude Code** |
+
+具有讽刺意味的是，Anthropic 在 7 月 1 日同一天宣布了两件截然不同的事：Claude Sonnet 5 发布，美国商务部**解除了**对 Claude Fable 5 和 Mythos 5 的出口管制——以及 PR 合并移除隐写标记代码。
+
+## 二、核心发现：三层检测架构
+
+通过对泄露源码的分析，社区还原了 Claude Code 客户端中隐藏的三层检测架构：
+
+### 第一层：代理检测
+
+```typescript
+// 简化还原 — 检测是否使用自定义代理
+const BASE_URL = process.env.ANTHROPIC_BASE_URL;
+
+function isUsingCustomProxy(): boolean {
+  if (!BASE_URL || BASE_URL === "https://api.anthropic.com") {
+    return false;
+  }
+  return true;
+}
+```
+
+当检测到用户设置了 `ANTHROPIC_BASE_URL` 指向非官方端点时，程序进入第二层判断。这是合理的边界——在中国大陆，由于 Anthropic API 无法直接访问，大量开发者通过第三方代理服务使用 Claude Code。正因如此，**几乎所有中国大陆用户都会触发此条件**。
+
+### 第二层：时区指纹
+
+```typescript
+// 简化还原 — 检测中国时区
+const TARGET_TIMEZONES = [
+  "Asia/Shanghai",
+  "Asia/Urumqi",
+];
+
+function isChinaTimezone(): boolean {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return TARGET_TIMEZONES.includes(tz);
+}
+```
+
+时区检测无法通过 VPN 或代理隐藏——系统时区是用户在操作系统安装时设定的。Asia/Shanghai 覆盖了绝大多数中国大陆用户。
+
+### 第三层：域名匹配
+
+```typescript
+// 简化还原 — 147 个硬编码域名的匹配逻辑
+const TARGET_DOMAINS = decodeAndExpand([
+  // 中国 AI 实验室
+  "deepseek.com", "zhipuai.cn", "moonshot.cn",
+  "minimax.chat", "stepfun.com", "01.ai",
+  // 中国科技巨头
+  "baidu.com", "alibaba.com", "antgroup.com",
+  "bytedance.com", "tencent.com", "huawei.com",
+  // Claude API 代理/转售服务
+  "claude-proxy", "claude-api", "claude-mirror",
+  // ...共 147 个条目
+]);
+
+function matchesTargetDomain(proxyUrl: string): boolean {
+  const domain = new URL(proxyUrl).hostname;
+  return TARGET_DOMAINS.some(d => domain.includes(d));
+}
+```
+
+这个硬编码列表包含了三类目标：
+1. **中国 AI 实验室**：DeepSeek、智谱、月之暗面、MiniMax、阶跃星辰等
+2. **中国科技公司**：百度、阿里巴巴、蚂蚁、字节跳动、腾讯、华为等
+3. **Claude API 代理服务**：大量第三方中转和转售服务
+
+## 三、隐写术：信息传输的精巧设计
+
+最令人震惊的不是检测逻辑本身，而是**信息传输的方式**——一种教科书级别的隐写术实现。
+
+### 传统遥测 vs 隐写
+
+在正常的软件遥测中，检测数据会通过独立的 API 端点或专用字段上报：
+
+```
+正常做法：
+POST /api/telemetry HTTP/1.1
+{ "timezone": "Asia/Shanghai", "proxy": "proxy.example.com" }
+```
+
+但 Claude Code 的做法完全不同——它**没有**新建任何网络请求，而是将信息编码进了**系统提示词（System Prompt）** 中。
+
+### "Today's date is..." 的秘密
+
+每个发送给 Claude API 的请求都包含一条系统提示词。其中一个看似无害的语句是：
+
+```
+Today's date is 2026-07-04
+```
+
+而正是这个看似普通的句子，承载了隐藏信息。
+
+#### 标记位 1：日期分隔符
+
+```typescript
+// 简化还原 — 通过日期格式编码时区信息
+function formatDateString(date: Date, isTarget: boolean): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  
+  if (isTarget) {
+    return `${y}/${m}/${d}`;  // 斜杠 = 命中中国时区
+  }
+  return `${y}-${m}-${d}`;   // 连字符 = 正常
+}
+```
+
+当用户时区为 Asia/Shanghai 时，日期格式从 `2026-07-04` 变为 `2026/07/04`。这在视觉上几乎完全相同——你会在意系统提示词里日期用的是斜杠还是连字符吗？
+
+#### 标记位 2：Unicode 同形字符
+
+```typescript
+// 简化还原 — 通过撇号字符编码域名匹配结果
+const APOSTROPHE_VARIANTS = {
+  NONE:    "'",   // U+0027 — 标准 ASCII 撇号
+  DOMAIN:  "ʼ",   // U+02BC — 修饰字母撇号
+  LAB:     "ʹ",   // U+02B9 — 修饰字母 Prime
+  BOTH:    "ʻ",   // U+02BB — 修饰字母转逗号
+};
+
+function encodeTodayString(matches: CheckResult): string {
+  const variant = APOSTROPHE_VARIANTS[matches.level];
+  return `${variant}Today${variant}s date is ${matches.dateStr}`;
+}
+
+// 最终效果对比（肉眼不可区分）：
+// 'Today's date is 2026-07-04     ← 标准 ASCII，未命中
+// ʼTodayʼs date is 2026-07-04     ← U+02BC，命中域名列表
+// ʹTodayʹs date is 2026/07/04     ← U+02B9 + 斜杠，命中 AI 实验室
+// ʻTodayʻs date is 2026/07/04     ← U+02BB + 斜杠，全部命中
+```
+
+这四个 Unicode 字符在绝大多数编辑器和终端中的**渲染效果完全相同**——它们看起来都是普通的撇号 `'`。只有通过十六进制查看器或专门的 Unicode 分析工具才能区分。
+
+### 信息编码矩阵
+
+| 条件组合 | 日期格式 | 撇号字符 | 上层可见 |
+|----------|----------|----------|----------|
+| 正常用户 | `2026-07-04` | `'` (U+0027) | 无标记 |
+| 中国时区 | `2026/07/04` | `'` (U+0027) | 时区标记 |
+| 命中域名列表 | `2026-07-04` | `ʼ` (U+02BC) | 域名标记 |
+| 命中 AI 实验室 | `2026/07/04` | `ʹ` (U+02B9) | 实验室标记 |
+| 全部命中 | `2026/07/04` | `ʻ` (U+02BB) | 最高标记 |
+
+通过这种编码方式，每个 API 请求都在用户完全不知情的情况下，向 Anthropic 的服务器传递了**2 bits 的分类信息**。
+
+## 四、为什么这是严重的信任问题
+
+### 1. 透明度缺失
+
+Anthropic 的隐私政策中虽然提到会收集某些数据，但从未披露过这段隐写逻辑的存在。用户无法在文档中找到任何关于时区检测、域名匹配或 Unicode 字符替换的说明。
+
+### 2. 无法主动选择
+
+与标准的遥测不同，隐写术没有"退出"（opt-out）机制。这段代码在客户端静默运行，将元数据编码进正常的功能性通信中。用户无法通过配置、防火墙或隐私设置来阻止它——因为你不打开源码，根本不知道它的存在。
+
+### 3. 可能只是冰山一角
+
+如果开发者愿意在系统提示词中隐藏这种检测逻辑，那么：
+- 是否还有其他信息被类似方式编码？
+- 客户端还有多少未公开的检测逻辑？
+- 这些行为是否存在于其他 Anthropic 产品中？
+
+### 4. 对编码助手工具信任的侵蚀
+
+Claude Code 运行在开发者的代码仓库中，拥有：
+- 完整源代码的读取权限
+- 文件结构和项目细节的访问权限
+- 执行 Shell 命令的权限
+- 修改文件的能力
+
+对于拥有如此高权限的工具，"信任"是它存在的基础。
+
+## 五、Anthropic 的回应与背景
+
+事件曝光后，Anthropic 团队成员 @trq212 在社交媒体回应：
+
+> "这是我们 3 月启动的一个实验，旨在防止未授权转售商的账户滥用行为，以及防御模型蒸馏（distillation）攻击。该代码将在明天发布的新版本中移除。"
+
+### 蒸馏攻击的阴影
+
+Anthropic 并非毫无理由。2026 年 6 月，Anthropic 向美国参议院银行委员会提交了一份报告，指控阿里巴巴及其 AI 实验室 Qwen（通义千问）使用了近 **25,000 个欺诈账户**，累计产生 **2,880 万次**与 Claude 的交互，用于"汲取"Claude 模型的推理能力。
+
+在 AI 领域，"蒸馏"是指使用高级模型的输出训练一个较弱模型的技术。如果竞争对手通过大规模账户伪造来系统性提取模型能力，这确实构成严重的商业和国家安全威胁。
+
+### 方法 vs 目的
+
+然而，争议的焦点在于**实现方式而非目的本身**：
+
+> 一个拥有源代码读取权限、Shell 执行权限和文件修改能力的编码助手，在用户不知情的情况下，通过隐写术向自己的服务器编码用户的环境信息。这个边界的打破，无论出于什么目的，代价都太高了。
+
+## 六、事件后续：回滚、禁令与连锁反应
+
+### Anthropic 的正式回滚
+
+事件曝光后，Anthropic Claude Code 团队成员 **Thariq Shihipar（@trq212）** 在 X 上正式回应：
+
+> "这是我们 3 月启动的一个实验，旨在防止未授权转售商的账户滥用行为，以及保护模型免受蒸馏（distillation）攻击。团队后来已经达成了更强有力的保护措施，我们其实一直打算移除这段代码。PR 已经合并了，应该在明天的版本中完全回滚。"
+
+独立安全研究者 **Thereallo** 随后验证，PR #23770 于 7 月 1 日被合并，Claude Code v2.2.0（7 月 2 日发布）已不再包含该隐写标记功能。
+
+### 阿里巴巴全面封禁
+
+事情远没有因代码回滚而结束。2026 年 7 月 10 日，**阿里巴巴** 向全体员工发出内部通知，正式将 Claude Code 列入高危软件清单，禁止在公司设备上使用：
+
+> "鉴于 Claude Code 近期被发现存在后门风险，经全面评估，Claude Code 已被纳入存在安全漏洞的高风险软件清单。"
+
+阿里巴巴推荐员工使用自研编码代理平台 **Qoder（通义灵码）** 作为替代方案。
+
+这起禁令的背景尤为讽刺：Anthropic 此前刚刚向美国参议院银行委员会指控阿里巴巴旗下的 Qwen 实验室使用了近 25,000 个欺诈账户进行大规模蒸馏攻击。如今，阿里巴巴反过来以"后门风险"为由封禁了 Claude Code。
+
+### 国际媒体的广泛报道
+
+事件迅速发酵为国际新闻，主流媒体和科技媒体纷纷跟进：
+
+| 媒体 | 标题基调 |
+|------|----------|
+| **The Next Web** | "Alibaba bans Claude Code over hidden Chinese user tracking" |
+| **The Register** | "Anthropic is removing its covert code for catching Chinese competitors" |
+| **The Information** | "Anthropic Backtracks Spyware Targeting Chinese Users" |
+| **Yahoo News** | "Anthropic rolls back China tracking code" |
+| **India Today** | "Anthropic tried to spy on Chinese Claude users through hidden code" |
+| **The Decoder** | "Hidden code in Claude Code secretly flagged Chinese users" |
+
+多家媒体使用了 "spyware"（间谍软件）一词来回溯 Anthropic 的行为，反映出业界对此事件的定性。
+
+### 连锁反应：信任危机与 AI 工具地缘化
+
+该事件引发了更深层次的讨论：
+
+**中国企业加速"去美国化"。** 阿里巴巴的禁令并非孤立事件。随着美国对 AI 工具的出口管制不断加强，中国科技企业越来越将美国 AI 工具视为法律、安全和运营风险的来源。此事给了中国企业进一步推动员工使用国产替代方案的充分理由。
+
+**开发者信任遭受重创。** Claude Code 需要读取开发者本地文件系统、执行 Shell 命令、修改代码——任何隐藏功能实际上都可以访问机器上的一切。火绒安全等中国安全厂商指出，Anthropic 的追踪不仅是透明度问题，还涉及跨境数据合规风险。
+
+> "今天的时区检测，明天可能是系统破坏或数据窃取。"——Reddit 用户评论
+
+### 延伸争议：封禁邮件中的追踪像素
+
+与隐写标记事件几乎同期发酵的，还有另一个争议——多位用户发现 Anthropic 发送的 **封号通知邮件中包含邮件追踪像素（Tracking Pixel）**。
+
+追踪像素是一种 1×1 像素的透明图片，嵌入在邮件 HTML 中。当邮件客户端加载图片时，会向发件方服务器发出请求，从而泄露：
+
+- 邮件被打开的时间
+- 收件人的 IP 地址（可推断地理位置）
+- 邮件客户端和设备信息
+
+虽然追踪像素在商业邮件中的使用率超过 95%（已被 Mailchimp、SendGrid 等邮件服务商默认集成），但它在 **封号通知邮件** 中引发格外强烈的反感——用户被单方面封禁后，还被要求"确认已读"收件通知，这在伦理上存在严重争议。
+
+截至发稿，Anthropic 尚未就邮件追踪像素问题作出官方回应。
+
+## 七、技术验证：如何检查自己的 Claude Code
+
+如果你是 Claude Code 用户，可以通过以下方式检查是否受影响：
+
+### 方法 1：检查日期格式
+
+```bash
+# 查看 Claude Code 发送给 API 的实际提示词
+# 如果你的日期显示为 2026/07/04（斜杠）而不是 2026-07-04（连字符）
+# 说明你已被标记
+```
+
+### 方法 2：十六进制检查
+
+```bash
+# 用 xxd 查看提示词中的撇号字节
+echo "Today's" | xxd | grep "54 6f 64 61 79"
+# 标准 ASCII 撇号后应为 27
+# 如果显示 ca bc / ca b9 / ca bb 则说明是 Unicode 变体
+```
+
+### 方法 3：查看版本
+
+Anthropic 已在 2026 年 7 月 2 日发布的 v2.2.0 中移除了该隐写标记代码。建议升级到最新版本并检查完整的 Release Notes。
+
+## 八、总结与思考
+
+这次事件揭示了几个重要问题：
+
+**1. AI 工具的地缘政治化正在加速。** 出口管制、反蒸馏防御、用户指纹识别、邮件追踪——AI 不再只是技术问题，而是深度嵌入到了国际政治博弈中。
+
+**2. 客户端安全审计的重要性被低估。** 大多数开发者不会审查 npm 包的源码。Claude Code 作为一个拥有极高系统权限的工具，其客户端的透明度应该受到更严格的审视。
+
+**3. 隐写术作为隐蔽通信手段，其应用边界值得讨论。** 当一家公司使用 steganography 来隐藏数据收集行为时，无论初衷如何，这一行为本身就构成了对用户信任的根本性违背。
+
+**4. 中国开发者的被动处境。** 因为地理和政治原因，中国大陆开发者天然处于被"特殊对待"的位置——无论是 API 封锁、客户端检测还是邮件追踪。发展自主的 AI 编码工具和控制权，已不再是技术选择，而是必要的基础设施建设。
+
+**5. 信任是 AI 开发工具的基石。** Claude Code 拥有文件系统读取、Shell 执行、代码修改等极高权限。任何隐蔽的数据收集——无论目的是什么——都会动摇整个生态的信任基础。阿里巴巴的禁令是一个明确的信号：当信任破裂时，市场会立即做出反应。
+
+---
+
+> 本文技术分析基于 2026 年 3 月 Claude Code v2.1.88 源码泄露后公开的分析资料，以及社区独立验证报告。所有代码片段均为基于公开分析的简化还原，不代表 Anthropic 的实际源码。
+>
+> **参考资料：**
+> - [Cybernews: Claude Code attempts to detect Chinese users](https://cybernews.com/ai-news/claude-code-steganography-china-users/)
+> - [36氪/机器之心：Claude Code 被曝秘密标记中国用户](https://eu.36kr.com/en/p/3876461674917892)
+> - [TheRealLo: Claude Code Prompt Steganography 技术报告](https://thereallo.dev/blog/claude-code-prompt-steganography)
+> - [GitHub: claude-code-source-analysis-orange-book](https://github.com/alchaincyf/claude-code-source-analysis-orange-book)
+> - [OSChina: Anthropic 正在移除 Claude Code 用于检测中国用户的隐藏代码](https://www.oschina.net/news/471416/anthropic-removing-its-code-for-catching-chinese-competitors)
+> - [TNW: Alibaba bans Claude Code over hidden Chinese user tracking](https://thenextweb.com/news/alibaba-bans-claude-code-anthropic-tracking-chinese-users)
+> - [The Register: Anthropic is removing its covert code for catching Chinese competitors](https://www.theregister.com/2026/07/01/anthropic_is_removing_its_covert_code_for_catching_chinese_competitors/)
+> - [The Decoder: Hidden code in Claude Code secretly flagged Chinese users](https://the-decoder.com/hidden-code-in-claude-code-secretly-flagged-chinese-users/)
+> - [The Information: Anthropic Backtracks Spyware Targeting Chinese Users](https://www.theinformation.com/briefings/anthropic-backtracks-spyware-targeting-chinese-users-controversy)
+> - [Yahoo News: Anthropic rolls back China tracking code](https://www.yahoo.com/news/politics/articles/anthropic-rolls-back-china-tracking-224913396.html)
+
+---
+
+## Next.js 14 App Router 完全指南
+
+- URL: http://localhost:3302/posts/2026-03-29-nextjs-14-app-router完全指南
+- 发布时间: 2026-03-29
+- 分类: frontend
+- 标签: next-js, react, ssr
+- 阅读时长: 2 分钟
+
+> Next.js 14 的 App Router 带来了全新的开发体验。Server Componen...
+
+# Next.js 14 App Router 完全指南
+
+Next.js 14 的 App Router 带来了全新的开发体验。Server Components、Server Actions、嵌套 Layout——这些概念让 React 开发进入了一个新时代。
+
+
+## 文件约定即路由
+
+app/layout.js（根布局，必需）、page.js（页面组件）、loading.js（加载状态，自动被 Suspense 包裹）、error.js（错误边界）、not-found.js（404 页面）。app/blog/[slug]/page.js 自动映射到 /blog/:slug。
+
+
+## Server Components（默认）
+
+App Router 中所有组件默认是 Server Component。可以直接访问数据库、文件系统、环境变量。使用 async/await 获取数据，无需 useEffect。不会增加客户端 JS bundle 体积。
+
+
+## Server Actions
+
+用 'use server' 声明的异步函数，可以直接在表单的 action 属性中调用。替代了传统的 API Route + fetch 模式。自动处理 CSRF 保护、支持渐进增强、调用 revalidatePath 刷新缓存。
+
+
+## 嵌套 Layout 与模板
+
+layout.js 在路由切换时保持状态（持久化导航），template.js 每次路由切换都重新挂载。适合需要重置状态的场景。
+
+
+## 流式渲染与 Suspense
+
+使用 loading.js 实现页面级别的流式渲染——服务端可以先发送页面骨架，在数据就绪后流式传输内容。比传统的 SSR 有更快的 TTFB（首字节时间）。
+
+
+## 总结
+
+App Router 的核心创新：Server Components 减少客户端 JS、Server Actions 替代 API Routes、嵌套 Layout 实现持久化导航、流式渲染改善首屏体验。
+
+---
+
+## CI/CD 实战：GitHub Actions 自动化工作流
+
+- URL: http://localhost:3302/posts/2026-03-22-cicd实战-github-actions
+- 发布时间: 2026-03-22
+- 分类: devops
+- 标签: automation, cicd, github-actions
+- 阅读时长: 2 分钟
+
+> GitHub Actions 让 CI/CD 变得简单而强大。从自动测试到自动部署，一切都可以自动化...
+
+# CI/CD 实战：GitHub Actions 自动化工作流
+
+GitHub Actions 让 CI/CD 变得简单而强大。从自动测试到自动部署，一切都可以自动化。
+
+
+## 基础工作流结构
+
+YAML 格式定义在 .github/workflows/ 目录。核心概念：on（触发条件）、jobs（任务）、steps（步骤）。每个 job 运行在独立的虚拟机上，jobs 之间默认并行执行。
+
+
+## Matrix 构建
+
+使用 strategy.matrix 在多个环境（Node 版本、OS）中并行测试。确保代码在不同环境的兼容性。可以设置 fail-fast: false 让所有组合都完成。
+
+
+## 缓存依赖
+
+使用 actions/setup-node 的 cache 选项或 actions/cache 缓存 node_modules。大幅减少安装时间——从几分钟降到几秒。
+
+
+## 部署到 Vercel
+
+使用官方 Action 或直接调用 CLI。需要配置 Secrets（VERCEL_TOKEN 等）来安全存储凭证。部署到 production 需要设置 --prod 标志。
+
+
+## Docker 构建与推送
+
+使用 docker/build-push-action 构建和推送镜像到 GitHub Container Registry。多阶段构建优化镜像大小。标签管理使用 git tag 触发版本发布。
+
+
+## 安全最佳实践
+
+使用 OIDC 代替长期 Token、设置 GITHUB_TOKEN 最小权限、定期审查 workflow 中使用的外部 Action 版本、使用 Dependabot 自动更新 Action 版本。
+
+
+## 总结
+
+CI/CD 的核心价值：自动化测试防止回归、一致的构建环境、快速反馈循环、安全的部署流程。好的 CI/CD 让团队专注于写代码，而不是手动部署。
+
+---
+
+## MongoDB 最佳实践：Schema 设计、索引与聚合管道
+
+- URL: http://localhost:3302/posts/2026-03-15-mongodb最佳实践-schema设计
+- 发布时间: 2026-03-15
+- 分类: technology
+- 标签: database, mongodb, nosql
+- 阅读时长: 2 分钟
+
+> MongoDB 的灵活性是一把双刃剑。不当的 Schema 设计会导致严重的性能问题。...
+
+# MongoDB 最佳实践：Schema 设计、索引与聚合管道
+
+MongoDB 的灵活性是一把双刃剑。不当的 Schema 设计会导致严重的性能问题。
+
+
+## 嵌入 vs 引用
+
+嵌入：将相关数据放在同一个文档中，适合「一起读取」的数据如订单中的商品项。引用：存储关联文档的 ID，适合独立实体如用户资料。MongoDB 单个文档最大 16MB，避免嵌入无限增长的数据。
+
+
+## 索引策略
+
+每个查询都必须有对应的索引。使用 explain() 分析查询计划（目标是 IXSCAN 而非 COLLSCAN）。复合索引的列顺序遵循 ESR 规则（Equality → Sort → Range）。创建部分索引节省空间。
+
+
+## 聚合管道实战
+
+聚合管道是 MongoDB 的杀手级特性。$match（过滤）、$group（分组聚合）、$lookup（关联查询，类似 SQL JOIN）、$unwind（展开数组）、$project（重塑文档）。管道顺序对性能影响很大。
+
+
+## 性能监控
+
+db.currentOp() 查看当前操作、db.setProfilingLevel() 开启慢查询日志、mongostat/mongotop 监控实时性能。Atlas 用户可以使用 Performance Advisor 获取自动索引建议。
+
+
+## 总结
+
+MongoDB 的核心优势在于灵活性和水平扩展能力。关键原则：根据访问模式设计 Schema、每个查询都要有索引、用聚合管道替代多次查询、监控慢查询并持续优化。
+
+---
+
+## Web 性能优化全景指南：从 Core Web Vitals 到实战
+
+- URL: http://localhost:3302/posts/2026-03-08-web性能优化全景指南
+- 发布时间: 2026-03-08
+- 分类: frontend
+- 标签: optimization, performance, web
+- 阅读时长: 2 分钟
+
+> Web 性能直接影响用户体验和 SEO 排名。Google 的 Core Web Vitals 是衡...
+
+# Web 性能优化全景指南：从 Core Web Vitals 到实战
+
+Web 性能直接影响用户体验和 SEO 排名。Google 的 Core Web Vitals 是衡量性能的黄金标准。
+
+
+## Core Web Vitals 解读
+
+LCP（最大内容绘制 < 2.5s）衡量加载性能、INP（交互到下次绘制 < 200ms）衡量交互性、CLS（累积布局偏移 < 0.1）衡量视觉稳定性。这三个指标共同决定了页面的用户体验评分。
+
+
+## 加载性能优化
+
+代码分割（React.lazy / dynamic import）、图片优化（WebP/AVIF 格式、srcset 响应式图片、loading=lazy 懒加载）、字体优化（font-display: swap、子集化 unicode-range）。
+
+
+## 渲染性能优化
+
+虚拟列表处理长列表（只渲染可视区域）、debounce/throttle 高频事件、CSS containment（contain 属性限制布局范围）、避免强制同步布局（先读后写）。
+
+
+## 网络优化
+
+CDN 分发静态资源、HTTP/2 多路复用、资源预加载（preload/prefetch/dns-prefetch）、Service Worker 离线缓存、合理的缓存策略（Cache-Control/ETag）。
+
+
+## Bundle 优化
+
+Tree Shaking 消除死代码、代码分割按路由拆分、动态导入大型第三方库、使用 webpack-bundle-analyzer 分析 bundle 体积。
+
+
+## 性能监控
+
+Lighthouse CI 集成到 CI/CD、Web Vitals 库实时监控 RUM 数据、Chrome DevTools Performance 面板分析运行时性能。
+
+
+## 总结
+
+性能优化优先级：1) 测量（Lighthouse/Web Vitals）→ 2) 代码分割 + 图片优化 → 3) 缓存策略 → 4) 渲染优化 → 5) 预加载/预连接。不要过早优化——先测量，再优化瓶颈。
+
+---
+
+## LLM 应用开发实战：用 LangChain 构建 AI 助手
+
+- URL: http://localhost:3302/posts/2026-03-01-llm应用开发实战-langchain
+- 发布时间: 2026-03-01
+- 分类: ai
+- 标签: ai, langchain, llm
+- 阅读时长: 2 分钟
+
+> 大语言模型（LLM）正在改变软件开发的方式。本文通过实例展示如何用 LangChain 构建实用的 ...
+
+# LLM 应用开发实战：用 LangChain 构建 AI 助手
+
+大语言模型（LLM）正在改变软件开发的方式。本文通过实例展示如何用 LangChain 构建实用的 AI 应用。
+
+
+## 基础 LLM 调用
+
+使用 ChatOpenAI 进行简单的问答和补全。temperature 参数控制随机性（0=确定性，1=创造性）。可以传递 system prompt 来定义 AI 的角色和行为。
+
+
+## Prompt Template 工程
+
+使用 ChatPromptTemplate 创建可复用的提示模板。支持变量插值和条件逻辑。好的 prompt 模板是 LLM 应用的核心——它决定了输出质量和一致性。
+
+
+## RAG（检索增强生成）
+
+RAG 让 LLM 能够基于私有知识库回答问题。流程：文档分割 → Embedding 向量化 → 存入向量数据库（Chroma/Pinecone）→ 查询时检索相关 chunks → 注入 prompt 交给 LLM 回答。
+
+
+## Agent 与工具调用
+
+Agent 让 LLM 能够使用外部工具。定义一个工具函数并标注其用途，LLM 会自动决定何时调用哪个工具。例如：计算器、天气查询、数据库查询等。AgentExecutor 负责协调交互。
+
+
+## 链式操作 (Chains)
+
+LangChain 的核心抽象——将多个操作连接成管道。支持顺序链、并行链、条件链。LangChain Expression Language (LCEL) 提供了声明式的链式定义方式。
+
+
+## 总结
+
+LLM 应用开发的三个层次：直接调用（简单问答）、RAG（基于私有知识的问答）、Agent（具备工具使用能力的自主助手）。选择哪个层次取决于你的应用需求——不需要为了 Agent 而 Agent。
+
+---
+
+## JavaScript 模块化演进史：IIFE 到 ES Modules
+
+- URL: http://localhost:3302/posts/2026-02-22-javascript模块化演进史
+- 发布时间: 2026-02-22
+- 分类: frontend
+- 标签: history, javascript, modules
+- 阅读时长: 2 分钟
+
+> JavaScript 的模块化之路走得异常曲折。从全局污染到标准化 ES Modules，这条路走了...
+
+# JavaScript 模块化演进史：IIFE 到 ES Modules
+
+JavaScript 的模块化之路走得异常曲折。从全局污染到标准化 ES Modules，这条路走了 20 年。
+
+
+## 全局变量时代（1995-2005）
+
+所有代码共享全局作用域。用命名空间前缀（如 var app = app || {}）来避免冲突。问题：命名冲突、依赖顺序混乱、全局污染严重。
+
+
+## IIFE 时代（2005-2010）
+
+立即执行函数表达式创建私有作用域。通过闭包隐藏内部变量，只暴露公共 API。jQuery 就是典型例子。优势：私有作用域。问题：仍需手动管理依赖。
+
+
+## CommonJS（2009）
+
+Node.js 采用的模块规范。require() 同步加载，module.exports 导出。每个文件是一个模块，有自己的作用域。优势：简单直接。问题：同步加载不适合浏览器。
+
+
+## AMD（2011）
+
+Asynchronous Module Definition，用于浏览器环境。RequireJS 是最流行的实现。define() 定义模块，异步加载依赖。解决了浏览器异步加载的问题。
+
+
+## ES Modules（2015至今）
+
+JavaScript 官方的模块标准。import / export 语法。静态分析（支持 Tree Shaking）、异步加载、命名空间隔离。动态 import() 实现代码分割。
+
+
+## 总结
+
+ES Modules 是 JavaScript 模块化的最终答案。它提供了静态分析（Tree Shaking）、异步加载、命名空间隔离等所有现代需求。了解这段历史有助于理解各种构建工具的底层原理。
+
+---
+
+## 现代 CSS 动画完全指南：从 Transition 到 Web Animations API
+
+- URL: http://localhost:3302/posts/2026-02-15-现代css动画完全指南
+- 发布时间: 2026-02-15
+- 分类: frontend
+- 标签: animation, css, performance
+- 阅读时长: 2 分钟
+
+> 动画是提升用户体验的关键。本文涵盖从基础 CSS 过渡到高性能 Web Animations API...
+
+# 现代 CSS 动画完全指南：从 Transition 到 Web Animations API
+
+动画是提升用户体验的关键。本文涵盖从基础 CSS 过渡到高性能 Web Animations API 的完整技能树。
+
+
+## CSS Transition（过渡）
+
+最简单的动画方式。定义属性变化的持续时间和缓动函数。适合 hover、focus 等简单交互。关键属性：transition-property、transition-duration、transition-timing-function、transition-delay。
+
+
+## CSS Animation / Keyframes
+
+比 Transition 更强大，可以定义多个关键帧，控制动画方向、次数、填充模式等。使用 @keyframes 定义动画步骤，animation 属性应用动画。适合加载动画、入场动画等复杂场景。
+
+
+## 动画性能优化
+
+浏览器渲染管线：JavaScript → Style → Layout → Paint → Composite。动画应尽量只触发 Composite（transform 和 opacity），避免触发 Layout（如 width、height）。使用 will-change 提前告知浏览器准备优化。
+
+
+## prefers-reduced-motion
+
+尊重用户的系统偏好。对于有前庭功能障碍的用户，动画可能导致不适。使用媒体查询 @media (prefers-reduced-motion: reduce) 关闭或简化动画。
+
+
+## Web Animations API
+
+JavaScript 原生的动画 API，结合了 CSS 动画的声明性和 JavaScript 的灵活性。可以在运行时控制动画的播放、暂停、反转。比直接操作 style 性能更好。
+
+
+## 总结
+
+动画的关键原则：使用 transform 和 opacity 获得 60fps、避免触发布局的属性、用 will-change 提前告知浏览器、尊重用户的 prefers-reduced-motion 设置。好的动画是微妙而有目的的。
+
+---
+
+## 设计模式实战：在 Node.js 中应用经典模式
+
+- URL: http://localhost:3302/posts/2026-02-08-设计模式实战-nodejs
+- 发布时间: 2026-02-08
+- 分类: technology
+- 标签: architecture, design-pattern, node-js
+- 阅读时长: 2 分钟
+
+> 设计模式不是僵化的模板，而是经过验证的解决方案。以下是在 Node.js 中最实用的几种经典设计模式...
+
+# 设计模式实战：在 Node.js 中应用经典模式
+
+设计模式不是僵化的模板，而是经过验证的解决方案。以下是在 Node.js 中最实用的几种经典设计模式。
+
+
+## 单例模式 (Singleton)
+
+数据库连接、配置管理器等全局唯一的资源适合用单例模式。在 Node.js 中可以通过模块缓存天然实现——require 的模块只会被执行一次并缓存结果。也可以使用类的静态属性或闭包来实现。
+
+
+## 工厂模式 (Factory)
+
+根据参数动态创建不同类型的对象。例如支付系统中，根据支付方式创建不同的支付处理器。解耦了对象的创建和使用，方便添加新的类型。
+
+
+## 观察者模式 (Observer)
+
+Node.js 内置的 EventEmitter 就是观察者模式的实现。适用于事件驱动的场景：订单创建后发送邮件、更新库存、记录日志等。解耦了事件的生产者和消费者。
+
+
+## 策略模式 (Strategy)
+
+定义一系列算法，把它们封装起来并可以互相替换。例如认证系统中的 JWT、OAuth、API Key 等不同策略。
+
+
+## 中间件模式 (Middleware)
+
+Express/Koa 的核心概念。将请求处理拆分为独立的中间件函数，按顺序执行。每个中间件可以修改请求/响应对象，或者终止请求链。
+
+
+## 总结
+
+设计模式的价值在于提供共同语言和经过验证的解决方案。不要为了用模式而用模式——让需求驱动设计。
+
+---
+
+## 深入 React Server Components：新一代 React 架构
+
+- URL: http://localhost:3302/posts/2026-02-01-react-server-components-新一代架构
+- 发布时间: 2026-02-01
+- 分类: frontend
+- 标签: next-js, react, rsc
+- 阅读时长: 2 分钟
+
+> React Server Components (RSC) 是 React 18 引入的范式转换，从...
+
+# 深入 React Server Components：新一代 React 架构
+
+React Server Components (RSC) 是 React 18 引入的范式转换，从根本上改变了 React 应用的架构。
+
+
+## 传统 React 的问题
+
+所有代码都在浏览器中执行，包括依赖库。导致 JS bundle 体积过大，首屏加载缓慢。数据获取需要 useEffect 配合 API 路由，增加了一层间接性。
+
+
+## Server Components 的优势
+
+Server Component 在服务端运行，可以直接访问数据库和文件系统。不需要 useEffect 和 API 层。依赖库留在服务端，不发送给客户端——零客户端 JS 开销。
+
+
+## 'use client' 边界
+
+只有在需要交互（事件处理、useState、useEffect、浏览器 API）时，才标记为客户端组件。Server Component 可以渲染 Client Component，但不能反过来。数据通过 props 从 Server Component 流向 Client Component。
+
+
+## 数据流模式
+
+Server Component → 获取数据 → 通过 props 传递给 Client Component → 交互 UI。这种单向数据流让代码更容易理解和测试。
+
+
+## 与 Next.js App Router 的关系
+
+Next.js 13+ 的 App Router 默认所有组件都是 Server Component。page.js、layout.js 都是 Server Component。Server Actions 让你可以在 Server Component 中定义数据处理函数，直接在 form action 中调用，无需创建 API 路由。
+
+
+## 总结
+
+RSC 的核心价值：零客户端 JS（服务端组件不发送 JS 到浏览器）、直接数据访问（无需 API 层）、自动代码分割（客户端边界即分割点）、更好的 SEO。RSC 不是要取代客户端组件，而是给了我们选择——把该放在服务端的逻辑留在服务端。
+
+---
+
+## GraphQL vs REST：现代 API 设计的选择
+
+- URL: http://localhost:3302/posts/2026-01-25-graphql-vs-rest-现代api设计的选择
+- 发布时间: 2026-01-25
+- 分类: technology
+- 标签: api, graphql, rest
+- 阅读时长: 1 分钟
+
+> 这是一篇关于GraphQL的深度技术文章
+
+# GraphQL vs REST：现代 API 设计的选择
+
+REST 已经统治 API 设计二十年，但 GraphQL 正在改变游戏规则。
+
+## REST 的核心问题
+
+### Over-fetching（过度获取）
+
+请求 `/api/users/123` 返回了所有字段，但你可能只需要 name 和 email。
+
+### Under-fetching（获取不足）
+
+需要多个请求才能获取关联数据：先获取用户，再获取用户的文章，再获取文章的评论。
+
+## GraphQL 的解决方案
+
+```graphql
+query {
+  user(id: "123") {
+    name
+    email
+    posts(first: 5) {
+      title
+      comments {
+        author { name }
+        content
+      }
+    }
+  }
+}
+```
+
+一次请求，精确获取所需数据。
+
+## 性能对比
+
+| 场景 | REST | GraphQL |
+|------|------|---------|
+| 简单查询 | 更快 | 稍慢 |
+| 复杂关联 | N+1 问题 | DataLoader 解决 |
+| 缓存 | HTTP 缓存开箱即用 | 需要额外配置 |
+| 带宽 | 容易 over-fetching | 按需获取 |
+
+## 选择建议
+
+- **用 REST**：简单 CRUD API、文件上传下载、第三方公开 API
+- **用 GraphQL**：复杂数据关系、多端共享 API、快速迭代产品
+
+## 总结
+
+两者不是非此即彼。许多公司采用混合方案：GraphQL 用于 BFF 层，REST 用于内部微服务通信。
+
+---
+
+## Kubernetes 入门到实战：部署你的第一个微服务
+
+- URL: http://localhost:3302/posts/2026-01-18-kubernetes-入门到实战-部署你的第一个微服务
+- 发布时间: 2026-01-18
+- 分类: devops
+- 标签: docker, kubernetes, microservices
+- 阅读时长: 2 分钟
+
+> 这是一篇关于Kubernetes的深度技术文章
+
+# Kubernetes 入门到实战：部署你的第一个微服务
+
+Kubernetes（K8s）是容器编排的事实标准。本文带你从零部署你的第一个应用。
+
+## 核心概念
+
+| 概念 | 说明 | 类比 |
+|------|------|------|
+| Pod | 最小部署单元 | 一个容器组 |
+| Service | 网络抽象 | 负载均衡器 |
+| Deployment | 声明式更新 | 应用版本管理 |
+| ConfigMap | 配置管理 | 环境变量文件 |
+| Ingress | 外部访问入口 | Nginx 反向代理 |
+
+## Deployment 配置
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: app
+        image: my-app:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+```
+
+## 常用操作
+
+```bash
+kubectl apply -f deployment.yaml
+kubectl get pods
+kubectl logs -f pod-name
+kubectl scale deployment my-app --replicas=5
+kubectl rollout undo deployment my-app
+kubectl port-forward pod-name 3000:3000
+```
+
+## 总结
+
+Kubernetes 学习曲线陡峭，但掌握基础概念后，它能极大简化应用部署和管理。从小规模开始，逐步增加复杂度。
+
+---
+
+## Redis 深度实战：缓存、队列与分布式锁
+
+- URL: http://localhost:3302/posts/2026-01-11-redis-深度实战缓存队列与分布式锁
+- 发布时间: 2026-01-11
+- 分类: technology
+- 标签: cache, distributed, redis
+- 阅读时长: 4 分钟
+
+> 这是一篇关于 Redis 的深度技术文章
+
+# Redis 深度实战：缓存、队列与分布式锁
+
+Redis 远不止是一个 key-value 缓存。它是一个内存数据结构服务器，支持字符串、哈希、列表、集合、有序集合、流等多种数据结构，适用场景极其广泛。
+
+## 1. 缓存策略
+
+### Cache-Aside Pattern（最常用）
+
+```python
+import redis
+r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+def get_user(user_id: int):
+    # 1. 先查缓存
+    cached = r.get(f"user:{user_id}")
+    if cached:
+        return json.loads(cached)
+    # 2. 缓存未命中，查数据库
+    user = db.query(f"SELECT * FROM users WHERE id = {user_id}")
+    # 3. 写入缓存
+    if user:
+        r.setex(f"user:{user_id}", 3600, json.dumps(user))
+    return user
+```
+
+### 缓存三大问题及解决方案
+
+| 问题 | 描述 | 解决方案 |
+|------|------|----------|
+| 缓存穿透 | 查询不存在的数据 | 布隆过滤器 / 缓存空值 |
+| 缓存击穿 | 热点数据过期 | 互斥锁 (SETNX) |
+| 缓存雪崩 | 大量缓存同时过期 | 过期时间加随机值 |
+
+```python
+# 缓存穿透：缓存空值
+if user:
+    r.setex(key, 3600, json.dumps(user))
+else:
+    r.setex(key, 60, "NULL")  # 缓存空值，防止穿透
+
+# 缓存击穿：互斥锁
+lock_key = f"lock:{key}"
+if r.set(lock_key, "1", nx=True, ex=10):
+    try:
+        data = db.query_expensive()
+        r.setex(key, 3600, data)
+    finally:
+        r.delete(lock_key)
+
+# 缓存雪崩：随机过期时间
+import random
+ttl = 3600 + random.randint(0, 600)
+r.setex(key, ttl, value)
+```
+
+## 2. 分布式锁
+
+使用 Redis 实现可靠的分布式锁（Redlock 算法）：
+
+```python
+import uuid
+
+class RedisLock:
+    def __init__(self, client, key, ttl=30):
+        self.client = client
+        self.key = f"lock:{key}"
+        self.ttl = ttl
+        self.token = str(uuid.uuid4())
+    
+    def acquire(self, retry=3):
+        for _ in range(retry):
+            if self.client.set(self.key, self.token, nx=True, ex=self.ttl):
+                return True
+            time.sleep(0.1)
+        return False
+    
+    def release(self):
+        # Lua 脚本保证原子性
+        script = """
+        if redis.call('get', KEYS[1]) == ARGV[1] then
+            return redis.call('del', KEYS[1])
+        else
+            return 0
+        end
+        """
+        self.client.eval(script, 1, self.key, self.token)
+
+lock = RedisLock(r, 'inventory:product:123')
+if lock.acquire():
+    try:
+        update_inventory(123)
+    finally:
+        lock.release()
+```
+
+## 3. 消息队列
+
+### List 实现简单队列
+
+```python
+# 生产者
+r.lpush('task_queue', json.dumps({'type': 'email', 'to': 'user@example.com'}))
+
+# 消费者
+while True:
+    _, task = r.brpop('task_queue', timeout=5)
+    if task:
+        process_task(json.loads(task))
+```
+
+### Stream 实现可靠队列
+
+```python
+# Redis Stream 支持消费者组、ACK 确认、消息持久化
+r.xadd('orders_stream', {'order_id': '12345', 'user_id': '678'}, maxlen=10000)
+
+# 消费者组
+r.xgroup_create('orders_stream', 'order_group', id='0', mkstream=True)
+messages = r.xreadgroup('order_group', 'consumer1', {'orders_stream': '>'}, count=10)
+for msg_id, data in messages[0][1]:
+    process(data)
+    r.xack('orders_stream', 'order_group', msg_id)
+```
+
+## 4. 排行榜
+
+```python
+# Sorted Set 天生适合排行榜
+r.zadd('leaderboard', {'user:1': 100, 'user:2': 200, 'user:3': 150})
+
+# Top 10
+top10 = r.zrevrange('leaderboard', 0, 9, withscores=True)
+
+# 用户排名
+rank = r.zrevrank('leaderboard', 'user:1')
+
+# 分数范围查询
+mid_range = r.zrangebyscore('leaderboard', 100, 200)
+```
+
+## 5. 性能优化建议
+
+1. **使用连接池**：避免频繁创建和销毁连接
+2. **Pipeline 批量操作**：减少网络往返次数
+3. **避免 KEYS 命令**：使用 SCAN 替代 KEYS
+4. **设置合理的过期时间**：防止内存无限增长
+5. **监控慢查询**：`SLOWLOG GET 10`
+
+## 总结
+
+Redis 的核心价值在于内存级速度和丰富的数据结构。将 Redis 用作缓存、分布式锁、消息队列和排行榜，能够覆盖大多数后端开发中的常见需求。
+
+---
+
+## Webpack 到 Vite：前端构建工具演进之路
+
+- URL: http://localhost:3302/posts/2026-01-04-webpack-到-vite-前端构建工具演进之路
+- 发布时间: 2026-01-04
+- 分类: frontend
+- 标签: build, vite, webpack
+- 阅读时长: 2 分钟
+
+> 这是一篇关于Vite的深度技术文章
+
+# Webpack 到 Vite：前端构建工具演进之路
+
+前端构建工具经历了从 Grunt/Gulp 到 Webpack，再到 Vite 的演进。本文深入对比这些工具的差异和适用场景。
+
+## 为什么 Webpack 慢？
+
+Webpack 的构建流程：从入口文件开始，解析依赖图，对每个模块进行 loader 转换，打包所有模块，最后输出。在大型项目中，这个过程可能需要几十秒甚至几分钟。
+
+## Vite 如何做到极速？
+
+Vite 利用了两个关键特性：
+1. **ES Modules 原生支持**：开发时无需打包，浏览器直接加载
+2. **esbuild 预构建**：用 Go 写的极速打包器处理依赖
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: { port: 3000 },
+  resolve: {
+    alias: { '@': path.resolve(__dirname, './src') }
+  }
+});
+```
+
+## 开发模式对比
+
+| 步骤 | Webpack | Vite |
+|------|---------|------|
+| 冷启动 | 打包整个应用 | 按需编译（ESM） |
+| HMR | 随模块数增加变慢 | O(1) 复杂度 |
+| 构建 | JavaScript | esbuild (Go) |
+
+## 从 Webpack 迁移到 Vite
+
+```bash
+npm uninstall webpack webpack-cli webpack-dev-server
+npm install -D vite @vitejs/plugin-react
+```
+
+将 `index.html` 移到根目录，添加 `<script type="module" src="/src/main.jsx">`。
+
+## 总结
+
+Vite 不是 Webpack 的替代品——生产构建仍然使用 Rollup。但在开发体验上，Vite 带来了质的飞跃。对于新项目，Vite 是明智的默认选择。
+
+---
+
+## Svelte 5 Runes 深入解析：新一代响应式原语
+
+- URL: http://localhost:3302/posts/2025-12-28-svelte-5-runes-深入解析新一代响应式原语
+- 发布时间: 2025-12-28
+- 分类: frontend
+- 标签: reactivity, runes, svelte
+- 阅读时长: 3 分钟
+
+> 这是一篇关于Svelte的深度技术文章
+
+# Svelte 5 Runes 深入解析：新一代响应式原语
+
+Svelte 5 引入了 Runes——一种全新的响应式声明方式，彻底改变了 Svelte 的编程模型。
+
+## 为什么需要 Runes？
+
+Svelte 4 的响应式依赖于编译器的魔法：
+
+```svelte
+<script>
+  // Svelte 4: 赋值触发响应式
+  let count = 0;
+  $: doubled = count * 2;  // $: 是响应式声明
+  
+  // 问题：不直观的响应式边界
+  function increment() {
+    count += 1;  // 赋值触发更新
+    // 但 array.push() 不会！
+  }
+</script>
+```
+
+## $state — 响应式状态
+
+```svelte
+<script>
+  // Svelte 5: 明确的响应式声明
+  let count = $state(0);
+  let doubled = $derived(count * 2);
+  
+  function increment() {
+    count += 1;  // 自动追踪
+  }
+</script>
+
+<button onclick={increment}>
+  Count: {count} (doubled: {doubled})
+</button>
+```
+
+## $derived — 派生值
+
+```svelte
+<script>
+  let items = $state([1, 2, 3, 4, 5]);
+  
+  let total = $derived(items.reduce((a, b) => a + b, 0));
+  let evens = $derived(items.filter(n => n % 2 === 0));
+  
+  // $derived.by 用于复杂表达式
+  let summary = $derived.by(() => {
+    const sum = items.reduce((a, b) => a + b, 0);
+    const avg = sum / items.length;
+    return { sum, avg, count: items.length };
+  });
+</script>
+```
+
+## $effect — 副作用
+
+```svelte
+<script>
+  let count = $state(0);
+  
+  $effect(() => {
+    // 当 count 变化时自动运行
+    console.log(`Count changed to ${count}`);
+    
+    // 可选的清理函数
+    return () => {
+      console.log('Cleanup before next run or unmount');
+    };
+  });
+</script>
+```
+
+## $props — 组件 Props
+
+```svelte
+<!-- Child.svelte -->
+<script>
+  let { name, age = 18, onUpdate } = $props();
+</script>
+
+<p>{name} is {age} years old</p>
+
+<!-- Parent.svelte -->
+<script>
+  import Child from './Child.svelte';
+</script>
+
+<Child name="Alice" age={25} />
+```
+
+## 实战：Todo 应用
+
+```svelte
+<script>
+  let todos = $state([]);
+  let newTodo = $state('');
+  
+  let completedCount = $derived(
+    todos.filter(t => t.done).length
+  );
+  
+  function addTodo() {
+    if (newTodo.trim()) {
+      todos.push({ id: Date.now(), text: newTodo, done: false });
+      newTodo = '';
+    }
+  }
+  
+  function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) todo.done = !todo.done;
+  }
+</script>
+
+<div>
+  <input bind:value={newTodo} placeholder="Add todo..." />
+  <button onclick={addTodo}>Add</button>
+  
+  <p>{completedCount}/{todos.length} completed</p>
+  
+  {#each todos as todo (todo.id)}
+    <div>
+      <input type="checkbox" checked={todo.done} 
+             onchange={() => toggleTodo(todo.id)} />
+      <span class:line-through={todo.done}>{todo.text}</span>
+    </div>
+  {/each}
+</div>
+```
+
+## Runes vs Svelte 4 对比
+
+| 特性 | Svelte 4 | Svelte 5 (Runes) |
+|------|----------|------------------|
+| 响应式声明 | `let count = 0` | `let count = $state(0)` |
+| 派生值 | `$: doubled = count * 2` | `let doubled = $derived(count * 2)` |
+| 副作用 | `$: { ... }` | `$effect(() => { ... })` |
+| Props | `export let name` | `let { name } = $props()` |
+| 通用性 | 仅 .svelte 文件 | .svelte 和 .svelte.js |
+
+## 总结
+
+Runes 让 Svelte 的响应式更加显式和可移植。关键词：
+- `$state` — 响应式状态
+- `$derived` — 派生值
+- `$effect` — 副作用
+- `$props` — 组件属性
+
+Runes 可以在 `.svelte.js` 文件中使用，打破了 Svelte 响应式与组件的耦合。
+
+---
+
+## PostgreSQL 性能优化实战：索引、查询与配置调优
+
+- URL: http://localhost:3302/posts/2025-12-21-postgresql-性能优化实战索引查询与配置调优
+- 发布时间: 2025-12-21
+- 分类: technology
+- 标签: database, performance, postgresql
+- 阅读时长: 3 分钟
+
+> 这是一篇关于PostgreSQL的深度技术文章
+
+# PostgreSQL 性能优化实战：索引、查询与配置调优
+
+PostgreSQL 是世界上功能最丰富的开源数据库。但要充分发挥它的性能，需要掌握一些优化技巧。
+
+## 1. 索引优化
+
+### B-Tree 索引（默认）
+
+```sql
+-- 单列索引
+CREATE INDEX idx_users_email ON users(email);
+
+-- 复合索引（注意列顺序！）
+CREATE INDEX idx_orders_user_date ON orders(user_id, created_at);
+
+-- 部分索引
+CREATE INDEX idx_active_users ON users(email) WHERE active = true;
+
+-- 覆盖索引（包含额外列避免回表）
+CREATE INDEX idx_users_email_name ON users(email) INCLUDE (name);
+```
+
+### GIN 索引（全文搜索、数组、JSON）
+
+```sql
+-- 全文搜索
+CREATE INDEX idx_articles_search ON articles USING GIN(to_tsvector('english', content));
+
+-- JSONB
+CREATE INDEX idx_events_data ON events USING GIN(data jsonb_path_ops);
+
+-- 数组
+CREATE INDEX idx_posts_tags ON posts USING GIN(tags);
+```
+
+## 2. 查询优化
+
+### EXPLAIN ANALYZE
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
+SELECT u.name, COUNT(o.id)
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.created_at > '2024-01-01'
+GROUP BY u.id, u.name;
+```
+
+### 常见查询反模式
+
+```sql
+-- ❌ 避免在索引列上使用函数
+SELECT * FROM users WHERE LOWER(email) = 'test@example.com';
+
+-- ✅ 使用表达式索引
+CREATE INDEX idx_users_email_lower ON users(LOWER(email));
+
+-- ❌ 避免 SELECT *
+SELECT * FROM users WHERE id = 1;
+
+-- ✅ 只选择需要的列
+SELECT id, name, email FROM users WHERE id = 1;
+```
+
+## 3. 连接优化
+
+```sql
+-- ❌ 相关子查询可能很慢
+SELECT u.*, 
+  (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as order_count
+FROM users u;
+
+-- ✅ 使用 LATERAL JOIN
+SELECT u.*, o.order_count
+FROM users u
+LEFT JOIN LATERAL (
+  SELECT COUNT(*) as order_count FROM orders WHERE user_id = u.id
+) o ON true;
+
+-- ✅ 或者使用窗口函数
+SELECT DISTINCT ON (u.id) u.*, COUNT(o.id) OVER (PARTITION BY u.id) as order_count
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+```
+
+## 4. 配置调优
+
+```ini
+# postgresql.conf
+
+# 内存配置（根据服务器内存调整）
+shared_buffers = 4GB              # 25% of RAM
+effective_cache_size = 12GB       # 75% of RAM  
+work_mem = 64MB                   # 排序/哈希操作内存
+maintenance_work_mem = 1GB        # VACUUM/CREATE INDEX 内存
+
+# WAL 配置
+wal_level = replica
+max_wal_size = 4GB
+min_wal_size = 1GB
+
+# 查询规划器
+random_page_cost = 1.1            # SSD 使用
+effective_io_concurrency = 200    # SSD 使用
+
+# 连接
+max_connections = 200
+```
+
+## 5. 表分区
+
+```sql
+-- 按日期范围分区
+CREATE TABLE orders (
+  id SERIAL,
+  user_id INTEGER,
+  amount DECIMAL,
+  created_at TIMESTAMP
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE orders_2025_q1 PARTITION OF orders
+  FOR VALUES FROM ('2025-01-01') TO ('2025-04-01');
+
+CREATE TABLE orders_2025_q2 PARTITION OF orders
+  FOR VALUES FROM ('2025-04-01') TO ('2025-07-01');
+```
+
+## 总结
+
+PostgreSQL 优化的三个层次：
+1. **索引** — 正确的索引是 90% 的性能问题解决方案
+2. **查询** — 好的 SQL 比差的快 1000 倍
+3. **配置** — 根据硬件调整 PG 配置
+
+工具推荐：`pg_stat_statements`、`pgBadger`、`auto_explain`
+
+---
+
+## 深入 Node.js  Stream 流：处理大数据的利器
+
+- URL: http://localhost:3302/posts/2025-12-14-深入-nodejs--stream-流处理大数据的利器
+- 发布时间: 2025-12-14
+- 分类: technology
+- 标签: node-js, performance, stream
+- 阅读时长: 3 分钟
+
+> 这是一篇关于Node.js的深度技术文章
+
+# 深入 Node.js Stream 流：处理大数据的利器
+
+Stream 是 Node.js 最强大但最被低估的特性之一。它让你能够以内存高效的方式处理大量数据。
+
+## 为什么需要 Stream？
+
+```javascript
+// ❌ 传统方式：将整个文件读入内存
+const data = fs.readFileSync('huge-file.csv');  // 可能 OOM！
+processData(data);
+
+// ✅ Stream 方式：逐块处理
+fs.createReadStream('huge-file.csv')
+  .pipe(csvParser())
+  .pipe(transformStream())
+  .pipe(fs.createWriteStream('output.csv'));
+```
+
+## 四种 Stream 类型
+
+| 类型 | 功能 | 示例 |
+|------|------|------|
+| Readable | 读取数据 | `fs.createReadStream()` |
+| Writable | 写入数据 | `fs.createWriteStream()` |
+| Duplex | 读写 | `net.Socket` |
+| Transform | 转换数据 | `zlib.createGzip()` |
+
+## Readable Stream
+
+```javascript
+const { Readable } = require('stream');
+
+// 自定义可读流
+class NumberGenerator extends Readable {
+  constructor(max, options) {
+    super(options);
+    this.max = max;
+    this.current = 0;
+  }
+
+  _read() {
+    if (this.current < this.max) {
+      this.push(String(this.current++));
+    } else {
+      this.push(null); // 结束
+    }
+  }
+}
+
+const numbers = new NumberGenerator(1000000);
+
+// 两种消费方式
+// 方式 1：pipe
+numbers.pipe(process.stdout);
+
+// 方式 2：事件
+numbers.on('data', chunk => console.log(chunk));
+numbers.on('end', () => console.log('Done'));
+```
+
+## Transform Stream
+
+```javascript
+const { Transform } = require('stream');
+
+class UppercaseTransform extends Transform {
+  _transform(chunk, encoding, callback) {
+    this.push(chunk.toString().toUpperCase());
+    callback();
+  }
+}
+
+// 使用
+fs.createReadStream('input.txt')
+  .pipe(new UppercaseTransform())
+  .pipe(fs.createWriteStream('output.txt'));
+```
+
+## Pipeline
+
+```javascript
+const { pipeline } = require('stream/promises');
+
+async function processFile() {
+  await pipeline(
+    fs.createReadStream('input.csv'),
+    csvParser(),
+    filterStream(row => row.active),
+    transformStream(row => ({ ...row, processed: true })),
+    stringify(),
+    fs.createWriteStream('output.csv')
+  );
+  console.log('Pipeline completed');
+}
+```
+
+## 背压处理
+
+当写入速度跟不上读取速度时，Stream 自动处理背压：
+
+```javascript
+const readable = getFastReadable();
+const writable = getSlowWritable();
+
+// pipe 自动处理背压
+readable.pipe(writable);
+
+// 手动处理背压
+readable.on('data', chunk => {
+  const canContinue = writable.write(chunk);
+  if (!canContinue) {
+    readable.pause(); // 暂停读取
+    writable.once('drain', () => readable.resume()); // 等待排空
+  }
+});
+```
+
+## 实战：处理 10GB CSV 文件
+
+```javascript
+async function processLargeCSV(inputPath, outputPath) {
+  const lineCount = { value: 0 };
+  
+  await pipeline(
+    fs.createReadStream(inputPath),
+    split2(),                          // 按行分割
+    new Transform({
+      objectMode: true,
+      transform(line, enc, cb) {
+        lineCount.value++;
+        if (lineCount.value % 100000 === 0) {
+          console.log(`Processed ${lineCount.value} lines`);
+        }
+        const processed = processLine(line.toString());
+        cb(null, processed + '\n');
+      }
+    }),
+    fs.createWriteStream(outputPath)
+  );
+}
+```
+
+## 总结
+
+Stream 的核心价值：
+- **内存高效**：逐块处理，不会 OOM
+- **时间高效**：边读边处理，无需等待全部读完
+- **可组合**：通过 pipe 和 pipeline 连接
+- **自动背压**：防止内存溢出
+
+---
+
+## Git 工作流最佳实践：从 Feature Branch 到 GitFlow
+
+- URL: http://localhost:3302/posts/2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow
+- 发布时间: 2025-12-07
+- 分类: devops
+- 标签: cicd, git, workflow
+- 阅读时长: 2 分钟
+
+> 这是一篇关于Git的深度技术文章
+
+# Git 工作流最佳实践：从 Feature Branch 到 GitFlow
+
+版本控制是团队协作的基石。选择合适的 Git 工作流能大幅提升开发效率。
+
+## Feature Branch Workflow
+
+最简单的协作工作流——每个功能在独立分支开发：
+
+```bash
+# 从 main 创建功能分支
+git checkout -b feature/user-auth main
+
+# 开发...
+git add .
+git commit -m "feat: add user authentication"
+
+# 推送并创建 PR
+git push origin feature/user-auth
+```
+
+### 优点
+- 简单易懂，适合小团队
+- 每个功能独立，互不干扰
+- PR review 自然融入流程
+
+## GitFlow
+
+适合有明确发布周期的项目：
+
+```
+main ─────●────────────●────────────●────
+           \          / \          /
+develop ────●──●──●──●───●──●──●──●────
+             \  /     \  /
+feature/A ────●──●      │
+                        │
+release/1.0 ────────────●──●
+```
+
+### 分支类型
+
+| 分支 | 用途 | 来源 | 合并到 |
+|------|------|------|--------|
+| `main` | 生产环境 | - | - |
+| `develop` | 开发集成 | main | - |
+| `feature/*` | 功能开发 | develop | develop |
+| `release/*` | 发布准备 | develop | main + develop |
+| `hotfix/*` | 紧急修复 | main | main + develop |
+
+## 提交信息规范 (Conventional Commits)
+
+```bash
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+### Type 类型
+
+| Type | 说明 |
+|------|------|
+| `feat` | 新功能 |
+| `fix` | Bug 修复 |
+| `docs` | 文档变更 |
+| `style` | 代码格式 |
+| `refactor` | 重构 |
+| `perf` | 性能优化 |
+| `test` | 测试 |
+| `chore` | 构建/工具 |
+
+### 示例
+
+```bash
+git commit -m "feat(auth): add JWT token refresh
+
+Implement automatic token refresh 5 minutes before expiry.
+Add TokenRefreshInterceptor to handle 401 responses.
+
+Closes #123"
+```
+
+## 总结
+
+选择工作流的原则：
+- 小团队（2-5人）：Feature Branch + Trunk Based
+- 中型团队（5-20人）：简化版 GitFlow
+- 大型项目需要多版本维护：完整 GitFlow
+- 不管哪种，保持提交信息的规范性和一致性是最重要的
+
+---
+
+## Tailwind CSS 实战技巧：构建现代化 UI 的 20 个模式
+
+- URL: http://localhost:3302/posts/2025-11-30-tailwind-css-实战技巧构建现代化-ui-的-20-个模式
+- 发布时间: 2025-11-30
+- 分类: frontend
+- 标签: css, tailwind, ui
+- 阅读时长: 3 分钟
+
+> 这是一篇关于Tailwind的深度技术文章
+
+# Tailwind CSS 实战技巧：构建现代化 UI 的 20 个模式
+
+Tailwind CSS 彻底改变了前端样式编写的方式。本文整理了 20 个实用的 Tailwind 模式。
+
+## 1. 响应式卡片网格
+
+```html
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <img class="w-full h-48 object-cover" src="card.jpg" alt="">
+    <div class="p-4">
+      <h3 class="text-lg font-semibold text-gray-900">Card Title</h3>
+      <p class="mt-2 text-gray-600">Card description goes here</p>
+    </div>
+  </div>
+</div>
+```
+
+## 2. 渐变按钮
+
+```html
+<button class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+  Get Started
+</button>
+```
+
+## 3. 骨架屏加载
+
+```html
+<div class="animate-pulse space-y-4">
+  <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+  <div class="h-4 bg-gray-200 rounded"></div>
+  <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+</div>
+```
+
+## 4. 粘性导航栏
+
+```html
+<nav class="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+      <div class="text-xl font-bold">Logo</div>
+      <div class="hidden md:flex space-x-8">
+        <a href="#" class="text-gray-700 hover:text-gray-900">Home</a>
+        <a href="#" class="text-gray-700 hover:text-gray-900">About</a>
+      </div>
+    </div>
+  </div>
+</nav>
+```
+
+## 5. 模态框
+
+```html
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+    <h2 class="text-xl font-bold">Modal Title</h2>
+    <p class="mt-2 text-gray-600">Modal content here...</p>
+    <div class="mt-6 flex justify-end space-x-3">
+      <button class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">Cancel</button>
+      <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Confirm</button>
+    </div>
+  </div>
+</div>
+```
+
+## 总结
+
+Tailwind 的核心优势在于：
+- 设计系统内建（间距、颜色、阴影一致性）
+- 响应式前缀 (`sm:`, `md:`, `lg:`)
+- 暗色模式支持 (`dark:`)
+- JIT 编译器保证只生成使用的 CSS
+
+---
+
+## CSS Grid 完全指南：告别 Flexbox 局限
+
+- URL: http://localhost:3302/posts/2025-11-23-css-grid-完全指南告别-flexbox-局限
+- 发布时间: 2025-11-23
+- 分类: frontend
+- 标签: css, grid, layout
+- 阅读时长: 4 分钟
+
+> 这是一篇关于CSS的深度技术文章
+
+# CSS Grid 完全指南：告别 Flexbox 局限
+
+CSS Grid 是二维布局的终极方案。虽然 Flexbox 在一维布局上表现出色，但当需要同时控制行和列时，Grid 才是正确的选择。
+
+## Grid vs Flexbox
+
+| 特性 | Flexbox | Grid |
+|------|---------|------|
+| 维度 | 一维（行或列） | 二维（行和列） |
+| 方向 | 内容驱动 | 布局驱动 |
+| 对齐 | 主轴和交叉轴 | 行轴和列轴 |
+| 适用 | 组件级布局 | 页面级布局 |
+
+## 基础概念
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 三列等宽 */
+  grid-template-rows: auto;           /* 行高自适应 */
+  gap: 20px;                          /* 行列间距 */
+}
+```
+
+### fr 单位详解
+
+`fr`（fraction）是 Grid 独有的弹性单位：
+
+```css
+/* 1:2:1 的比例 */
+grid-template-columns: 1fr 2fr 1fr;
+
+/* 与固定值混合 */
+grid-template-columns: 200px 1fr 1fr;
+/* 左侧固定 200px，剩余空间 1:1 分配 */
+
+/* 最小值和最大值 */
+grid-template-columns: minmax(200px, 1fr) 1fr;
+/* 第一列最小 200px，最大 1fr */
+```
+
+## 隐式与显式网格
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(100px, auto); /* 隐式行的高度 */
+}
+```
+
+超出显式定义的项目会自动创建隐式轨道：
+
+```html
+<div class="container">
+  <div>1</div> <div>2</div> <div>3</div>
+  <div>4</div> <div>5</div> <div>6</div>
+  <div>7</div> <!-- 隐式行 -->
+</div>
+```
+
+## Grid 区域命名
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "sidebar main aside"
+    "footer footer footer";
+  min-height: 100vh;
+}
+
+.header  { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main    { grid-area: main; }
+.aside   { grid-area: aside; }
+.footer  { grid-area: footer; }
+```
+
+## 对齐方式
+
+```css
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-template-rows: repeat(2, 150px);
+  
+  /* 项目在单元格内的对齐 */
+  justify-items: center;  /* 水平：start | end | center | stretch */
+  align-items: center;    /* 垂直：start | end | center | stretch */
+  
+  /* 网格在容器内的对齐（当网格总尺寸小于容器时） */
+  justify-content: center; /* 水平 */
+  align-content: center;   /* 垂直 */
+}
+
+/* 单个项目的对齐 */
+.special {
+  justify-self: end;
+  align-self: start;
+}
+```
+
+## auto-fit vs auto-fill
+
+```css
+/* auto-fill：尽可能多地创建轨道（保留空轨道） */
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+/* auto-fit：拉伸现有项目填满空间（折叠空轨道） */
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+```
+
+## 实战：响应式卡片布局
+
+```html
+<div class="card-grid">
+  <article class="card">
+    <img src="image.jpg" alt="">
+    <div class="card-content">
+      <h3>Card Title</h3>
+      <p>Card description text...</p>
+    </div>
+  </article>
+  <!-- more cards... -->
+</div>
+```
+
+```css
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.card {
+  display: grid;
+  grid-template-rows: 200px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+/* 特色卡片：跨两列 */
+.card.featured {
+  grid-column: span 2;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+}
+
+.card.featured img {
+  grid-row: auto;
+}
+```
+
+## Dashboard 布局示例
+
+```css
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 16px;
+  padding: 16px;
+}
+
+.stat-card {
+  padding: 24px;
+  background: white;
+  border-radius: 8px;
+}
+
+/* 大卡片跨两列两行 */
+.stat-card.large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* 宽卡片跨两列 */
+.stat-card.wide {
+  grid-column: span 3;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-card.large,
+  .stat-card.wide {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+```
+
+## 实际应用：Holy Grail 布局
+
+```css
+body {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px;
+  grid-template-rows: 60px 1fr 60px;
+  grid-template-areas:
+    "header header header"
+    "nav    main   aside"
+    "footer footer footer";
+  min-height: 100vh;
+}
+
+header { grid-area: header; }
+nav    { grid-area: nav; }
+main   { grid-area: main; }
+aside  { grid-area: aside; }
+footer { grid-area: footer; }
+
+@media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60px auto 1fr auto 60px;
+    grid-template-areas:
+      "header"
+      "nav"
+      "main"
+      "aside"
+      "footer";
+  }
+}
+```
+
+## 总结
+
+CSS Grid 是现代 Web 布局的基石。核心要点：
+
+- 使用 `grid-template-columns/rows` 定义轨道
+- `fr` 单位实现弹性布局
+- `grid-template-areas` 提供可视化布局方式
+- `auto-fit`/`auto-fill` 实现响应式无需媒体查询
+- `gap` 替代传统的 margin 间距
+
+Grid 加上 Flexbox，构成了完整的现代 CSS 布局体系。
+
+---
+
+## Go 语言并发编程：goroutine 和 channel 深度解析
+
+- URL: http://localhost:3302/posts/2025-11-16-go-语言并发编程goroutine-和-channel-深度解析
+- 发布时间: 2025-11-16
+- 分类: technology
+- 标签: channel, go, goroutine
+- 阅读时长: 5 分钟
+
+> 这是一篇关于Go的深度技术文章
+
+# Go 语言并发编程：goroutine 和 channel 深度解析
+
+Go 语言以其简洁的并发模型闻名。"不要通过共享内存来通信，而要通过通信来共享内存"——这是 Go 并发编程的核心理念。
+
+## goroutine：轻量级线程
+
+goroutine 是 Go 运行时管理的轻量级线程，创建成本极低：
+
+```go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func sayHello() {
+    fmt.Println("Hello from goroutine!")
+}
+
+func main() {
+    go sayHello() // 启动一个 goroutine
+    time.Sleep(100 * time.Millisecond) // 等待 goroutine 执行
+    fmt.Println("Main done")
+}
+```
+
+一个 Go 程序可以轻松运行成千上万个 goroutine：
+
+```go
+func main() {
+    for i := 0; i < 100000; i++ {
+        go func(id int) {
+            time.Sleep(time.Second)
+            fmt.Printf("Goroutine %d done\n", id)
+        }(i)
+    }
+    time.Sleep(2 * time.Second)
+}
+```
+
+## WaitGroup：等待一组 goroutine
+
+```go
+import "sync"
+
+func main() {
+    var wg sync.WaitGroup
+    
+    for i := 0; i < 5; i++ {
+        wg.Add(1) // 计数器 +1
+        go func(id int) {
+            defer wg.Done() // 计数器 -1
+            fmt.Printf("Worker %d\n", id)
+        }(i)
+    }
+    
+    wg.Wait() // 等待所有 goroutine 完成
+    fmt.Println("All workers done")
+}
+```
+
+## Channel：goroutine 之间的通信管道
+
+Channel 是 Go 并发模型的核心：
+
+```go
+func main() {
+    ch := make(chan string) // 创建无缓冲 channel
+    
+    go func() {
+        ch <- "Hello from goroutine!" // 发送
+    }()
+    
+    msg := <-ch // 接收（阻塞直到有数据）
+    fmt.Println(msg)
+}
+```
+
+### 有缓冲 Channel
+
+```go
+func main() {
+    ch := make(chan int, 3) // 容量为 3 的缓冲 channel
+    
+    ch <- 1 // 不阻塞
+    ch <- 2
+    ch <- 3
+    // ch <- 4 // 阻塞！缓冲区满
+    
+    fmt.Println(<-ch) // 1
+    fmt.Println(<-ch) // 2
+    fmt.Println(<-ch) // 3
+}
+```
+
+### 关闭 Channel
+
+```go
+func main() {
+    ch := make(chan int, 5)
+    
+    go func() {
+        for i := 0; i < 5; i++ {
+            ch <- i
+        }
+        close(ch) // 关闭 channel
+    }()
+    
+    // range 会在 channel 关闭且为空时自动退出
+    for val := range ch {
+        fmt.Println(val)
+    }
+    
+    // 或者手动检查
+    val, ok := <-ch
+    if !ok {
+        fmt.Println("Channel closed")
+    }
+}
+```
+
+## Select：多路复用
+
+```go
+func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+    
+    go func() {
+        time.Sleep(1 * time.Second)
+        ch1 <- "one"
+    }()
+    
+    go func() {
+        time.Sleep(2 * time.Second)
+        ch2 <- "two"
+    }()
+    
+    for i := 0; i < 2; i++ {
+        select {
+        case msg1 := <-ch1:
+            fmt.Println("Received from ch1:", msg1)
+        case msg2 := <-ch2:
+            fmt.Println("Received from ch2:", msg2)
+        case <-time.After(3 * time.Second):
+            fmt.Println("Timeout!")
+            return
+        }
+    }
+}
+```
+
+## 并发模式
+
+### 1. Fan-Out / Fan-In
+
+```go
+// Fan-Out: 一个输入分发到多个 worker
+func fanOut(input <-chan int, workers int) []<-chan int {
+    channels := make([]<-chan int, workers)
+    for i := 0; i < workers; i++ {
+        ch := make(chan int)
+        channels[i] = ch
+        go func(out chan<- int) {
+            for val := range input {
+                out <- val * val // worker 处理
+            }
+            close(out)
+        }(ch)
+    }
+    return channels
+}
+
+// Fan-In: 多个 channel 合并为一个
+func fanIn(channels ...<-chan int) <-chan int {
+    out := make(chan int)
+    var wg sync.WaitGroup
+    
+    for _, ch := range channels {
+        wg.Add(1)
+        go func(c <-chan int) {
+            defer wg.Done()
+            for val := range c {
+                out <- val
+            }
+        }(ch)
+    }
+    
+    go func() {
+        wg.Wait()
+        close(out)
+    }()
+    
+    return out
+}
+```
+
+### 2. Pipeline
+
+```go
+func generate(nums ...int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for _, n := range nums {
+            out <- n
+        }
+        close(out)
+    }()
+    return out
+}
+
+func square(in <-chan int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for n := range in {
+            out <- n * n
+        }
+        close(out)
+    }()
+    return out
+}
+
+func main() {
+    // Pipeline: generate → square → print
+    for result := range square(generate(1, 2, 3, 4, 5)) {
+        fmt.Println(result) // 1, 4, 9, 16, 25
+    }
+}
+```
+
+### 3. Worker Pool
+
+```go
+func worker(id int, jobs <-chan int, results chan<- int) {
+    for job := range jobs {
+        fmt.Printf("Worker %d processing job %d\n", id, job)
+        time.Sleep(time.Second) // 模拟工作
+        results <- job * 2
+    }
+}
+
+func main() {
+    const numJobs = 10
+    const numWorkers = 3
+    
+    jobs := make(chan int, numJobs)
+    results := make(chan int, numJobs)
+    
+    // 启动 worker pool
+    for w := 1; w <= numWorkers; w++ {
+        go worker(w, jobs, results)
+    }
+    
+    // 发送任务
+    for j := 1; j <= numJobs; j++ {
+        jobs <- j
+    }
+    close(jobs)
+    
+    // 收集结果
+    for j := 1; j <= numJobs; j++ {
+        result := <-results
+        fmt.Printf("Result: %d\n", result)
+    }
+}
+```
+
+## 常见陷阱
+
+### 1. goroutine 泄漏
+
+```go
+// ❌ 泄漏：goroutine 永远阻塞在 channel 发送上
+func leak() {
+    ch := make(chan int)
+    go func() {
+        ch <- 42 // 永远阻塞，因为没有接收者
+    }()
+}
+
+// ✅ 使用 buffered channel 或 context 取消
+func noLeak() {
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+    defer cancel()
+    
+    ch := make(chan int, 1)
+    go func() {
+        select {
+        case ch <- 42:
+        case <-ctx.Done():
+            return
+        }
+    }()
+}
+```
+
+### 2. 数据竞争
+
+```go
+// ❌ 数据竞争
+var counter int
+for i := 0; i < 1000; i++ {
+    go func() { counter++ }()
+}
+
+// ✅ 使用 Mutex
+var mu sync.Mutex
+var counter int
+for i := 0; i < 1000; i++ {
+    go func() {
+        mu.Lock()
+        counter++
+        mu.Unlock()
+    }()
+}
+
+// ✅ 或使用 channel
+ch := make(chan int)
+go func() {
+    var counter int
+    for delta := range ch {
+        counter += delta
+    }
+}()
+```
+
+## 总结
+
+Go 的并发模型简单而强大：
+- `go` 关键字启动 goroutine
+- Channel 用于 goroutine 间通信
+- `select` 处理多个 channel
+- `sync.WaitGroup` 等待 goroutine
+- `sync.Mutex` 保护共享数据
+
+记住 Go 的并发哲学：**Don't communicate by sharing memory; share memory by communicating.**
+
+---
+
+## Nginx 反向代理与负载均衡实战
+
+- URL: http://localhost:3302/posts/2025-11-09-nginx-反向代理与负载均衡实战
+- 发布时间: 2025-11-09
+- 分类: devops
+- 标签: load-balancing, nginx, proxy
+- 阅读时长: 5 分钟
+
+> 这是一篇关于Nginx的深度技术文章
+
+# Nginx 反向代理与负载均衡实战
+
+Nginx 是目前最流行的 Web 服务器之一，它的反向代理和负载均衡能力使其成为现代 Web 架构的核心组件。
+
+## 基础反向代理
+
+最简单的反向代理配置：
+
+```nginx
+server {
+    listen 80;
+    server_name api.example.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+## 关键 proxy 指令详解
+
+### proxy_pass
+
+```nginx
+# 带路径替换
+location /api/ {
+    proxy_pass http://backend/;
+    # 请求 /api/users → 代理到 http://backend/users
+}
+
+location /api/ {
+    proxy_pass http://backend;
+    # 请求 /api/users → 代理到 http://backend/api/users
+}
+```
+
+### proxy_set_header
+
+```nginx
+location / {
+    proxy_pass http://backend;
+    
+    # 传递真实客户端 IP
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    
+    # 传递原始 Host
+    proxy_set_header Host $host;
+    
+    # 传递协议信息
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+### 超时配置
+
+```nginx
+location / {
+    proxy_pass http://backend;
+    
+    # 连接超时
+    proxy_connect_timeout 10s;
+    
+    # 发送超时
+    proxy_send_timeout 30s;
+    
+    # 读取超时
+    proxy_read_timeout 30s;
+}
+```
+
+## WebSocket 代理
+
+```nginx
+location /ws/ {
+    proxy_pass http://ws-backend;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    
+    # WebSocket 需要更长的超时
+    proxy_read_timeout 3600s;
+}
+```
+
+## 负载均衡
+
+### Round Robin（默认）
+
+```nginx
+upstream backend {
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com;
+}
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://backend;
+    }
+}
+```
+
+### 加权轮询
+
+```nginx
+upstream backend {
+    server backend1.example.com weight=3;
+    server backend2.example.com weight=2;
+    server backend3.example.com weight=1;
+    # backend1 处理 50% 的请求
+}
+```
+
+### IP Hash（会话保持）
+
+```nginx
+upstream backend {
+    ip_hash;
+    server backend1.example.com;
+    server backend2.example.com;
+    # 同一 IP 始终路由到同一服务器
+}
+```
+
+### Least Connections
+
+```nginx
+upstream backend {
+    least_conn;
+    server backend1.example.com;
+    server backend2.example.com;
+    # 请求发送到活跃连接数最少的服务器
+}
+```
+
+### 健康检查
+
+```nginx
+upstream backend {
+    server backend1.example.com max_fails=3 fail_timeout=30s;
+    server backend2.example.com max_fails=3 fail_timeout=30s;
+    server backend3.example.com backup;  # 备用服务器
+    # 30 秒内失败 3 次则标记为不可用
+}
+```
+
+## 缓存配置
+
+```nginx
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m 
+                  max_size=10g inactive=60m use_temp_path=off;
+
+server {
+    location /api/ {
+        proxy_pass http://backend;
+        
+        proxy_cache my_cache;
+        proxy_cache_key "$scheme$request_method$host$request_uri";
+        proxy_cache_valid 200 10m;
+        proxy_cache_valid 404 1m;
+        proxy_cache_bypass $http_cache_control;
+        
+        # 缓存状态头
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+}
+```
+
+## 限流
+
+```nginx
+# 定义限流区域
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
+server {
+    location /api/ {
+        # 请求速率限制：每秒 10 个，突发 20 个
+        limit_req zone=api_limit burst=20 nodelay;
+        
+        # 并发连接数限制
+        limit_conn conn_limit 10;
+        
+        proxy_pass http://backend;
+    }
+}
+```
+
+## 完整生产配置示例
+
+```nginx
+upstream app_backend {
+    least_conn;
+    server 10.0.1.10:3000 weight=2 max_fails=3 fail_timeout=30s;
+    server 10.0.1.11:3000 weight=2 max_fails=3 fail_timeout=30s;
+    server 10.0.1.12:3000 weight=1 max_fails=3 fail_timeout=30s;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # 安全头
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    # Gzip
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+
+    # 静态文件
+    location /_next/static/ {
+        alias /app/.next/static/;
+        expires 365d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # API 代理
+    location /api/ {
+        proxy_pass http://app_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_connect_timeout 10s;
+        proxy_read_timeout 30s;
+    }
+
+    # 前端应用
+    location / {
+        proxy_pass http://app_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
+```
+
+## 调试技巧
+
+```nginx
+# 自定义日志格式用于调试
+log_format proxy_debug '$remote_addr - $remote_user [$time_local] '
+                       '"$request" $status $body_bytes_sent '
+                       '"$http_referer" "$http_user_agent" '
+                       'upstream: $upstream_addr '
+                       'upstream_status: $upstream_status '
+                       'upstream_response_time: $upstream_response_time '
+                       'request_time: $request_time';
+
+# 验证配置
+nginx -t
+
+# 重新加载
+nginx -s reload
+
+# 查看 upstream 状态
+curl http://localhost/nginx_status
+```
+
+## 总结
+
+Nginx 的反向代理和负载均衡能力非常强大。掌握这些配置技巧，你就能构建高可用、高性能的 Web 服务架构。关键在于：
+
+- 正确设置 proxy headers
+- 选择合适的负载均衡策略
+- 配置缓存和限流保护后端
+- 做好健康检查和故障转移
+
+---
+
+## 构建一个完整的 React 状态管理方案：从 Context 到 Zustand
+
+- URL: http://localhost:3302/posts/2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand
+- 发布时间: 2025-11-02
+- 分类: frontend
+- 标签: react, state, zustand
+- 阅读时长: 4 分钟
+
+> 这是一篇关于React的深度技术文章
+
+# 构建一个完整的 React 状态管理方案：从 Context 到 Zustand
+
+React 生态中有太多的状态管理方案。本文从最基础的 Context 开始，逐步演进到 Zustand，帮助你理解每种方案的适用场景。
+
+## 方案一：useState + Props Drilling
+
+最简单的状态管理就是 `useState` 配合 props 传递：
+
+```jsx
+function App() {
+  const [count, setCount] = useState(0);
+  return <Counter count={count} onIncrement={() => setCount(c => c + 1)} />;
+}
+
+function Counter({ count, onIncrement }) {
+  return (
+    <div>
+      <Display count={count} />
+      <Button onClick={onIncrement} />
+    </div>
+  );
+}
+
+function Display({ count }) {
+  return <span>{count}</span>;
+}
+
+function Button({ onClick }) {
+  return <button onClick={onClick}>+1</button>;
+}
+```
+
+**适用场景**：组件层级浅、状态简单
+**缺点**：Props drilling 让中间组件传递不需要的 props
+
+## 方案二：React Context
+
+当状态需要被多个深层组件共享时，Context 是标准方案：
+
+```jsx
+import { createContext, useContext, useReducer } from 'react';
+
+// 1. 定义状态和 Action
+interface CounterState {
+  count: number;
+  loading: boolean;
+}
+
+type CounterAction =
+  | { type: 'INCREMENT' }
+  | { type: 'DECREMENT' }
+  | { type: 'SET_LOADING'; payload: boolean };
+
+// 2. 创建 Context
+const CounterContext = createContext<{
+  state: CounterState;
+  dispatch: React.Dispatch<CounterAction>;
+} | null>(null);
+
+// 3. Reducer
+function counterReducer(state: CounterState, action: CounterAction): CounterState {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { ...state, count: state.count + 1 };
+    case 'DECREMENT':
+      return { ...state, count: state.count - 1 };
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+    default:
+      return state;
+  }
+}
+
+// 4. Provider 组件
+function CounterProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = useReducer(counterReducer, {
+    count: 0,
+    loading: false,
+  });
+
+  return (
+    <CounterContext.Provider value={{ state, dispatch }}>
+      {children}
+    </CounterContext.Provider>
+  );
+}
+
+// 5. 自定义 Hook
+function useCounter() {
+  const ctx = useContext(CounterContext);
+  if (!ctx) throw new Error('useCounter must be within CounterProvider');
+  return ctx;
+}
+```
+
+**Context 的缺点**：
+1. Provider value 变化导致所有消费者重新渲染
+2. 多个 Context 嵌套导致 "Provider Hell"
+3. 不适合高频更新的状态
+
+## 方案三：Context + 选择器优化
+
+通过拆分 Context 减少不必要的渲染：
+
+```typescript
+// 拆分状态和 dispatch
+const CounterStateContext = createContext<CounterState | null>(null);
+const CounterDispatchContext = createContext<React.Dispatch<CounterAction> | null>(null);
+
+// 只读组件只订阅 state context
+function CounterDisplay() {
+  const state = useContext(CounterStateContext)!;
+  return <span>{state.count}</span>;
+}
+
+// 只写组件只订阅 dispatch context
+function IncrementButton() {
+  const dispatch = useContext(CounterDispatchContext)!;
+  return <button onClick={() => dispatch({ type: 'INCREMENT' })}>+1</button>;
+}
+```
+
+## 方案四：Zustand —— 轻量级状态管理
+
+Zustand 解决了 Context 的性能问题，API 极其简洁：
+
+```typescript
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+
+interface CounterStore {
+  count: number;
+  loading: boolean;
+  increment: () => void;
+  decrement: () => void;
+  incrementAsync: () => Promise<void>;
+}
+
+const useCounterStore = create<CounterStore>()(
+  devtools(
+    persist(
+      (set, get) => ({
+        count: 0,
+        loading: false,
+        increment: () => set(state => ({ count: state.count + 1 })),
+        decrement: () => set(state => ({ count: state.count - 1 })),
+        incrementAsync: async () => {
+          set({ loading: true });
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          set(state => ({ count: state.count + 1, loading: false }));
+        },
+      }),
+      { name: 'counter-storage' }
+    )
+  )
+);
+
+// 使用（组件外部也可以！）
+function CounterDisplay() {
+  const count = useCounterStore(state => state.count);
+  return <span>{count}</span>;
+}
+
+function Controls() {
+  const { increment, decrement, incrementAsync, loading } = useCounterStore();
+  return (
+    <div>
+      <button onClick={decrement}>-1</button>
+      <button onClick={increment}>+1</button>
+      <button onClick={incrementAsync} disabled={loading}>
+        {loading ? 'Loading...' : 'Async +1'}
+      </button>
+    </div>
+  );
+}
+```
+
+## 方案五：Jotai —— 原子化状态
+
+Jotai 适合需要细粒度状态控制的场景：
+
+```typescript
+import { atom, useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+
+// 定义原子
+const countAtom = atomWithStorage('count', 0);
+const doubledAtom = atom(get => get(countAtom) * 2);
+
+// 异步原子
+const userAtom = atom(async () => {
+  const response = await fetch('/api/user');
+  return response.json();
+});
+
+// 可写派生原子
+const countWithLogAtom = atom(
+  get => get(countAtom),
+  (get, set, newValue: number) => {
+    console.log(`Count changed: ${get(countAtom)} -> ${newValue}`);
+    set(countAtom, newValue);
+  }
+);
+```
+
+## 对比总结
+
+| 方案 | 适用场景 | 学习成本 | 性能 |
+|------|----------|----------|------|
+| useState | 局部状态 | 低 | 最佳 |
+| Context + useReducer | 全局但低频更新 | 低 | 一般 |
+| Zustand | 全局通用方案 | 低 | 优秀 |
+| Jotai | 细粒度原子化 | 中 | 优秀 |
+| Redux Toolkit | 大型团队 | 高 | 优秀 |
+
+## 我的推荐
+
+- **小型项目**：useState + Context 足矣
+- **中型项目**：Zustand —— 简单、高性能
+- **需要细粒度**：Jotai
+- **大型团队有规范需求**：Redux Toolkit
+
+个人最常使用的是 Zustand，它用最小的 API 解决了 90% 的状态管理需求。
+
+---
+
+## Python 异步编程完全指南：async/await 深入剖析
+
+- URL: http://localhost:3302/posts/2025-10-27-python-异步编程完全指南async-await-深入剖析
+- 发布时间: 2025-10-27
+- 分类: technology
+- 标签: async, asyncio, python
+- 阅读时长: 5 分钟
+
+> 这是一篇关于Python的深度技术文章
+
+# Python 异步编程完全指南：async/await 深入剖析
+
+Python 的异步编程经历了从回调地狱到 `async/await` 的演进。本文带你深入理解 Python 的异步模型。
+
+## 为什么需要异步？
+
+传统的同步 I/O 会阻塞线程：
+
+```python
+import time
+
+def fetch_url(url):
+    time.sleep(1)  # 模拟网络请求
+    return f"Data from {url}"
+
+def main():
+    urls = ["url1", "url2", "url3"]
+    results = [fetch_url(url) for url in urls]
+    # 需要 3 秒！
+```
+
+异步版本可以在等待 I/O 时切换到其他任务：
+
+```python
+import asyncio
+
+async def fetch_url(url):
+    await asyncio.sleep(1)
+    return f"Data from {url}"
+
+async def main():
+    urls = ["url1", "url2", "url3"]
+    tasks = [fetch_url(url) for url in urls]
+    results = await asyncio.gather(*tasks)
+    # 只需要约 1 秒！
+```
+
+## 协程（Coroutine）
+
+`async def` 定义的是协程函数，调用它返回一个协程对象：
+
+```python
+async def hello():
+    return "Hello"
+
+coro = hello()
+print(type(coro))  # <class 'coroutine'>
+
+# 协程需要通过 await 或 asyncio.run() 来执行
+result = asyncio.run(coro)
+print(result)  # Hello
+```
+
+## 事件循环（Event Loop）
+
+事件循环是异步编程的核心——它负责调度和执行协程：
+
+```python
+import asyncio
+
+async def task(name, delay):
+    await asyncio.sleep(delay)
+    print(f"Task {name} done")
+    return name
+
+async def main():
+    # 同时启动三个任务
+    results = await asyncio.gather(
+        task("A", 2),
+        task("B", 1),
+        task("C", 0.5),
+    )
+    print(f"Results: {results}")
+
+asyncio.run(main())
+# 输出顺序：C → B → A → Results: ['A', 'B', 'C']
+```
+
+## Task 与 Future
+
+- **Task**：对协程的封装，调度其在事件循环中执行
+- **Future**：表示一个尚未完成的结果
+
+```python
+async def main():
+    # create_task 立即调度协程
+    task1 = asyncio.create_task(fetch_url("url1"))
+    task2 = asyncio.create_task(fetch_url("url2"))
+    
+    # 可以取消任务
+    task2.cancel()
+    
+    try:
+        await task2
+    except asyncio.CancelledError:
+        print("Task 2 was cancelled")
+    
+    result = await task1
+    print(result)
+```
+
+## 异步上下文管理器
+
+```python
+import asyncio
+
+class AsyncConnection:
+    async def __aenter__(self):
+        print("Opening connection...")
+        await asyncio.sleep(0.1)
+        return self
+    
+    async def __aexit__(self, *args):
+        print("Closing connection...")
+        await asyncio.sleep(0.1)
+    
+    async def query(self, sql):
+        await asyncio.sleep(0.1)
+        return f"Result of: {sql}"
+
+async def main():
+    async with AsyncConnection() as conn:
+        result = await conn.query("SELECT * FROM users")
+        print(result)
+```
+
+## 异步迭代器
+
+```python
+class AsyncRange:
+    def __init__(self, start, end):
+        self.current = start
+        self.end = end
+    
+    def __aiter__(self):
+        return self
+    
+    async def __anext__(self):
+        if self.current >= self.end:
+            raise StopAsyncIteration
+        await asyncio.sleep(0.1)  # 模拟异步操作
+        self.current += 1
+        return self.current - 1
+
+async def main():
+    async for num in AsyncRange(0, 5):
+        print(num)
+```
+
+## 异步生成器
+
+```python
+async def async_range(start, end):
+    for i in range(start, end):
+        await asyncio.sleep(0.1)
+        yield i
+
+async def main():
+    async for num in async_range(0, 5):
+        print(num)
+    
+    # 异步列表推导（Python 3.11+）
+    results = [num async for num in async_range(0, 5)]
+    print(results)  # [0, 1, 2, 3, 4]
+```
+
+## 实战：异步 HTTP 客户端
+
+```python
+import asyncio
+import aiohttp
+from typing import List, Dict
+
+class AsyncHttpClient:
+    def __init__(self, concurrency: int = 10):
+        self.semaphore = asyncio.Semaphore(concurrency)
+        self.session: aiohttp.ClientSession | None = None
+    
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
+    
+    async def __aexit__(self, *args):
+        if self.session:
+            await self.session.close()
+    
+    async def fetch(self, url: str) -> Dict:
+        async with self.semaphore:
+            async with self.session.get(url) as response:
+                return {
+                    "url": url,
+                    "status": response.status,
+                    "body": await response.text()[:200]
+                }
+    
+    async def fetch_many(self, urls: List[str]) -> List[Dict]:
+        tasks = [self.fetch(url) for url in urls]
+        return await asyncio.gather(*tasks, return_exceptions=True)
+
+async def main():
+    urls = [
+        "https://httpbin.org/delay/1",
+        "https://httpbin.org/delay/2",
+        "https://httpbin.org/get",
+    ] * 5  # 15 个请求
+    
+    async with AsyncHttpClient(concurrency=5) as client:
+        results = await client.fetch_many(urls)
+        for r in results:
+            if isinstance(r, Exception):
+                print(f"Error: {r}")
+            else:
+                print(f"{r['url']}: {r['status']}")
+
+asyncio.run(main())
+```
+
+## 常见陷阱
+
+### 1. 在协程中调用阻塞函数
+
+```python
+# ❌ 错误：阻塞事件循环
+async def bad():
+    time.sleep(5)  # 阻塞整个事件循环！
+
+# ✅ 正确：使用线程池
+async def good():
+    await asyncio.to_thread(time.sleep, 5)
+```
+
+### 2. 忘记 await
+
+```python
+async def fetch_data():
+    await asyncio.sleep(1)
+    return "data"
+
+async def main():
+    # ❌ coroutine was never awaited
+    result = fetch_data()
+    
+    # ✅
+    result = await fetch_data()
+```
+
+### 3. 在同步代码中使用 asyncio.run()
+
+```python
+# ❌ 在已有事件循环的环境中使用 asyncio.run()
+# asyncio.run(fetch_data())
+
+# ✅ 在 Jupyter 等环境中使用
+await fetch_data()
+```
+
+## 总结
+
+Python 的异步编程模型相对直观，但需要注意：
+
+- 使用 `async/await` 编写协程
+- 用 `asyncio.gather()` 并发执行多个任务
+- 避免在协程中调用阻塞函数
+- 使用 `aiohttp`、`asyncpg` 等异步库获得真正的性能提升
+- 理解事件循环的工作方式帮助调试问题
+
+---
+
+## Linux 服务器安全加固指南：15 个必做配置
+
+- URL: http://localhost:3302/posts/2025-10-20-linux-服务器安全加固指南15-个必做配置
+- 发布时间: 2025-10-20
+- 分类: devops
+- 标签: linux, security, server
+- 阅读时长: 5 分钟
+
+> 这是一篇关于Linux的深度技术文章
+
+# Linux 服务器安全加固指南：15 个必做配置
+
+刚买的云服务器默认配置并不安全。以下是我每台服务器上线前的 15 项安全检查清单。
+
+## 1. 更新系统
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt upgrade -y
+
+# CentOS/RHEL
+sudo yum update -y
+
+# 启用自动安全更新
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure --priority=low unattended-upgrades
+```
+
+## 2. 创建非 root 用户
+
+永远不要使用 root 用户进行日常操作：
+
+```bash
+# 创建新用户
+sudo useradd -m -s /bin/bash deploy
+sudo passwd deploy
+
+# 添加到 sudo 组
+sudo usermod -aG sudo deploy
+
+# 测试
+su - deploy
+sudo whoami  # 应输出 root
+```
+
+## 3. SSH 安全配置
+
+编辑 `/etc/ssh/sshd_config`：
+
+```ini
+# 禁用 root 登录
+PermitRootLogin no
+
+# 修改默认端口（减少扫描）
+Port 2222
+
+# 仅允许密钥登录
+PasswordAuthentication no
+PubkeyAuthentication yes
+
+# 限制登录用户
+AllowUsers deploy
+
+# 空闲超时
+ClientAliveInterval 300
+ClientAliveCountMax 0
+
+# 限制认证尝试次数
+MaxAuthTries 3
+```
+
+重启 SSH 服务：`sudo systemctl restart sshd`
+
+## 4. 配置防火墙
+
+```bash
+# UFW (Ubuntu)
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 2222/tcp      # SSH
+sudo ufw allow 80/tcp         # HTTP
+sudo ufw allow 443/tcp        # HTTPS
+sudo ufw enable
+
+# firewalld (CentOS)
+sudo firewall-cmd --permanent --add-service=ssh
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --reload
+```
+
+## 5. 安装 Fail2Ban
+
+防止暴力破解：
+
+```bash
+sudo apt install fail2ban -y
+
+# 配置 /etc/fail2ban/jail.local
+[DEFAULT]
+bantime = 3600
+findtime = 600
+maxretry = 5
+
+[sshd]
+enabled = true
+port = 2222
+
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+
+# 查看封禁状态
+sudo fail2ban-client status sshd
+```
+
+## 6. 禁用不需要的服务
+
+```bash
+# 查看运行中的服务
+sudo systemctl list-unit-files --state=enabled
+
+# 禁用不需要的服务
+sudo systemctl disable --now bluetooth.service
+sudo systemctl disable --now cups.service
+sudo systemctl disable --now avahi-daemon.service
+```
+
+## 7. 配置日志监控
+
+```bash
+# 安装 logwatch
+sudo apt install logwatch -y
+
+# 配置每日报告
+sudo cp /usr/share/logwatch/default.conf/logwatch.conf \
+  /etc/logwatch/conf/logwatch.conf
+
+# 编辑配置
+# MailTo = your@email.com
+# Detail = High
+# Range = yesterday
+```
+
+## 8. 内核参数加固
+
+编辑 `/etc/sysctl.d/99-security.conf`：
+
+```ini
+# 防止 IP 欺骗
+net.ipv4.conf.all.rp_filter = 1
+
+# 忽略 ICMP 重定向
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+
+# 忽略 ICMP 广播请求
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# 启用 SYN Cookie 防护
+net.ipv4.tcp_syncookies = 1
+
+# 记录异常包
+net.ipv4.conf.all.log_martians = 1
+```
+
+应用配置：`sudo sysctl -p /etc/sysctl.d/99-security.conf`
+
+## 9. 文件权限加固
+
+```bash
+# 限制 cron 访问
+sudo chmod 600 /etc/crontab
+sudo chmod 700 /etc/cron.d
+sudo chmod 700 /etc/cron.daily
+sudo chmod 700 /etc/cron.hourly
+sudo chmod 700 /etc/cron.weekly
+sudo chmod 700 /etc/cron.monthly
+
+# 保护 SSH 密钥
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/id_rsa
+chmod 644 ~/.ssh/id_rsa.pub
+```
+
+## 10. 安装入侵检测系统
+
+```bash
+# AIDE - 文件完整性检查
+sudo apt install aide -y
+sudo aideinit
+sudo mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+
+# 定期检查
+sudo aide --check
+```
+
+## 11. 限制用户资源
+
+编辑 `/etc/security/limits.conf`：
+
+```ini
+* hard nproc 4096
+* hard nofile 65535
+* soft nofile 65535
+```
+
+## 12. 使用 SELinux 或 AppArmor
+
+```bash
+# Ubuntu: 确认 AppArmor 状态
+sudo aa-status
+
+# CentOS: 确认 SELinux 状态
+sestatus
+# 如果是 enforcing 模式则已启用
+```
+
+## 13. 配置自动安全审计
+
+```bash
+# 安装 Lynis
+sudo apt install lynis -y
+
+# 运行审计
+sudo lynis audit system
+
+# 查看建议
+sudo lynis show suggestions
+```
+
+## 14. 启用 HTTPS（Let's Encrypt）
+
+```bash
+# 安装 Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# 获取证书
+sudo certbot --nginx -d example.com -d www.example.com
+
+# 自动续期
+sudo certbot renew --dry-run
+```
+
+## 15. 备份策略
+
+```bash
+# 简单的 rsync 备份
+rsync -avz --delete /var/www/ backup@backup-server:/backups/www/
+
+# 数据库备份
+mysqldump -u root -p database_name | gzip > /backups/db_$(date +%Y%m%d).sql.gz
+
+# 加入 cron
+0 2 * * * /usr/local/bin/backup-script.sh
+```
+
+## 安全检查清单
+
+完成以上配置后，你可以使用这份检查清单验证：
+
+- [ ] 系统已更新到最新
+- [ ] root 无法 SSH 登录
+- [ ] SSH 仅允许密钥认证
+- [ ] 防火墙已启用并正确配置
+- [ ] Fail2Ban 正在运行
+- [ ] 不需要的服务已禁用
+- [ ] 内核参数已加固
+- [ ] 文件权限正确设置
+- [ ] 自动安全更新已启用
+
+安全不是一次性工作，而是持续的过程。定期审查日志、更新系统、检查入侵迹象，才能保持服务器的长期安全。
+
+---
+
+## TypeScript 高级类型体操：你真的会用泛型吗？
+
+- URL: http://localhost:3302/posts/2025-10-12-typescript-高级类型体操你真的会用泛型吗
+- 发布时间: 2025-10-12
+- 分类: frontend
+- 标签: generics, types, typescript
+- 阅读时长: 5 分钟
+
+> 这是一篇关于TypeScript的深度技术文章
+
+# TypeScript 高级类型体操：你真的会用泛型吗？
+
+TypeScript 的类型系统是图灵完备的——这意味着你可以在类型层面进行编程。掌握高级类型技巧，能让你的代码类型安全性提升一个档次。
+
+## 泛型基础回顾
+
+泛型允许我们编写可复用的类型安全代码：
+
+```typescript
+// 没有泛型：重复代码
+function getFirstNumber(arr: number[]): number | undefined {
+  return arr[0];
+}
+function getFirstString(arr: string[]): string | undefined {
+  return arr[0];
+}
+
+// 使用泛型：一次定义，多处使用
+function getFirst<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+const num = getFirst([1, 2, 3]); // number | undefined
+const str = getFirst(["a", "b"]); // string | undefined
+```
+
+## 泛型约束（Constraints）
+
+使用 `extends` 关键字约束泛型参数：
+
+```typescript
+interface HasLength {
+  length: number;
+}
+
+function logLength<T extends HasLength>(item: T): T {
+  console.log(item.length);
+  return item;
+}
+
+logLength("hello");   // ✅ string 有 length
+logLength([1, 2, 3]); // ✅ array 有 length
+// logLength(123);    // ❌ number 没有 length
+```
+
+## 条件类型（Conditional Types）
+
+```typescript
+type IsString<T> = T extends string ? true : false;
+
+type A = IsString<"hello">; // true
+type B = IsString<42>;      // false
+
+// 实用例子：提取 Promise 的返回值类型
+type Awaited<T> = T extends Promise<infer U> ? U : T;
+
+type Result = Awaited<Promise<string>>; // string
+type Plain = Awaited<number>;          // number
+```
+
+## `infer` 关键字
+
+`infer` 用于在条件类型中推断类型：
+
+```typescript
+// 提取数组元素类型
+type ArrayItem<T> = T extends (infer U)[] ? U : never;
+type Item = ArrayItem<string[]>; // string
+
+// 提取函数返回值类型
+type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+type Fn = (x: number) => string;
+type Ret = ReturnType<Fn>; // string
+
+// 提取函数第一个参数类型
+type FirstParam<T> = T extends (first: infer F, ...rest: any[]) => any ? F : never;
+type Param = FirstParam<(a: string, b: number) => void>; // string
+```
+
+## 映射类型（Mapped Types）
+
+```typescript
+// 将所有属性变为只读
+type MyReadonly<T> = {
+  readonly [K in keyof T]: T[K];
+};
+
+// 将所有属性变为可选
+type MyPartial<T> = {
+  [K in keyof T]?: T[K];
+};
+
+// 挑选特定属性
+type MyPick<T, K extends keyof T> = {
+  [P in K]: T[P];
+};
+
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+type ReadonlyUser = MyReadonly<User>;
+type OptionalUser = MyPartial<User>;
+type UserPreview = MyPick<User, "name" | "email">;
+```
+
+## 模板字面量类型（Template Literal Types）
+
+TypeScript 4.1 引入了模板字面量类型，可以进行字符串级别的类型运算：
+
+```typescript
+type EventName<T extends string> = `on${Capitalize<T>}`;
+type Click = EventName<"click">; // "onClick"
+
+// 实用例子：类型安全的事件系统
+type Events = {
+  click: { x: number; y: number };
+  focus: { target: string };
+  blur: void;
+};
+
+type EventHandlerMap = {
+  [K in keyof Events as `on${Capitalize<K & string>}`]: (e: Events[K]) => void;
+};
+
+// EventHandlerMap = {
+//   onClick: (e: { x: number; y: number }) => void;
+//   onFocus: (e: { target: string }) => void;
+//   onBlur: (e: void) => void;
+// }
+```
+
+## 递归类型
+
+```typescript
+// 深度 Partial
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+// 深度 Readonly
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
+interface Config {
+  server: {
+    host: string;
+    port: number;
+    ssl: {
+      enabled: boolean;
+      cert: string;
+    };
+  };
+}
+
+type PartialConfig = DeepPartial<Config>;
+// 所有层级都变为可选
+```
+
+## 实用工具类型实现
+
+```typescript
+// 排除 null 和 undefined
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+// 从联合类型中排除特定类型
+type MyExclude<T, U> = T extends U ? never : T;
+type OnlyString = MyExclude<string | number | boolean, number | boolean>; // string
+
+// 提取联合类型中的特定类型
+type MyExtract<T, U> = T extends U ? T : never;
+type OnlyNum = MyExtract<string | number | boolean, number>; // number
+
+// 函数参数类型
+type Parameters<T extends (...args: any) => any> = 
+  T extends (...args: infer P) => any ? P : never;
+
+// 构造函数参数类型
+type ConstructorParameters<T extends abstract new (...args: any) => any> = 
+  T extends abstract new (...args: infer P) => any ? P : never;
+```
+
+## 实战：类型安全的 API 客户端
+
+```typescript
+// 定义 API 路由
+interface ApiRoutes {
+  "/users": {
+    get: { response: User[] };
+    post: { body: CreateUserDto; response: User };
+  };
+  "/users/:id": {
+    get: { params: { id: string }; response: User };
+    put: { params: { id: string }; body: UpdateUserDto; response: User };
+    delete: { params: { id: string }; response: void };
+  };
+}
+
+// 类型安全的请求函数
+type RequestConfig<Method extends string, Config> = 
+  Config extends { body: infer B } 
+    ? { method: Method; body: B } & Omit<Config, "body" | "response">
+    : { method: Method } & Omit<Config, "response">;
+
+function request<
+  Path extends keyof ApiRoutes,
+  Method extends keyof ApiRoutes[Path]
+>(
+  path: Path,
+  config: RequestConfig<Method & string, ApiRoutes[Path][Method]>
+): Promise<ApiRoutes[Path][Method] extends { response: infer R } ? R : never> {
+  // 实现省略...
+  return fetch(path, config as any).then(r => r.json());
+}
+
+// 使用时有完整的类型提示：
+const users = await request("/users", { method: "get" });
+// users: User[]
+
+const newUser = await request("/users", {
+  method: "post",
+  body: { name: "Alice", email: "alice@example.com" }
+});
+// newUser: User
+```
+
+## 总结
+
+TypeScript 的高级类型工具让你能在编译时捕获更多错误。关键技巧包括：
+
+- **泛型约束**限制类型参数的范围
+- **条件类型**实现类型的条件分支
+- **`infer`** 提取类型信息
+- **映射类型**对对象类型进行变换
+- **模板字面量类型**实现字符串级别的类型安全
+
+掌握这些技巧，你写出的 TypeScript 代码将更加健壮和自文档化。
+
+---
+
+## Docker 容器化最佳实践：从开发到生产
+
+- URL: http://localhost:3302/posts/2025-10-05-docker-容器化最佳实践从开发到生产
+- 发布时间: 2025-10-05
+- 分类: devops
+- 标签: container, devops, docker
+- 阅读时长: 3 分钟
+
+> 这是一篇关于Docker的深度技术文章
+
+# Docker 容器化最佳实践：从开发到生产
+
+Docker 彻底改变了我们构建、交付和运行应用程序的方式。但要写出高效的 Dockerfile，让镜像既小又安全，需要遵循一系列最佳实践。
+
+## 1. 选择正确的基础镜像
+
+基础镜像的选择直接影响最终镜像的大小和安全性。
+
+### 使用官方镜像
+
+```dockerfile
+# ✅ 推荐：官方镜像，定期更新
+FROM node:20-alpine
+
+# ❌ 避免：来源不明的镜像
+FROM some-random-user/node:latest
+```
+
+### Alpine vs Slim vs Full
+
+| 镜像类型 | 大小 | 适用场景 |
+|----------|------|----------|
+| `node:20` | ~1GB | 不需要优化 |
+| `node:20-slim` | ~250MB | 通用推荐 |
+| `node:20-alpine` | ~120MB | 追求极致体积 |
+
+Alpine 使用 musl libc 而非 glibc，某些原生模块可能不兼容。
+
+## 2. 多阶段构建
+
+多阶段构建是减小镜像体积的最强武器：
+
+```dockerfile
+# 阶段 1：构建
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+
+# 阶段 2：运行
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
+```
+
+## 3. 利用构建缓存
+
+Docker 按层缓存，将不常变动的指令放在前面：
+
+```dockerfile
+# ✅ 正确顺序：依赖安装在前
+COPY package*.json ./
+RUN npm ci
+COPY . .
+
+# ❌ 错误顺序：源码变化导致依赖重新安装
+COPY . .
+RUN npm ci
+```
+
+### .dockerignore 不可忽视
+
+```dockerignore
+node_modules
+.git
+dist
+.env
+*.md
+.DS_Store
+coverage
+```
+
+## 4. 以非 root 用户运行
+
+```dockerfile
+FROM node:20-alpine
+
+# 创建非 root 用户
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+USER nodejs
+
+COPY --chown=nodejs:nodejs . /app
+WORKDIR /app
+
+CMD ["node", "index.js"]
+```
+
+## 5. 健康检查
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+```
+
+## 6. 使用 docker-compose 管理多服务应用
+
+```yaml
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+
+volumes:
+  pgdata:
+```
+
+## 7. 日志管理
+
+应用日志应输出到 stdout/stderr，由 Docker 或容器编排平台统一处理：
+
+```javascript
+// ✅ 好的做法
+console.log(JSON.stringify({
+  level: 'info',
+  message: 'User logged in',
+  userId: 123,
+  timestamp: new Date().toISOString()
+}));
+
+// ❌ 避免
+fs.appendFileSync('/var/log/app.log', 'User logged in\n');
+```
+
+## 8. 安全扫描
+
+```bash
+# 使用 Docker Scout 扫描漏洞
+docker scout quickview myapp:latest
+
+# 使用 Trivy
+trivy image myapp:latest
+
+# 使用 Hadolint 检查 Dockerfile
+hadolint Dockerfile
+```
+
+## 总结
+
+高效的 Docker 实践可以总结为：
+
+1. 使用官方、轻量级基础镜像
+2. 多阶段构建减小体积
+3. 合理安排 COPY 顺序利用缓存
+4. 以非 root 用户运行
+5. 添加健康检查
+6. 将日志输出到 stdout/stderr
+7. 定期安全扫描
+
+记住，一个好的 Dockerfile 不仅是能构建出镜像，更要让镜像**小、安全、可维护**。
+
+---
+
+## Rust 所有权系统详解：从入门到实践
+
+- URL: http://localhost:3302/posts/2025-09-28-rust-所有权系统详解从入门到实践
+- 发布时间: 2025-09-28
+- 分类: technology
+- 标签: memory, ownership, rust
+- 阅读时长: 5 分钟
+
+> 这是一篇关于Rust的深度技术文章
+
+# Rust 所有权系统详解：从入门到实践
+
+Rust 最独特的特性莫过于它的**所有权（Ownership）系统**——这套在编译期保证内存安全的机制，让 Rust 在没有垃圾回收器的情况下依然能做到内存安全。
+
+## 为什么需要所有权？
+
+传统编程语言处理内存有三种方式：
+- **手动管理**（C/C++）：程序员自己 malloc/free，容易出错
+- **垃圾回收**（Java/Go/Python）：运行时自动回收，但带来性能开销
+- **所有权系统**（Rust）：编译期检查，零运行时开销
+
+Rust 通过所有权规则在编译时保证内存安全，这意味着你的程序不会出现悬垂指针、双重释放、使用已释放内存等经典内存 bug。
+
+## 所有权三原则
+
+Rust 的所有权系统遵循三条铁律：
+
+1. Rust 中的每个值都有一个**所有者（owner）**
+2. 同一时间只能有**一个所有者**
+3. 当所有者离开作用域，值会被**自动释放**
+
+```rust
+fn main() {
+    let s = String::from("hello"); // s 进入作用域
+    // s 是 "hello" 的所有者
+    
+    takes_ownership(s); // s 的值被移动（move）到函数中
+    // println!("{}", s); // ❌ 编译错误：s 已经无效
+    
+    let x = 5;
+    makes_copy(x); // x 是 i32，实现了 Copy trait，所以被复制
+    println!("{}", x); // ✅ 没问题
+}
+
+fn takes_ownership(some_string: String) {
+    println!("{}", some_string);
+} // some_string 离开作用域，内存被释放
+
+fn makes_copy(some_integer: i32) {
+    println!("{}", some_integer);
+}
+```
+
+## Move（移动）vs Clone（克隆）
+
+在 Rust 中，赋值操作默认是**移动**而非复制：
+
+```rust
+let s1 = String::from("hello");
+let s2 = s1; // s1 被移动到 s2，s1 不再有效
+
+// println!("{}", s1); // ❌ 编译错误！
+
+let s3 = s2.clone(); // 显式克隆，s2 仍然有效
+println!("s2 = {}, s3 = {}", s2, s3); // ✅ 都能使用
+```
+
+对于实现了 `Copy` trait 的类型（如整数、布尔值、浮点数），赋值会自动复制而非移动。
+
+## 引用与借用（Borrowing）
+
+为了避免所有权转移带来的不便，Rust 提供了**引用**机制：
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let len = calculate_length(&s1); // 借用 s1，不获取所有权
+    println!("The length of '{}' is {}.", s1, len);
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+} // s 离开作用域，但因为它没有所有权，所以不会释放内存
+```
+
+### 引用的规则
+
+1. 在任意给定时间，**要么**只能有一个可变引用，**要么**只能有多个不可变引用
+2. 引用必须始终有效（不能有悬垂引用）
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &s; // 不可变引用
+let r2 = &s; // 不可变引用 ✅
+// let r3 = &mut s; // ❌ 编译错误：不能同时存在可变和不可变引用
+
+println!("{} and {}", r1, r2); // r1 和 r2 不再被使用
+
+let r3 = &mut s; // ✅ 此时可以创建可变引用
+r3.push_str(" world");
+```
+
+## 生命周期（Lifetime）
+
+生命周期是 Rust 的类型系统中另一个核心概念，用于确保引用始终有效：
+
+```rust
+// ❌ 编译错误：缺少生命周期标注
+fn longest(x: &str, y: &str) -> &str {
+    if x.len() > y.len() { x } else { y }
+}
+
+// ✅ 正确：添加生命周期标注
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() { x } else { y }
+}
+```
+
+生命周期标注不会改变引用的存活时间，它只是告诉编译器多个引用之间的关系。
+
+## 实战：实现一个简单的字符串处理库
+
+```rust
+pub struct TextProcessor {
+    content: String,
+}
+
+impl TextProcessor {
+    pub fn new(content: &str) -> Self {
+        TextProcessor {
+            content: String::from(content),
+        }
+    }
+    
+    pub fn word_count(&self) -> usize {
+        self.content.split_whitespace().count()
+    }
+    
+    pub fn find_words_containing(&self, pattern: &str) -> Vec<&str> {
+        self.content
+            .split_whitespace()
+            .filter(|word| word.contains(pattern))
+            .collect()
+    }
+    
+    pub fn replace(&mut self, from: &str, to: &str) {
+        self.content = self.content.replace(from, to);
+    }
+    
+    pub fn into_string(self) -> String {
+        self.content
+    }
+}
+
+fn main() {
+    let mut processor = TextProcessor::new("The quick brown fox jumps over the lazy dog");
+    
+    println!("Words: {}", processor.word_count());
+    println!("Words with 'o': {:?}", processor.find_words_containing("o"));
+    
+    processor.replace("fox", "cat");
+    println!("After replace: {}", processor.into_string());
+}
+```
+
+## 常见所有权错误与解决
+
+| 错误 | 原因 | 解决方案 |
+|------|------|----------|
+| `use of moved value` | 使用了已移动的值 | 使用引用或克隆 |
+| `cannot borrow as mutable` | 同时存在多个引用 | 调整作用域，先释放旧引用 |
+| `does not live long enough` | 引用存活时间不够 | 延长值的生命周期或使用自有类型 |
+
+## 总结
+
+Rust 的所有权系统初学时可能会让人感到沮丧——编译器似乎总是在"找茬"。但一旦你理解了它的规则，你会发现在运行之前就能捕获绝大多数内存 bug，这种安全感是其他语言难以提供的。
+
+记住这三个核心概念，你就掌握了 Rust 80% 的精髓：
+- **所有权（Ownership）**：每个值有且只有一个所有者
+- **借用（Borrowing）**：通过引用临时使用值而不获取所有权
+- **生命周期（Lifetime）**：确保引用始终指向有效数据
+
+---
+
+## 深入理解 JavaScript 事件循环：从宏任务到微任务
+
+- URL: http://localhost:3302/posts/2025-09-21-深入理解-javascript-事件循环从宏任务到微任务
+- 发布时间: 2025-09-21
+- 分类: frontend
+- 标签: async, event-loop, javascript
+- 阅读时长: 4 分钟
+
+> 这是一篇关于JavaScript的深度技术文章
+
+# 深入理解 JavaScript 事件循环：从宏任务到微任务
+
+JavaScript 是一门单线程语言，但它的异步能力却异常强大。这一切的背后，都离不开**事件循环（Event Loop）** 这一核心机制。
+
+## 为什么需要事件循环？
+
+JavaScript 最初被设计为在浏览器中运行的脚本语言，用于处理用户交互、操作 DOM。如果 JavaScript 是多线程的，多个线程同时操作 DOM 将导致不可预测的结果。因此，JavaScript 选择了单线程模型。
+
+但单线程意味着如果遇到耗时操作（如网络请求、文件读写），整个页面就会卡住。为了解决这个问题，JavaScript 引入了**异步编程**和**事件循环**。
+
+## 调用栈（Call Stack）
+
+JavaScript 引擎有一个调用栈，用于追踪函数执行：
+
+```javascript
+function foo() {
+  console.log('foo');
+  bar();
+}
+
+function bar() {
+  console.log('bar');
+}
+
+foo();
+// 输出：foo → bar
+```
+
+调用栈遵循 LIFO（后进先出）原则。当函数执行完毕，它就会被弹出栈。
+
+## 任务队列（Task Queue）
+
+当遇到异步操作时（如 `setTimeout`、`setInterval`、I/O），回调函数不会立即执行，而是被放入**任务队列**中等待。
+
+```javascript
+console.log('1');
+
+setTimeout(() => {
+  console.log('2');
+}, 0);
+
+console.log('3');
+
+// 输出：1 → 3 → 2
+```
+
+即使 `setTimeout` 的延迟设置为 0，回调也会被放入任务队列，等待调用栈清空后才执行。
+
+## 微任务（Microtask）
+
+ES6 引入了 **Promise** 和**微任务**的概念。微任务的优先级**高于**宏任务（普通任务）。
+
+微任务包括：
+- `Promise.then()` / `Promise.catch()` / `Promise.finally()`
+- `MutationObserver`
+- `queueMicrotask()`
+- `process.nextTick()`（Node.js）
+
+```javascript
+console.log('start');
+
+setTimeout(() => {
+  console.log('timeout');
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('promise');
+});
+
+console.log('end');
+
+// 输出：start → end → promise → timeout
+```
+
+## 事件循环的执行顺序
+
+每一轮事件循环（tick）的执行顺序如下：
+
+1. 执行一个宏任务（从宏任务队列中取出最老的一个）
+2. 执行所有微任务（清空微任务队列）
+3. 如果需要，渲染更新
+4. 重复以上步骤
+
+这解释了为什么 `Promise.then()` 的回调比 `setTimeout` 先执行——因为微任务在每轮事件循环结束时就会被清空，而宏任务需要等待下一轮。
+
+## Node.js 中的事件循环
+
+Node.js 的事件循环基于 **libuv** 库，比浏览器中的事件循环更复杂，分为以下几个阶段：
+
+1. **timers**：执行 `setTimeout` 和 `setInterval` 的回调
+2. **pending callbacks**：执行延迟到下一轮的 I/O 回调
+3. **idle, prepare**：内部使用
+4. **poll**：获取新的 I/O 事件
+5. **check**：执行 `setImmediate` 的回调
+6. **close callbacks**：执行关闭事件的回调
+
+每个阶段之间，Node.js 会检查并清空微任务队列。
+
+```javascript
+const fs = require('fs');
+
+fs.readFile(__filename, () => {
+  setTimeout(() => console.log('timeout'), 0);
+  setImmediate(() => console.log('immediate'));
+  Promise.resolve().then(() => console.log('promise'));
+  process.nextTick(() => console.log('nextTick'));
+});
+
+// 输出顺序：nextTick → promise → immediate → timeout
+// （在 I/O 回调中，setImmediate 优先于 setTimeout）
+```
+
+## 实际应用
+
+理解事件循环对于编写高性能 JavaScript 应用至关重要：
+
+### 1. 避免阻塞主线程
+
+```javascript
+// ❌ 错误：阻塞主线程
+function heavyComputation() {
+  let result = 0;
+  for (let i = 0; i < 1e9; i++) {
+    result += i;
+  }
+  return result;
+}
+
+// ✅ 正确：使用 setTimeout 分批处理
+function heavyComputationAsync() {
+  return new Promise(resolve => {
+    let result = 0;
+    let i = 0;
+    function chunk() {
+      const end = Math.min(i + 1e6, 1e9);
+      for (; i < end; i++) result += i;
+      if (i < 1e9) setTimeout(chunk, 0);
+      else resolve(result);
+    }
+    chunk();
+  });
+}
+```
+
+### 2. 理解 async/await
+
+`async/await` 本质上是 Promise + Generator 的语法糖：
+
+```javascript
+async function fetchData() {
+  console.log('1');
+  const data = await fetch('/api/data'); // await 之后的代码相当于 .then()
+  console.log('2');
+  return data;
+}
+
+// 等价于：
+function fetchData() {
+  console.log('1');
+  return fetch('/api/data').then(data => {
+    console.log('2');
+    return data;
+  });
+}
+```
+
+## 总结
+
+| 类型 | 示例 | 优先级 |
+|------|------|--------|
+| 同步代码 | 普通函数调用 | 最高 |
+| 微任务 | Promise.then, queueMicrotask | 中 |
+| 宏任务 | setTimeout, setInterval, I/O | 最低 |
+
+深入理解事件循环不仅能帮助你写出正确的异步代码，还能让你在面试中脱颖而出。
+
+> **关键记住**：微任务在每轮事件循环结束前全部执行，宏任务每次只执行一个。这就是为什么 Promise 比 setTimeout 快的原因。
+
+---
+
+## Markdown 教程
+
+- URL: http://localhost:3302/posts/markdown-tutorial
+- 发布时间: 2025-01-20
+- 分类: examples
+- 标签: blogging, markdown
+- 阅读时长: 11 分钟
+
+> 一个简单的隐藏博客文章的例子。
+
+# Markdown 教程
+
+本 Markdown 示例展示了如何编写 Markdown 文件。本文档集成了核心语法和扩展（GMF）。
+
+- [块级元素](#块级元素)
+    - [段落与换行](#段落与换行)
+    - [标题](#标题)
+    - [引用块](#引用快)
+    - [列表](#列表)
+    - [代码块](#代码块)
+    - [分割线](#分割线)
+    - [表格](#表格)
+- [行内元素](#行内元素)
+    - [链接](#链接)
+    - [强调](#强调)
+    - [代码](#代码)
+    - [图片](#图片)
+    - [删除线](#删除线)
+- [杂项](#杂项)
+    - [自动链接](#自动链接)
+    - [反斜杠转义](#反斜杠转义)
+- [内联 HTML](#内联-HTML)
+
+
+## 块级元素
+
+### 段落与换行
+
+#### 段落
+
+HTML 标签: `<p>`
+
+一个或多个空行。（只包含**空格**或**制表符**的行也被视为空行。）
+
+代码：
+
+    This will be
+    inline.
+
+    This is second paragraph.
+
+
+预览：
+
+---
+
+This will be
+inline.
+
+This is second paragraph.
+
+---
+
+
+#### 换行
+
+HTML 标签: `<br />`
+
+在一行末尾添加**两个或更多空格**。
+
+代码：
+
+    This will be not
+    inline.
+
+
+预览：
+
+---
+
+This will be not  
+inline.
+
+---
+
+
+### 标题
+
+Markdown 支持两种标题风格：Setext 和 atx。
+
+#### Setext
+
+HTML 标签: `<h1>`, `<h2>`
+
+使用**等号（=）**下划线表示 `<h1>`，**短横线（-）**下划线表示 `<h2>`，数量不限。
+
+代码：
+
+    This is an H1
+    =============
+    This is an H2
+    -------------
+
+
+预览：
+
+---
+
+# This is an H1
+
+## This is an H2
+
+---
+
+
+#### atx
+
+HTML 标签: `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>`
+
+在行首使用 1-6 个**井号（#）**，分别对应 `<h1>` - `<h6>`。
+
+代码：
+
+    # This is an H1
+    ## This is an H2
+    ###### This is an H6
+
+Preview:
+
+---
+
+# This is an H1
+
+## This is an H2
+
+###### This is an H6
+
+---
+
+
+可选地，你可以“闭合”atx 风格标题。结尾的井号数量**不需要与开头一致**。
+
+代码：
+
+    # This is an H1 #
+    ## This is an H2 ##
+    ### This is an H3 ######
+
+Preview:
+
+---
+
+# This is an H1
+
+## This is an H2
+
+### This is an H3
+
+---
+
+
+### 引用块
+
+HTML 标签: `<blockquote>`
+
+Markdown 使用邮件风格的 **>** 字符进行引用。建议每行前都加 >，效果最佳。
+
+代码：
+
+    > This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+    > consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+    > Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+    >
+    > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+    > id sem consectetuer libero luctus adipiscing.
+
+Preview:
+
+---
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+>
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+> id sem consectetuer libero luctus adipiscing.
+
+---
+
+
+Markdown 允许你偷懒，只在段落第一行前加 > 也可以。
+
+代码：
+
+    > This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+    consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+    Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+    > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+    id sem consectetuer libero luctus adipiscing.
+
+Preview:
+
+---
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+> id sem consectetuer libero luctus adipiscing.
+
+---
+
+
+引用块可以嵌套（即引用中的引用），只需增加 > 层级。
+
+代码：
+
+    > This is the first level of quoting.
+    >
+    > > This is nested blockquote.
+    >
+    > Back to the first level.
+
+Preview:
+
+---
+
+> This is the first level of quoting.
+>
+> > This is nested blockquote.
+>
+> Back to the first level.
+
+---
+
+
+引用块内可以包含其他 Markdown 元素，包括标题、列表和代码块。
+
+代码：
+
+    > ## This is a header.
+    >
+    > 1.   This is the first list item.
+    > 2.   This is the second list item.
+    >
+    > Here's some example code:
+    >
+    >     return shell_exec("echo $input | $markdown_script");
+
+Preview:
+
+---
+
+> ## This is a header.
+>
+> 1.  This is the first list item.
+> 2.  This is the second list item.
+>
+> Here's some example code:
+>
+>     return shell_exec("echo $input | $markdown_script");
+
+---
+
+
+### 列表
+
+Markdown 支持有序（编号）和无序（项目符号）列表。
+
+#### 无序列表
+
+HTML 标签: `<ul>`
+
+无序列表可用**星号（*）**、**加号（+）**或**短横线（-）**。
+
+代码：
+
+    *   Red
+    *   Green
+    *   Blue
+
+Preview:
+
+---
+
+- Red
+- Green
+- Blue
+
+---
+
+
+等价于：
+
+代码：
+
+    +   Red
+    +   Green
+    +   Blue
+
+
+或：
+
+代码：
+
+    -   Red
+    -   Green
+    -   Blue
+
+
+#### 有序列表
+
+HTML 标签: `<ol>`
+
+有序列表使用数字加英文句点：
+
+代码：
+
+    1.  Bird
+    2.  McHale
+    3.  Parish
+
+Preview:
+
+---
+
+1.  Bird
+2.  McHale
+3.  Parish
+
+---
+
+
+有时你可能会不小心触发有序列表，比如：
+
+代码：
+
+    1986. What a great season.
+
+Preview:
+
+---
+
+1986. What a great season.
+
+---
+
+
+你可以用**反斜杠（\\）**转义句点：
+
+代码：
+
+    1986\. What a great season.
+
+Preview:
+
+---
+
+1986\. What a great season.
+
+---
+
+#### Indented
+
+
+##### 列表项中的引用块
+
+要在列表项中插入引用块，> 需要缩进：
+
+代码：
+
+    *   A list item with a blockquote:
+
+        > This is a blockquote
+        > inside a list item.
+
+Preview:
+
+---
+
+- A list item with a blockquote:
+
+  > This is a blockquote
+  > inside a list item.
+
+---
+
+
+##### 列表项中的代码块
+
+要在列表项中插入代码块，需要缩进两次（**8 个空格**或**两个 Tab**）：
+
+代码：
+
+    *   A list item with a code block:
+
+            <code goes here>
+
+Preview:
+
+---
+
+- A list item with a code block:
+
+      <code goes here>
+
+---
+
+
+##### 嵌套列表
+
+代码：
+
+    * A
+      * A1
+      * A2
+    * B
+    * C
+
+Preview:
+
+---
+
+- A
+  - A1
+  - A2
+- B
+- C
+
+---
+
+
+### 代码块
+
+HTML 标签: `<pre>`
+
+代码块每行需缩进**至少 4 个空格**或**1 个 Tab**。
+
+代码：
+
+    This is a normal paragraph:
+
+        This is a code block.
+
+
+预览：
+
+---
+
+This is a normal paragraph:
+
+    This is a code block.
+
+---
+
+
+代码块会一直持续，直到遇到未缩进的行（或文档结尾）。
+
+在代码块中，**& 符号**和**尖括号（< 和 >）**会自动转为 HTML 实体。
+
+代码：
+
+        <div class="footer">
+            &copy; 2004 Foo Corporation
+        </div>
+
+Preview:
+
+---
+
+    <div class="footer">
+        &copy; 2004 Foo Corporation
+    </div>
+
+---
+
+
+下述“围栏代码块”和“语法高亮”是扩展语法，提供了另一种书写代码块的方式。
+
+#### 围栏代码块
+
+只需用 ` ``` ` 包裹代码（如下所示），无需再缩进四个空格。
+
+代码：
+
+    Here's an example:
+
+    ```
+    function test() {
+      console.log("notice the blank line before this function?");
+    }
+    ```
+
+Preview:
+
+---
+
+Here's an example:
+
+```
+function test() {
+  console.log("notice the blank line before this function?");
+}
+```
+
+---
+
+
+#### 语法高亮
+
+在围栏代码块后加上可选的语言标识，即可实现语法高亮（[支持的语言列表](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml)）。
+
+代码：
+
+    ```ruby
+    require 'redcarpet'
+    markdown = Redcarpet.new("Hello World!")
+    puts markdown.to_html
+    ```
+
+Preview:
+
+---
+
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
+
+---
+
+
+### 分割线
+
+HTML 标签: `<hr />`
+在单独一行输入**三个或以上的短横线（-）、星号（*）或下划线（_）**即可。符号间可有空格。
+
+代码：
+
+    * * *
+    ***
+    *****
+    - - -
+    ---------------------------------------
+    ___
+
+Preview:
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+
+### 表格
+
+HTML 标签: `<table>`
+
+（扩展语法）
+
+用**竖线（|）**分隔列，用**短横线（-）**分隔表头，**冒号（:）**用于对齐。
+
+外层竖线和对齐可选。每个单元格至少有 3 个分隔符。
+
+代码：
+
+```
+| Left | Center | Right |
+| :--- | :----: | ----: |
+| aaa  |  bbb   |   ccc |
+| ddd  |  eee   |   fff |
+
+ | A   | B   |
+ | --- | --- |
+ | 123 | 456 |
+
+
+| A   | B   |
+| --- | --- |
+| 12  | 45  |
+```
+
+Preview:
+
+---
+
+| Left | Center | Right |
+| :--- | :----: | ----: |
+| aaa  |  bbb   |   ccc |
+| ddd  |  eee   |   fff |
+
+| A   | B   |
+| --- | --- |
+| 123 | 456 |
+
+| A   | B   |
+| --- | --- |
+| 12  | 45  |
+
+---
+
+
+## 行内元素
+
+### 链接
+
+HTML 标签: `<a>`
+
+Markdown 支持两种链接风格：行内和引用。
+
+#### 行内链接
+
+
+行内链接格式如下：`[链接文本](URL "标题")`
+
+标题可选。
+
+代码：
+
+    This is [an example](http://example.com/ "Title") inline link.
+
+    [This link](http://example.net/) has no title attribute.
+
+Preview:
+
+---
+
+This is [an example](http://example.com/ "Title") inline link.
+
+[This link](http://example.net/) has no title attribute.
+
+---
+
+
+如果引用同一服务器上的本地资源，可以使用相对路径：
+
+代码：
+
+    See my [About](/about/) page for details.
+
+Preview:
+
+---
+
+See my [About](/about/) page for details.
+
+---
+
+
+#### 引用链接
+
+你可以预定义链接引用。格式如下：`[id]: URL "标题"`
+
+标题同样可选。引用时格式为：`[链接文本][id]`
+
+代码：
+
+    [id]: http://example.com/  "Optional Title Here"
+    This is [an example][id] reference-style link.
+
+Preview:
+
+---
+
+[id]: http://example.com/ "Optional Title Here"
+
+This is [an example][id] reference-style link.
+
+---
+
+
+即：
+
+- 方括号内为链接标识符（**不区分大小写**，可选最多缩进三格）；
+- 后跟冒号；
+- 后跟一个或多个空格（或 Tab）；
+- 后跟链接的 URL；
+- 链接 URL 可选用尖括号包裹；
+- 可选跟链接标题，标题可用双引号、单引号或括号包裹。
+
+以下三种定义等价：
+
+Code:
+
+    [foo]: http://example.com/  "Optional Title Here"
+    [foo]: http://example.com/  'Optional Title Here'
+    [foo]: http://example.com/  (Optional Title Here)
+    [foo]: <http://example.com/>  "Optional Title Here"
+
+
+使用空方括号时，链接文本本身作为标识符。
+
+代码：
+
+    [Google]: http://google.com/
+    [Google][]
+
+Preview:
+
+---
+
+[Google]: http://google.com/
+
+[Google][]
+
+---
+
+
+### 强调
+
+HTML 标签: `<em>`, `<strong>`
+
+Markdown 用**星号（*）**和**下划线（_）**表示强调。**单个符号**为 `<em>`，**双符号**为 `<strong>`。
+
+代码：
+
+    *single asterisks*
+
+    _single underscores_
+
+    **double asterisks**
+
+    __double underscores__
+
+Preview:
+
+---
+
+_single asterisks_
+
+_single underscores_
+
+**double asterisks**
+
+**double underscores**
+
+---
+
+
+但如果在 * 或 _ 两侧加空格，则会被视为普通字符。
+
+你也可以用反斜杠转义：
+
+代码：
+
+    \*this text is surrounded by literal asterisks\*
+
+Preview:
+
+---
+
+\*this text is surrounded by literal asterisks\*
+
+---
+
+
+### 行内代码
+
+HTML 标签: `<code>`
+
+用**反引号（`）**包裹。
+
+代码：
+
+    Use the `printf()` function.
+
+Preview:
+
+---
+
+Use the `printf()` function.
+
+---
+
+
+如需在代码中包含反引号，可用**多个反引号**包裹：
+
+代码：
+
+    ``There is a literal backtick (`) here.``
+
+Preview:
+
+---
+
+``There is a literal backtick (`) here.``
+
+---
+
+
+反引号包裹代码时，开头和结尾可各加一个空格，这样可在代码开头或结尾包含反引号：
+
+代码：
+
+    A single backtick in a code span: `` ` ``
+
+    A backtick-delimited string in a code span: `` `foo` ``
+
+Preview:
+
+---
+
+A single backtick in a code span: `` ` ``
+
+A backtick-delimited string in a code span: `` `foo` ``
+
+---
+
+
+### 图片
+
+HTML 标签: `<img />`
+
+Markdown 的图片语法类似于链接，支持行内和引用两种风格。
+
+#### 行内图片
+
+Inline image syntax looks like this: `![Alt text](URL "Title")`
+
+Title is optional.
+
+Code:
+
+    ![Alt text](/path/to/img.jpg)
+
+    ![Alt text](/path/to/img.jpg "Optional title")
+
+Preview:
+
+---
+
+![Alt text](https://s2.loli.net/2024/08/20/5fszgXeOxmL3Wdv.webp)
+
+![Alt text](https://s2.loli.net/2024/08/20/5fszgXeOxmL3Wdv.webp "Optional title")
+
+---
+
+
+即：
+
+- 一个感叹号 !；
+- 后跟方括号，内为图片的 alt 文本；
+- 后跟圆括号，内为图片的 URL 或路径，可选标题用引号包裹。
+
+
+#### 引用图片
+
+引用风格图片语法如下：`![Alt text][id]`
+
+代码：
+
+    [img id]: https://s2.loli.net/2024/08/20/5fszgXeOxmL3Wdv.webp  "Optional title attribute"
+    ![Alt text][img id]
+
+Preview:
+
+---
+
+[img id]: https://s2.loli.net/2024/08/20/5fszgXeOxmL3Wdv.webp "Optional title attribute"
+
+![Alt text][img id]
+
+---
+
+
+### 删除线
+
+HTML 标签: `<del>`
+
+（扩展语法）
+
+GFM 增加了删除线语法。
+
+代码：
+
+```
+~~Mistaken text.~~
+```
+
+Preview:
+
+---
+
+~~Mistaken text.~~
+
+---
+
+
+## 杂项
+
+### 自动链接
+
+Markdown 支持为 URL 和邮箱地址创建“自动”链接，只需用尖括号包裹即可。
+
+代码：
+
+    <http://example.com/>
+
+    <address@example.com>
+
+Preview:
+
+---
+
+<http://example.com/>
+
+<address@example.com>
+
+---
+
+
+GFM 会自动识别标准 URL。
+
+代码：
+
+```
+https://github.com/emn178/markdown
+```
+
+Preview:
+
+---
+
+https://github.com/emn178/markdown
+
+---
+
+
+### 反斜杠转义
+
+Markdown 允许用反斜杠转义本应有特殊含义的字符。
+
+代码：
+
+    \*literal asterisks\*
+
+Preview:
+
+---
+
+\*literal asterisks\*
+
+---
+
+
+Markdown 支持对下列字符进行反斜杠转义：
+
+代码：
+
+    \   backslash
+    `   backtick
+    *   asterisk
+    _   underscore
+    {}  curly braces
+    []  square brackets
+    ()  parentheses
+    #   hash mark
+    +   plus sign
+    -   minus sign (hyphen)
+    .   dot
+    !   exclamation mark
+
+
+## 内联 HTML
+
+对于 Markdown 未覆盖的标记，直接写 HTML 即可，无需特殊标记或分隔。
+
+代码：
+
+    This is a regular paragraph.
+
+    <table>
+        <tr>
+            <td>Foo</td>
+        </tr>
+    </table>
+
+    This is another regular paragraph.
+
+Preview:
+
+---
+
+This is a regular paragraph.
+
+<table>
+    <tr>
+        <td>Foo</td>
+    </tr>
+</table>
+
+This is another regular paragraph.
+
+---
+
+
+注意：Markdown 语法**不会在块级 HTML 标签内生效**。
+
+与块级 HTML 不同，Markdown 语法**会在行内 HTML 标签内生效**。
+
+代码：
+
+    <span>**Work**</span>
+
+    <div>
+        **No Work**
+    </div>
+
+Preview:
+
+---
+
+<span>**Work**</span>
+
+<div>
+  **No Work**
+</div>
+***
+
+---
+
+## Markdown 扩展功能
+
+- URL: http://localhost:3302/posts/markdown-extended
+- 发布时间: 2024-05-01
+- 更新时间: 2024-11-29
+- 分类: examples
+- 标签: demo, example, markdown, xinstar
+- 阅读时长: 2 分钟
+
+> 在 xinStar 中了解更多 Markdown 功能
+
+## GitHub 仓库卡片
+您可以添加链接到 GitHub 仓库的动态卡片，页面加载时，仓库信息会从 GitHub API 中提取。
+
+::github{repo="xinvxueyuan/xinvxueyuan.github.io"}
+
+使用代码 `::github{repo="xinvxueyuan/xinvxueyuan.github.io"}` 创建 GitHub 仓库卡片。
+
+```markdown
+::github{repo="xinvxueyuan/xinvxueyuan.github.io"}
+```
+
+## 提示框
+
+支持以下类型的提示框：`note` `tip` `important` `warning` `caution`
+
+:::note
+突出显示用户应该注意的信息，即使在浏览时也应该注意。
+:::
+
+:::tip
+帮助用户更成功的可选信息。
+:::
+
+:::important
+用户成功所必需的关键信息。
+:::
+
+:::warning
+由于潜在风险而需要立即引起用户注意的关键内容。
+:::
+
+:::caution
+操作的负面潜在后果。
+:::
+
+### 基本语法
+
+```markdown
+:::note
+突出显示用户应该注意的信息，即使在浏览时也应该注意。
+:::
+
+:::tip
+帮助用户更成功的可选信息。
+:::
+```
+
+### 自定义标题
+
+提示框的标题可以自定义。
+
+:::note[我的自定义标题]
+这是一个带有自定义标题的注释。
+:::
+
+```markdown
+:::note[MY CUSTOM TITLE]
+This is a note with a custom title.
+:::
+```
+
+### GitHub 语法
+
+> [!TIP]
+> 也支持 [GitHub 语法](https://github.com/orgs/community/discussions/16925)。
+
+```
+> [!NOTE]
+> 也支持 GitHub 语法。
+
+> [!TIP]
+> 也支持 GitHub 语法。
+```
+
+### 剧透
+
+您可以在文本中添加剧透。该文本也支持 **Markdown** 语法。
+
+内容 :spoiler[是隐藏的 **呀呀呀**]！
+
+```markdown
+The content :spoiler[is hidden **ayyy**]!
+```
+
+---
+
+## xinStar 简易指南
+
+- URL: http://localhost:3302/posts/guide-index
+- 发布时间: 2024-04-01
+- 分类: guides
+- 标签: blogging, customization, xinstar
+- 阅读时长: 2 分钟
+
+> 如何使用这个博客模板。
+
+这个博客模板是用 [Astro](https://astro.build/) 构建的。对于本指南中未涉及的内容，您可以在 [Astro 文档](https://docs.astro.build/) 中找到答案。
+
+## 文章前置数据
+
+```yaml
+---
+title: My First Blog Post
+published: 2023-09-09
+description: This is the first post of my new Astro blog.
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: Front-end
+draft: false
+---
+```
+
+
+
+
+| 属性          | 描述                                                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`       | 文章的标题。                                                                                                                                                 |
+| `published`   | 文章发布的日期。                                                                                                                                             |
+| `pinned`      | 这篇文章是否固定在文章列表的顶部。                                                                                                                           |
+| `priority`    | 固定文章的优先级。数值越小优先级越高（0, 1, 2...）。                                                                                                         |
+| `description` | 文章的简短描述。在首页显示。                                                                                                                                 |
+| `image`       | 文章的封面图片路径。<br/>1. 以 `http://` 或 `https://` 开头：使用网络图片<br/>2. 以 `/` 开头：用于 `public` 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 |
+| `tags`        | 文章的标签。                                                                                                                                                 |
+| `category`    | 文章的分类。                                                                                                                                                 |
+| `licenseName` | 文章内容的许可证名称。                                                                                                                                       |
+| `author`      | 文章的作者。                                                                                                                                                 |
+| `sourceLink`  | 文章内容的源链接或参考。                                                                                                                                     |
+| `draft`       | 这篇文章是否仍在草稿中，不会被显示。                                                                                                                         |
+
+## 文章文件放置位置
+
+
+
+您的文章文件应放在 `src/content/posts/` 目录中。您也可以创建子目录来更好地组织您的文章和资材。
+
+```
+src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.webp
+    └── index.md
+```
+
+---
+
+## 加密文章
+
+- URL: http://localhost:3302/posts/encrypted-post
+- 发布时间: 2024-01-15
+- 分类: technology
+- 标签: encryption, test
+- 阅读时长: 3 分钟
+
+> 这是一篇用于测试页面加密功能的文章
+
+这个博客模板是用 [Astro](https://astro.build/) 构建的。对于本指南中未涉及的内容，您可以在 [Astro 文档](https://docs.astro.build/) 中找到答案。
+
+## 文章前置数据
+
+```yaml
+---
+title: My First Blog Post
+published: 2023-09-09
+description: This is the first post of my new Astro blog.
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: Front-end
+draft: false
+---
+```
+
+
+
+
+
+| 属性           | 描述                                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`        | 文章的标题。                                                                                                                                                 |
+| `published`    | 文章发布的日期。                                                                                                                                             |
+| `pinned`       | 这篇文章是否固定在文章列表的顶部。                                                                                                                           |
+| `description`  | 文章的简短描述。在首页显示。                                                                                                                                 |
+| `image`        | 文章的封面图片路径。<br/>1. 以 `http://` 或 `https://` 开头：使用网络图片<br/>2. 以 `/` 开头：用于 `public` 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 |
+| `tags`         | 文章的标签。                                                                                                                                                 |
+| `category`     | 文章的分类。                                                                                                                                                 |
+| `alias`        | 文章的别名。文章可在 `/posts/{alias}/` 处访问。例如：`my-special-article`（将在 `/posts/my-special-article/` 处可用）                                        |
+| `licenseName`  | 文章内容的许可证名称。                                                                                                                                       |
+| `author`       | 文章的作者。                                                                                                                                                 |
+| `sourceLink`   | 文章内容的源链接或参考。                                                                                                                                     |
+| `draft`        | 这篇文章是否仍在草稿中，不会被显示。                                                                                                                         |
+| `encrypted`    | 这篇文章是否受密码保护。                                                                                                                                     |
+| `password`     | 解锁加密文章的密码。                                                                                                                                         |
+| `passwordHint` | 帮助用户记住密码的提示。显示在密码输入框下方。                                                                                                               |
+
+## 文章文件放置位置
+
+
+
+您的文章文件应放在 `src/content/posts/` 目录中。您也可以创建子目录来更好地组织您的文章和资材。
+
+```
+src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.png
+    └── index.md
+```
+
+## 文章别名
+
+您可以通过在前置数据中添加 `alias` 字段为任何文章设置别名：
+
+```yaml
+---
+title: My Special Article
+published: 2024-01-15
+alias: "my-special-article"
+tags: ["Example"]
+category: "Technology"
+---
+```
+
+设置别名时：
+- 文章将在自定义 URL 处可访问（例如，`/posts/my-special-article/`）
+- 默认的 `/posts/{slug}/` URL 仍将有效
+- RSS/Atom 订阅源将使用自定义别名
+- 所有内部链接将自动使用自定义别名
+
+**重要提示：**
+- 别名不应包含 `/posts/` 前缀（它将被自动添加）
+- 避免在别名中使用特殊字符和空格
+- 使用小写字母和连字符以获得最佳的 SEO 实践
+- 确保别名在所有文章中是唯一的
+- 不要包含前导或尾部斜杠
+
+
+## 工作原理
+
+```mermaid
+graph LR
+    A[用户密码] --> B[直接 AES 解密]
+    B --> C{检查前缀?}
+    C -- "xinStar-VERIFY:" 找到 --> D[成功：渲染内容]
+    C -- 随机/垃圾 --> E[失败：密码错误]
+```
+
+## 页面加密
+
+您可以通过在前置数据中设置 `encrypted: true` 并提供 `password` 来对任何文章进行密码保护：
+
+```yaml
+---
+title: My Private Post
+published: 2024-01-15
+encrypted: true
+password: "my-secret-password"
+passwordHint: "Hint: The password is my dog's name"
+---
+```
+
+### 字段
+
+| 字段           | 必需 | 描述                                 |
+| -------------- | ---- | ------------------------------------ |
+| `encrypted`    | 是   | 设置为 `true` 以启用密码保护         |
+| `password`     | 是   | 解锁文章的密码                       |
+| `passwordHint` | 否   | 在密码输入框下方显示的提示，帮助用户 |
+
+### 解锁框的外观
+
+解锁框显示：
+- 主题主色的锁定图标
+- 文章标题"受密码保护"
+- 要求输入密码的描述
+- 提示（如果提供了 `passwordHint`）
+- 密码输入字段和解锁按钮
+
+输入正确的密码后，内容将被解密并显示。密码存储在会话存储中，因此用户不需要在同一会话中的后续页面加载时重新输入。
+
+---
+
+## Markdown Mermaid 图表
+
+- URL: http://localhost:3302/posts/markdown-mermaid
+- 发布时间: 2023-10-01
+- 分类: examples
+- 标签: blogging, markdown, mermaid
+- 阅读时长: 4 分钟
+
+> 一个使用Mermaid的Markdown博客文章简单示例。
+
+# Markdown 与 Mermaid 图表完整指南
+
+本文演示如何在 Markdown 文档中使用 Mermaid 创建各种复杂图表，包括流程图、序列图、甘特图、类图和状态图。
+
+## 流程图示例
+
+流程图非常适合展示流程或算法步骤。
+
+
+
+
+```mermaid
+graph TD
+    A[Start] --> B{Condition Check}
+    B -->|Yes| C[Process Step 1]
+    B -->|No| D[Process Step 2]
+    C --> E[Subprocess]
+    D --> E
+    subgraph E [Subprocess Details]
+        E1[Substep 1] --> E2[Substep 2]
+        E2 --> E3[Substep 3]
+    end
+    E --> F{Another Decision}
+    F -->|Option 1| G[Result 1]
+    F -->|Option 2| H[Result 2]
+    F -->|Option 3| I[Result 3]
+    G --> J[End]
+    H --> J
+    I --> J
+```
+
+## 序列图示例
+
+序列图显示了对象在一段时间内的交互情况。
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant WebApp
+    participant Server
+    participant Database
+
+    User->>WebApp: Submit Login Request
+    WebApp->>Server: Send Auth Request
+    Server->>Database: Query User Credentials
+    Database-->>Server: Return User Data
+    Server-->>WebApp: Return Auth Result
+    
+    alt Auth Successful
+        WebApp->>User: Show Welcome Page
+        WebApp->>Server: Request User Data
+        Server->>Database: Get User Preferences
+        Database-->>Server: Return Preferences
+        Server-->>WebApp: Return User Data
+        WebApp->>User: Load Personalized Interface
+    else Auth Failed
+        WebApp->>User: Show Error Message
+        WebApp->>User: Prompt Re-entry
+    end
+```
+
+## 甘特图示例
+
+甘特图非常适合展示项目计划和时间表。
+
+```mermaid
+gantt
+    title Website Development Project Timeline
+    dateFormat  YYYY-MM-DD
+    axisFormat  %m/%d
+    
+    section Design Phase
+    Requirements Analysis      :a1, 2023-10-01, 7d
+    UI Design                 :a2, after a1, 10d
+    Prototype Creation        :a3, after a2, 5d
+    
+    section Development Phase
+    Frontend Development      :b1, 2023-10-20, 15d
+    Backend Development       :b2, after a2, 18d
+    Database Design           :b3, after a1, 12d
+    
+    section Testing Phase
+    Unit Testing              :c1, after b1, 8d
+    Integration Testing       :c2, after b2, 10d
+    User Acceptance Testing   :c3, after c2, 7d
+    
+    section Deployment
+    Production Deployment     :d1, after c3, 3d
+    Launch                    :milestone, after d1, 0d
+```
+
+## 类图示例
+
+类图展示了系统的静态结构，包括类、属性、方法及其之间的关系。
+
+```mermaid
+classDiagram
+    class User {
+        +String username
+        +String password
+        +String email
+        +Boolean active
+        +login()
+        +logout()
+        +updateProfile()
+    }
+    
+    class Article {
+        +String title
+        +String content
+        +Date publishDate
+        +Boolean published
+        +publish()
+        +edit()
+        +delete()
+    }
+    
+    class Comment {
+        +String content
+        +Date commentDate
+        +addComment()
+        +deleteComment()
+    }
+    
+    class Category {
+        +String name
+        +String description
+        +addArticle()
+        +removeArticle()
+    }
+    
+    User "1" -- "*" Article : writes
+    User "1" -- "*" Comment : posts
+    Article "1" -- "*" Comment : has
+    Article "1" -- "*" Category : belongs to
+```
+
+## 状态图示例
+
+状态图展示了对象在生命周期中所经历的状态序列。
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    
+    Draft --> UnderReview : submit
+    UnderReview --> Draft : reject
+    UnderReview --> Approved : approve
+    Approved --> Published : publish
+    Published --> Archived : archive
+    Published --> Draft : retract
+    
+    state Published {
+        [*] --> Active
+        Active --> Hidden : temporarily hide
+        Hidden --> Active : restore
+        Active --> [*]
+        Hidden --> [*]
+    }
+    
+    Archived --> [*]
+```
+
+## 饼图示例
+
+饼图适合展示比例和百分比数据。
+
+```mermaid
+pie title Website Traffic Sources Analysis
+    "Search Engines" : 45.6
+    "Direct Access" : 30.1
+    "Social Media" : 15.3
+    "Referral Links" : 6.4
+    "Other Sources" : 2.6
+```
+
+## 总结
+
+Mermaid 是一个强大的工具，用于在 Markdown 文档中创建各种类型的图表。本文演示了如何使用流程图、序列图、甘特图、类图、状态图和饼图。这些图表可以帮助您更清楚地表达复杂的概念、流程和数据结构。
+
+要使用 Mermaid，只需在代码块中指定 mermaid 语言，并使用简洁的文本语法描述图表即可。Mermaid 会自动将这些描述转换为美观的可视化图表。
+
+在您的下一篇技术博客文章或项目文档中尝试使用 Mermaid 图表——它们将使您的内容更加专业和易于理解！
+
+---
+
+## 在帖子中包含视频
+
+- URL: http://localhost:3302/posts/video
+- 发布时间: 2022-08-01
+- 分类: examples
+- 标签: example, video
+- 阅读时长: 1 分钟
+
+> 这篇文章演示了如何在博客文章中包含嵌入式视频。
+
+复制 YouTube 或 Bilibili 视频 ID，并使用允许的视频指令即可：
+
+```yaml
+---
+title: 在帖子中包含视频
+published: 2023-10-19
+// ...
+---
+
+::video{provider="youtube" id="5gIf0_xpFPI"}
+```
+## YouTube
+
+::video{provider="youtube" id="5gIf0_xpFPI"}
+
+## Bilibili
+
+::video{provider="bilibili" id="BV1fK4y1s7Qf"}
+
+---

@@ -1,6 +1,7 @@
 import {
   describeSite,
   loadDatedPosts,
+  loadPostBody,
   loadSiteProfile,
   newestStamp,
 } from "#src/components/site-content.ts";
@@ -8,6 +9,7 @@ import {
   absoluteUrl,
   siteOrigin,
   escapeXml,
+  excerptOf,
   rfc3339,
   SITE_LANGUAGE,
 } from "#src/components/site.ts";
@@ -15,13 +17,16 @@ import {
 /**
  * Atom 1.0 over the same rows as `/rss.xml`.
  *
- * Entry ids are the article's absolute URL (stable, resolvable), and `updated` falls back to the
- * publish time when an article has never been edited — both are required by RFC 4287.
+ * `<content type="text">` carries the article body, matching v2, with the summary keeping the
+ * description-or-excerpt fallback. Entry ids are the article's absolute URL (stable, resolvable),
+ * and `updated` falls back to the publish time when an article has never been edited — both are
+ * required by RFC 4287.
  */
 
 export const dynamic = "force-dynamic";
 
 const FEED_PATH = "/atom.xml";
+const FEED_ITEM_LIMIT = 20;
 
 const GET = async (): Promise<Response> => {
   const origin = await siteOrigin();
@@ -32,8 +37,17 @@ const GET = async (): Promise<Response> => {
   ]);
 
   const site = describeSite(profile);
+  const latest = posts.slice(0, FEED_ITEM_LIMIT);
 
-  const newest = newestStamp(posts);
+  const bodies = new Map(
+    await Promise.all(
+      latest.map(
+        async (post) => [post.slug, await loadPostBody(post.slug)] as const
+      )
+    )
+  );
+
+  const newest = newestStamp(latest);
 
   const lines = [
     '<?xml version="1.0" encoding="utf-8"?>',
@@ -62,9 +76,13 @@ const GET = async (): Promise<Response> => {
     )}</email></author>`
   );
 
-  for (const post of posts) {
+  for (const post of latest) {
     const link = absoluteUrl(origin, `/posts/${post.slug}`);
     const updated = post.updatedAt ?? post.publishedAt;
+    const body = bodies.get(post.slug)?.trim() ?? "";
+
+    const summary =
+      post.description ?? (body === "" ? "" : excerptOf(body, 240));
 
     lines.push(
       "  <entry>",
@@ -73,7 +91,7 @@ const GET = async (): Promise<Response> => {
       `    <id>${escapeXml(link)}</id>`,
       `    <published>${escapeXml(rfc3339(post.publishedAt))}</published>`,
       `    <updated>${escapeXml(rfc3339(updated))}</updated>`,
-      `    <summary type="text">${escapeXml(post.description ?? "")}</summary>`
+      `    <summary type="text">${escapeXml(summary)}</summary>`
     );
 
     if (post.categorySlug !== null) {
@@ -82,6 +100,10 @@ const GET = async (): Promise<Response> => {
 
     for (const tag of post.tags) {
       lines.push(`    <category term="${escapeXml(tag)}" />`);
+    }
+
+    if (body !== "") {
+      lines.push(`    <content type="text">${escapeXml(body)}</content>`);
     }
 
     lines.push("  </entry>");
