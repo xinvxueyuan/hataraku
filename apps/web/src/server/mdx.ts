@@ -6,6 +6,7 @@ import { rehypePrettyCode } from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 
+import { Sheet } from "#src/components/sheet.tsx";
 import { assertSafeMdx } from "#src/server/mdx-guard.ts";
 
 /**
@@ -31,10 +32,14 @@ import { assertSafeMdx } from "#src/server/mdx-guard.ts";
  * React belong here. A component added later must render props only and never evaluate a string, or
  * it reopens the boundary this map exists to hold.
  *
- * `src/components/sheet.tsx` is written but not listed yet: its Univer mount still throws on
- * hydration, so it stays out of the content surface until that is fixed and verified in a browser.
+ * `Sheet` is the first entry: it reads the markdown table in its body into a read-only Univer
+ * canvas, so a body can show a table without gaining a call into anything. Note that the compiler
+ * runs with expressions blocked, which strips `rows={[…]}` attribute values without a warning, so a
+ * component here takes its data from children or string attributes, never from an expression. The
+ * editor itself arrives through `next/dynamic` with `ssr: false`, which keeps the engine out of
+ * the server render and out of the first bundle.
  */
-const ALLOWED_COMPONENTS = {};
+const ALLOWED_COMPONENTS = { Sheet };
 
 /** Shiki themes that follow the light and dark token sets in the UI package. */
 const SHIKI_THEMES = {
