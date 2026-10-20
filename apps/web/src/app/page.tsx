@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { ApiStatusPill } from "#src/components/api-status-pill.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -58,6 +59,7 @@ const HomePage = async () => {
         {description === null ? null : (
           <p className="text-muted-foreground max-w-2xl">{description}</p>
         )}
+        <ApiStatusPill />
       </header>
 
       <section aria-labelledby="latest-heading" className="flex flex-col gap-4">
