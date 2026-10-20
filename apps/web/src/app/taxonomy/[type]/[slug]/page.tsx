@@ -19,8 +19,8 @@ import { serverCall } from "#src/server/query.ts";
 const PAGE_SIZE = 20;
 
 const KINDS = {
-  category: { index: "分类", label: "分类" },
-  tag: { index: "标签", label: "标签" },
+  category: { label: "分类" },
+  tag: { label: "标签" },
 } as const;
 
 type TaxonomyKind = keyof typeof KINDS;

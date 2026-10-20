@@ -35,7 +35,9 @@ page.on("console", (message) => {
 });
 
 try {
-  await page.goto(url, { waitUntil: "networkidle" });
+  // Not "networkidle": the dev server keeps a socket open, so the page never goes idle. The canvas
+  // selector and the painted-pixel poll below are the real readiness signal.
+  await page.goto(url, { waitUntil: "domcontentloaded" });
   // The node has to be attached, not visible: the preset also renders a 0x0 helper canvas, and the
   // size is the assertion below rather than a precondition here.
   await page.waitForSelector("[data-slot=sheet-canvas] canvas", {
