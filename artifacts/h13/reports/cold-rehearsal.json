@@ -1,0 +1,455 @@
+{
+  "copies": [
+    {
+      "after": 7,
+      "before": 0,
+      "source": 7,
+      "table": "categories"
+    },
+    {
+      "after": 39,
+      "before": 0,
+      "source": 39,
+      "table": "posts"
+    },
+    {
+      "after": 96,
+      "before": 0,
+      "source": 96,
+      "table": "tags"
+    },
+    {
+      "after": 122,
+      "before": 0,
+      "source": 122,
+      "table": "post_tags"
+    },
+    {
+      "after": 2,
+      "before": 0,
+      "source": 2,
+      "table": "projects"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "micro_posts"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "changelog_entries"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "tools"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "friends"
+    },
+    {
+      "after": 5,
+      "before": 0,
+      "source": 5,
+      "table": "skills"
+    },
+    {
+      "after": 1,
+      "before": 0,
+      "source": 1,
+      "table": "albums"
+    },
+    {
+      "after": 22,
+      "before": 0,
+      "source": 22,
+      "table": "album_photos"
+    },
+    {
+      "after": 2,
+      "before": 0,
+      "source": 2,
+      "table": "devices"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "diary_entries"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "source": 0,
+      "table": "timeline_entries"
+    },
+    {
+      "after": 1,
+      "before": 0,
+      "source": 1,
+      "table": "site_profile"
+    }
+  ],
+  "dryRun": false,
+  "failures": [],
+  "generatedAt": "2026-10-20T13:08:05.925Z",
+  "precision": {
+    "hits": 0,
+    "sameAsSource": true,
+    "term": "不存在的词xyz"
+  },
+  "projection": {
+    "metadataMismatches": [],
+    "missing": [],
+    "orphansRemoved": 0,
+    "sourceRows": 39,
+    "targetRows": 39,
+    "tsvMismatches": []
+  },
+  "references": [
+    {
+      "description": "post_tags.post_id -> posts.id",
+      "sourceOrphans": 0,
+      "targetOrphans": 0
+    },
+    {
+      "description": "post_tags.tag_id -> tags.id",
+      "sourceOrphans": 0,
+      "targetOrphans": 0
+    },
+    {
+      "description": "album_photos.album_id -> albums.id",
+      "sourceOrphans": 0,
+      "targetOrphans": 0
+    },
+    {
+      "description": "posts.category_id -> categories.id",
+      "sourceOrphans": 0,
+      "targetOrphans": 0
+    }
+  ],
+  "searchChecks": [
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "一步",
+      "sameAsSource": true,
+      "targetHits": [
+        "2026-07-04-claude-code-隐写标记-源码解析",
+        "2026-07-07-开源安全威胁态势报告",
+        "2026-10-17-google-ai-studio-personal-android-apps"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "年开",
+      "sameAsSource": true,
+      "targetHits": [
+        "2026-07-07-开源安全威胁态势报告"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "一封",
+      "sameAsSource": true,
+      "targetHits": [
+        "2026-07-05-claude-封禁邮件-追踪像素分析"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "深度",
+      "sameAsSource": true,
+      "targetHits": [
+        "2025-09-21-深入理解-javascript-事件循环从宏任务到微任务",
+        "2025-09-28-rust-所有权系统详解从入门到实践",
+        "2025-10-05-docker-容器化最佳实践从开发到生产",
+        "2025-10-12-typescript-高级类型体操你真的会用泛型吗",
+        "2025-10-20-linux-服务器安全加固指南15-个必做配置",
+        "2025-10-27-python-异步编程完全指南async-await-深入剖析",
+        "2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand",
+        "2025-11-09-nginx-反向代理与负载均衡实战",
+        "2025-11-16-go-语言并发编程goroutine-和-channel-深度解析",
+        "2025-11-23-css-grid-完全指南告别-flexbox-局限",
+        "2025-11-30-tailwind-css-实战技巧构建现代化-ui-的-20-个模式",
+        "2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow",
+        "2025-12-14-深入-nodejs--stream-流处理大数据的利器",
+        "2025-12-21-postgresql-性能优化实战索引查询与配置调优",
+        "2025-12-28-svelte-5-runes-深入解析新一代响应式原语",
+        "2026-01-04-webpack-到-vite-前端构建工具演进之路",
+        "2026-01-11-redis-深度实战缓存队列与分布式锁",
+        "2026-01-18-kubernetes-入门到实战-部署你的第一个微服务",
+        "2026-01-25-graphql-vs-rest-现代api设计的选择",
+        "2026-07-04-claude-code-隐写标记-源码解析",
+        "2026-07-07-开源安全威胁态势报告"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "完全",
+      "sameAsSource": true,
+      "targetHits": [
+        "2025-10-27-python-异步编程完全指南async-await-深入剖析",
+        "2025-11-23-css-grid-完全指南告别-flexbox-局限",
+        "2026-02-15-现代css动画完全指南",
+        "2026-03-29-nextjs-14-app-router完全指南",
+        "2026-07-04-claude-code-隐写标记-源码解析",
+        "2026-07-05-claude-封禁邮件-追踪像素分析",
+        "2026-07-07-开源安全威胁态势报告"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "实战",
+      "sameAsSource": true,
+      "targetHits": [
+        "2025-09-28-rust-所有权系统详解从入门到实践",
+        "2025-10-12-typescript-高级类型体操你真的会用泛型吗",
+        "2025-10-27-python-异步编程完全指南async-await-深入剖析",
+        "2025-11-09-nginx-反向代理与负载均衡实战",
+        "2025-11-23-css-grid-完全指南告别-flexbox-局限",
+        "2025-11-30-tailwind-css-实战技巧构建现代化-ui-的-20-个模式",
+        "2025-12-14-深入-nodejs--stream-流处理大数据的利器",
+        "2025-12-21-postgresql-性能优化实战索引查询与配置调优",
+        "2025-12-28-svelte-5-runes-深入解析新一代响应式原语",
+        "2026-01-11-redis-深度实战缓存队列与分布式锁",
+        "2026-01-18-kubernetes-入门到实战-部署你的第一个微服务",
+        "2026-02-08-设计模式实战-nodejs",
+        "2026-03-01-llm应用开发实战-langchain",
+        "2026-03-08-web性能优化全景指南",
+        "2026-03-15-mongodb最佳实践-schema设计",
+        "2026-03-22-cicd实战-github-actions",
+        "2026-07-07-开源安全威胁态势报告"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "最佳",
+      "sameAsSource": true,
+      "targetHits": [
+        "2025-10-05-docker-容器化最佳实践从开发到生产",
+        "2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand",
+        "2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow",
+        "2026-03-15-mongodb最佳实践-schema设计",
+        "2026-03-22-cicd实战-github-actions",
+        "encrypted-post",
+        "markdown-tutorial"
+      ]
+    },
+    {
+      "fallback": false,
+      "found": true,
+      "prefix": "性能",
+      "sameAsSource": true,
+      "targetHits": [
+        "2025-09-21-深入理解-javascript-事件循环从宏任务到微任务",
+        "2025-09-28-rust-所有权系统详解从入门到实践",
+        "2025-10-27-python-异步编程完全指南async-await-深入剖析",
+        "2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand",
+        "2025-11-09-nginx-反向代理与负载均衡实战",
+        "2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow",
+        "2025-12-21-postgresql-性能优化实战索引查询与配置调优",
+        "2026-01-11-redis-深度实战缓存队列与分布式锁",
+        "2026-01-25-graphql-vs-rest-现代api设计的选择",
+        "2026-02-15-现代css动画完全指南",
+        "2026-03-08-web性能优化全景指南",
+        "2026-03-15-mongodb最佳实践-schema设计"
+      ]
+    }
+  ],
+  "source": {
+    "database": "neondb",
+    "host": "ep-noisy-sunset-a1rwss13-pooler.ap-southeast-1.aws.neon.tech"
+  },
+  "tables": [
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 7,
+      "table": "categories",
+      "target": 7
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 39,
+      "table": "posts",
+      "target": 39
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 96,
+      "table": "tags",
+      "target": 96
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 122,
+      "table": "post_tags",
+      "target": 122
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 2,
+      "table": "projects",
+      "target": 2
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "micro_posts",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "changelog_entries",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "tools",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "friends",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 5,
+      "table": "skills",
+      "target": 5
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 1,
+      "table": "albums",
+      "target": 1
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 22,
+      "table": "album_photos",
+      "target": 22
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 2,
+      "table": "devices",
+      "target": 2
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "diary_entries",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 0,
+      "table": "timeline_entries",
+      "target": 0
+    },
+    {
+      "contentMatch": true,
+      "countsMatch": true,
+      "differing": [],
+      "extra": [],
+      "missing": [],
+      "source": 1,
+      "table": "site_profile",
+      "target": 1
+    }
+  ],
+  "target": {
+    "database": "hataraku_h13_rehearsal",
+    "host": "127.0.0.1:5432"
+  },
+  "untouched": [
+    {
+      "after": 0,
+      "before": 0,
+      "table": "login_attempts"
+    },
+    {
+      "after": 0,
+      "before": 0,
+      "table": "todos"
+    }
+  ]
+}

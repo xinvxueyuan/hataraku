@@ -1,0 +1,69 @@
+source: ep-noisy-sunset-a1rwss13-pooler.ap-southeast-1.aws.neon.tech/neondb
+target: 127.0.0.1:5432/hataraku_h13_rehearsal
+mode:   upsert on primary key
+
+--- copy ---
+categories           source=    7 target_before=    0 target_after=    7
+posts                source=   39 target_before=    0 target_after=   39
+tags                 source=   96 target_before=    0 target_after=   96
+post_tags            source=  122 target_before=    0 target_after=  122
+projects             source=    2 target_before=    0 target_after=    2
+micro_posts          source=    0 target_before=    0 target_after=    0
+changelog_entries    source=    0 target_before=    0 target_after=    0
+tools                source=    0 target_before=    0 target_after=    0
+friends              source=    0 target_before=    0 target_after=    0
+skills               source=    5 target_before=    0 target_after=    5
+albums               source=    1 target_before=    0 target_after=    1
+album_photos         source=   22 target_before=    0 target_after=   22
+devices              source=    2 target_before=    0 target_after=    2
+diary_entries        source=    0 target_before=    0 target_after=    0
+timeline_entries     source=    0 target_before=    0 target_after=    0
+site_profile         source=    1 target_before=    0 target_after=    1
+
+--- rebuild search_index from the triggers ---
+removed 0 orphaned vector row(s)
+
+--- reconcile ---
+OK   categories           rows     7/    7  content identical
+OK   posts                rows    39/   39  content identical
+OK   tags                 rows    96/   96  content identical
+OK   post_tags            rows   122/  122  content identical
+OK   projects             rows     2/    2  content identical
+OK   micro_posts          rows     0/    0  content identical
+OK   changelog_entries    rows     0/    0  content identical
+OK   tools                rows     0/    0  content identical
+OK   friends              rows     0/    0  content identical
+OK   skills               rows     5/    5  content identical
+OK   albums               rows     1/    1  content identical
+OK   album_photos         rows    22/   22  content identical
+OK   devices              rows     2/    2  content identical
+OK   diary_entries        rows     0/    0  content identical
+OK   timeline_entries     rows     0/    0  content identical
+OK   site_profile         rows     1/    1  content identical
+
+--- referential integrity ---
+OK   post_tags.post_id -> posts.id        source=    0 target=    0
+OK   post_tags.tag_id -> tags.id          source=    0 target=    0
+OK   album_photos.album_id -> albums.id   source=    0 target=    0
+OK   posts.category_id -> categories.id   source=    0 target=    0
+
+--- search_index projection ---
+vectors: source=39 target=39 tsv_mismatched=0 metadata_mismatched=0 missing=0
+
+--- Chinese retrieval on the target ---
+OK   「一步」 -> 2026-07-04-claude-code-隐写标记-源码解析, 2026-07-07-开源安全威胁态势报告, 2026-10-17-google-ai-studio-personal-android-apps
+OK   「年开」 -> 2026-07-07-开源安全威胁态势报告
+OK   「一封」 -> 2026-07-05-claude-封禁邮件-追踪像素分析
+OK   「深度」 -> 2025-09-21-深入理解-javascript-事件循环从宏任务到微任务, 2025-09-28-rust-所有权系统详解从入门到实践, 2025-10-05-docker-容器化最佳实践从开发到生产 (+18)
+OK   「完全」 -> 2025-10-27-python-异步编程完全指南async-await-深入剖析, 2025-11-23-css-grid-完全指南告别-flexbox-局限, 2026-02-15-现代css动画完全指南 (+4)
+OK   「实战」 -> 2025-09-28-rust-所有权系统详解从入门到实践, 2025-10-12-typescript-高级类型体操你真的会用泛型吗, 2025-10-27-python-异步编程完全指南async-await-深入剖析 (+14)
+OK   「最佳」 -> 2025-10-05-docker-容器化最佳实践从开发到生产, 2025-11-02-构建一个完整的-react-状态管理方案从-context-到-zustand, 2025-12-07-git-工作流最佳实践从-feature-branch-到-gitflow (+4)
+OK   「性能」 -> 2025-09-21-深入理解-javascript-事件循环从宏任务到微任务, 2025-09-28-rust-所有权系统详解从入门到实践, 2025-10-27-python-异步编程完全指南async-await-深入剖析 (+9)
+checked 8 CJK prefix(es)
+OK   precision guard: 「不存在的词xyz」 -> 0 hit(s)
+OK   untouched login_attempts   rows     0 ->     0
+OK   untouched todos            rows     0 ->     0
+
+report: artifacts/h13/reports/cold-rehearsal.json
+
+RESULT: every table reconciled and the projection verified

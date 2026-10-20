@@ -1,0 +1,13 @@
+generatedAt: 2026-10-20T21:25:11.7243538+08:00
+
+--- vp check scripts ---
+pass: All 2 files are correctly formatted (483ms, 8 threads)
+pass: Found no warnings, lint errors, or type errors in 1 file (1.2s, 8 threads)
+
+check scripts EXIT=0
+
+--- vp run knip ---
+$ knip ⊘ cache disabled
+
+
+knip EXIT=0

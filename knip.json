@@ -2,6 +2,10 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignore": ["artifacts/**"],
   "workspaces": {
+    ".": {
+      "entry": ["scripts/**/*.ts"],
+      "ignoreDependencies": ["postgres"]
+    },
     "apps/mobile": {
       "ignoreDependencies": ["expo-updates"]
     },
