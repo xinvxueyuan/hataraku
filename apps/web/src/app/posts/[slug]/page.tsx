@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { absoluteUrl, dateOnly, siteOrigin } from "#src/components/site.ts";
 import { renderMdx } from "#src/server/mdx.ts";
 import { getQueryClient, serverApi } from "#src/server/query.ts";
 
@@ -41,9 +42,43 @@ export const generateMetadata = async ({
 }: PageProps): Promise<Metadata> => {
   const { slug } = await params;
   const post = await loadPost(slug);
+  const origin = await siteOrigin();
+
+  const published =
+    post.publishedAt === null ? "" : (dateOnly(post.publishedAt) ?? "");
+
+  const card = new URLSearchParams({ title: post.title });
+
+  if (post.description !== null) {
+    card.set("description", post.description);
+  }
+
+  if (post.category !== null) {
+    card.set("category", post.category.name);
+  }
+
+  if (published !== "") {
+    card.set("date", published);
+  }
+
+  const image = absoluteUrl(origin, `/api/og?${card.toString()}`);
 
   return {
     description: post.description ?? undefined,
+    openGraph: {
+      description: post.description ?? undefined,
+      images: [
+        {
+          alt: `${post.title} 的分享图`,
+          height: 630,
+          url: image,
+          width: 1200,
+        },
+      ],
+      title: post.title,
+      type: "article",
+      url: `/posts/${post.slug}`,
+    },
     title: post.title,
   };
 };

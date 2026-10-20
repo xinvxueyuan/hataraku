@@ -5,7 +5,9 @@ import Link from "next/link";
 import { Badge } from "@hataraku/ui/components/badge";
 import { Card, CardContent } from "@hataraku/ui/components/card";
 
+import { formatDisplayDate } from "#src/components/display-date.ts";
 import { MediaImage } from "#src/components/media-image.tsx";
+import { loadAllRows } from "#src/components/site.ts";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -74,10 +76,14 @@ const PLACES = [
 ] as const;
 
 const AboutPage = async () => {
-  const [profile, taxonomy, albums] = await Promise.all([
+  const [profile, taxonomy, albums, timeline] = await Promise.all([
     loadProfile(),
     serverCall.taxonomy.overview(),
     serverCall.media.albums.list({ page: 1, pageSize: 1 }),
+    loadAllRows(
+      async (page) =>
+        await serverCall.media.timeline.list({ page, pageSize: 100 })
+    ),
   ]);
 
   const stats = [
@@ -189,6 +195,66 @@ const AboutPage = async () => {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section
+        aria-labelledby="timeline-heading"
+        className="flex flex-col gap-4"
+      >
+        <h2 className="text-xl font-semibold" id="timeline-heading">
+          时间线
+        </h2>
+        {timeline.length === 0 ? (
+          <p className="text-muted-foreground rounded-lg border border-dashed p-6">
+            时间线还没有记录。等站点走过第一个节点后，会在这里按时间排开——先去{" "}
+            <Link className={`${focusRing} underline`} href="/archive">
+              归档
+            </Link>{" "}
+            读几篇最近的文章。
+          </p>
+        ) : (
+          <ol
+            className="flex flex-col gap-5 border-l pl-6"
+            data-slot="site-timeline"
+          >
+            {timeline.map((entry) => (
+              <li className="relative flex flex-col gap-1" key={entry.id}>
+                <span
+                  aria-hidden="true"
+                  className="bg-primary absolute top-1.5 -left-[31px] size-2.5 rounded-full"
+                />
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <time
+                    className="text-muted-foreground font-mono text-xs"
+                    dateTime={entry.date ?? undefined}
+                  >
+                    {entry.date === null
+                      ? dateFormatter.format(entry.createdAt)
+                      : (formatDisplayDate(entry.date) ?? entry.date)}
+                  </time>
+                  <span className="font-medium">{entry.title}</span>
+                  {entry.highlight ? <Badge>里程碑</Badge> : null}
+                  <Badge variant="outline">{entry.category}</Badge>
+                </div>
+                {entry.description === null ? null : (
+                  <p className="text-muted-foreground text-sm">
+                    {entry.description}
+                  </p>
+                )}
+                {entry.link === null ? null : (
+                  <a
+                    className={`${focusRing} w-fit text-sm underline underline-offset-4`}
+                    href={entry.link}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {entry.link}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
 
       <section aria-labelledby="places-heading" className="flex flex-col gap-4">

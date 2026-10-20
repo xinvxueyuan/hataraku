@@ -60,6 +60,10 @@ type Device = Awaited<
   ReturnType<typeof serverCall.media.devices.list>
 >["items"][number];
 
+type Friend = Awaited<
+  ReturnType<typeof serverCall.content.friends.list>
+>[number];
+
 interface CategoryGroup<T> {
   category: string;
   items: T[];
@@ -215,14 +219,68 @@ interface PageProps {
   searchParams: Promise<{ page?: string }>;
 }
 
+const FriendCard = ({ friend }: { friend: Friend }) => {
+  const avatarSource = friend.avatarUrl ?? friend.avatarKey;
+
+  return (
+    <article className="flex h-full flex-col gap-2 rounded-xl border p-4">
+      <div className="flex items-center gap-3">
+        <span className="bg-muted relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
+          {avatarSource === null ? (
+            <span
+              aria-hidden="true"
+              className="text-muted-foreground text-sm font-semibold"
+            >
+              {friend.name.slice(0, 1)}
+            </span>
+          ) : (
+            <MediaImage
+              alt={`${friend.name} 的头像`}
+              assetKey={friend.avatarKey}
+              className="object-cover"
+              fill
+              src={friend.avatarUrl}
+            />
+          )}
+        </span>
+        <h3 className="font-medium">{friend.name}</h3>
+      </div>
+
+      {friend.description === null ? null : (
+        <p className="text-muted-foreground text-sm">{friend.description}</p>
+      )}
+
+      {friend.tags.length === 0 ? null : (
+        <ul className="flex flex-wrap gap-1">
+          {friend.tags.map((tag) => (
+            <li key={tag}>
+              <Badge variant="secondary">{tag}</Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <a
+        className={`${focusRing} mt-auto text-sm underline underline-offset-4`}
+        href={friend.url}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        访问站点
+      </a>
+    </article>
+  );
+};
+
 const ToolboxPage = async ({ searchParams }: PageProps) => {
   const { page: rawPage } = await searchParams;
   const page = readPage(rawPage);
 
-  const [tools, devices, skills] = await Promise.all([
+  const [tools, devices, skills, friends] = await Promise.all([
     serverCall.content.tools.list({ page, pageSize: TOOL_PAGE_SIZE }),
     serverCall.media.devices.list({ page: 1, pageSize: DIRECTORY_PAGE_SIZE }),
     serverCall.content.skills.list(),
+    serverCall.content.friends.list(),
   ]);
 
   const skillGroups = groupByCategory(skills);
@@ -232,8 +290,8 @@ const ToolboxPage = async ({ searchParams }: PageProps) => {
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight">工具箱</h1>
         <p className="text-muted-foreground">
-          {tools.total} 个工具 · {devices.total} 台设备 · {skills.length}{" "}
-          项技能。
+          {tools.total} 个工具 · {devices.total} 台设备 · {skills.length} 项技能
+          · {friends.length} 位朋友。
         </p>
       </header>
 
@@ -331,6 +389,37 @@ const ToolboxPage = async ({ searchParams }: PageProps) => {
               </section>
             ))}
           </div>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="friends-heading"
+        className="flex flex-col gap-4"
+      >
+        <h2 className="text-xl font-semibold" id="friends-heading">
+          友链
+        </h2>
+
+        {friends.length === 0 ? (
+          <p className="text-muted-foreground rounded-lg border border-dashed p-6">
+            还没有友链。等和更多写作者建立来往后再补上——先去{" "}
+            <Link className={`${focusRing} underline`} href="/projects">
+              项目
+            </Link>{" "}
+            或{" "}
+            <Link className={`${focusRing} underline`} href="/micro">
+              微文
+            </Link>{" "}
+            看看这个站点最近在做什么。
+          </p>
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2" data-slot="friend-list">
+            {friends.map((friend) => (
+              <li key={friend.id}>
+                <FriendCard friend={friend} />
+              </li>
+            ))}
+          </ul>
         )}
       </section>
     </div>

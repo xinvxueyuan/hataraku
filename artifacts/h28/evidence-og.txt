@@ -1,0 +1,25 @@
+H28 — /api/og 渲染与像素统计
+时间: 2026-10-21 (Asia/Shanghai)
+实例: http://localhost:3302
+
+1) 中文标题卡片（curl 落盘 artifacts/h28/og.png）
+- HTTP 200, content-type: image/png
+- PNG 签名: 89504e470d0a1a0a
+- 尺寸: 1200 × 630，文件 79,220 bytes
+- 视觉检查: 标题「夜行栈：中文标题渲染实测」、描述、分类徽章「标题」、日期、host 均正常，无豆腐块。
+
+2) 另一标题的浏览器内像素统计（Playwright + OffscreenCanvas）
+- contentType: image/png
+- width × height: 1200 × 630
+- bytes: 85,835
+- uniqueColorBuckets: 423（每通道右移 3 位后去重）
+- brightPixels (luma > 140): 22,525
+- brightRatio: 0.0298
+- meanLuma: 33.69
+- lumaStdDev: 38.39
+结论: 非空白卡片（文字像素与多色渐变都真实存在），且中文标题由仓库内字体渲染。
+
+3) 文章页联调
+- /posts/2026-10-17-google-ai-studio-personal-android-apps 的 og:image 为
+  http://localhost:3302/api/og?title=...（由 siteOrigin() 推导的绝对 URL）
+- 该 URL 返回 200 image/png，1200 × 630，86,337 bytes。

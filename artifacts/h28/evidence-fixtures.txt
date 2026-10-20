@@ -1,0 +1,17 @@
+ok - og returns 200 image/png
+ok - og payload is a PNG
+ok - og is 1200x630
+ok - og carries real bytes
+ok - og clamps hostile input without failing
+ok - found a post to check
+ok - article og:image is absolute
+ok - article og:image carries the title
+ok - article og:image resolves to a 1200x630 PNG
+ok - /about renders the timeline
+ok - /about renders a milestone
+ok - /about formats the timeline date
+ok - /toolbox renders friends
+ok - /toolbox renders a friend
+ok - /toolbox counts friends
+
+PASS http://localhost:3302 (fixtures)
