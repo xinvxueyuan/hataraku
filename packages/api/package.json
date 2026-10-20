@@ -11,6 +11,8 @@
     "./mdx-guard": "./src/mdx-guard.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
     "@hataraku/auth": "workspace:*",
     "@hataraku/db": "workspace:*",
     "@orpc/server": "catalog:",

@@ -6,7 +6,7 @@ import type { Database } from "@hataraku/db";
 import { posts } from "@hataraku/db/schema/posts";
 import type { NewPost, Post } from "@hataraku/db/schema/posts";
 
-import { assertSafeMdx, UnsafeMdxError } from "#src/mdx-guard.ts";
+import { assertStorableBody } from "#src/mdx-guard.ts";
 import { adminProcedure } from "#src/procedures.ts";
 import {
   adminPostDetailSchema,
@@ -60,27 +60,6 @@ const findPost = async (db: Database, id: string): Promise<Post> => {
   }
 
   return row;
-};
-
-/**
- * Rejects a body the renderer would refuse, at the moment the author can still fix it.
- *
- * `assertSafeMdx` is the same rule `renderMdx` applies when it reads a body back; this is the write
- * side of that boundary, not a second policy.
- */
-const guardBody = (bodyMd: string): void => {
-  try {
-    assertSafeMdx(bodyMd);
-  } catch (error) {
-    if (error instanceof UnsafeMdxError) {
-      throw new ORPCError("BAD_REQUEST", {
-        data: { reason: error.reason },
-        message: `This body cannot be saved: ${error.reason}.`,
-      });
-    }
-
-    throw error;
-  }
 };
 
 /** A readable conflict beats a raw unique-index violation. The index stays the invariant. */
@@ -140,7 +119,7 @@ export const adminPostsRouter = {
     .input(createPostInput)
     .output(adminPostDetailSchema)
     .handler(async ({ context, input }) => {
-      guardBody(input.bodyMd);
+      assertStorableBody(input.bodyMd);
       await assertSlugFree(context.db, input.slug, null);
 
       const [row] = await context.db
@@ -236,7 +215,7 @@ export const adminPostsRouter = {
       const existing = await findPost(context.db, id);
 
       if (changes.bodyMd !== undefined) {
-        guardBody(changes.bodyMd);
+        assertStorableBody(changes.bodyMd);
       }
 
       if (changes.slug !== undefined) {

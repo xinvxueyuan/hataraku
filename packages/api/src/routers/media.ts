@@ -6,7 +6,16 @@ import { albumPhotos, albums, devices } from "@hataraku/db/schema/media";
 import { diaryEntries, timelineEntries } from "@hataraku/db/schema/pages";
 
 import { paginate } from "#src/pagination.ts";
-import { publicProcedure } from "#src/procedures.ts";
+import { adminProcedure, publicProcedure } from "#src/procedures.ts";
+import {
+  ALLOWED_MIME_TYPES,
+  createPresignedUpload,
+  hasR2Config,
+  planUpload,
+  requestUploadInput,
+  UPLOAD_MAX_BYTES,
+  UPLOAD_PREFIXES,
+} from "#src/r2.ts";
 import {
   albumWithPhotosSchema,
   deviceSchema,
@@ -19,6 +28,8 @@ import {
   albumSchema,
   slugInput,
   timelineEntrySchema,
+  uploadPolicySchema,
+  uploadTicketSchema,
 } from "#src/schemas.ts";
 
 const albumsRouter = {
@@ -72,6 +83,41 @@ const albumsRouter = {
       ]);
 
       return paginate(rows, totalRow[0]?.total ?? 0, input);
+    }),
+};
+
+const uploadsRouter = {
+  /** What the form shows before a file is chosen: accepted types, the size cap, the prefixes. */
+  policy: adminProcedure.output(uploadPolicySchema).handler(() => ({
+    allowedMimeTypes: [...ALLOWED_MIME_TYPES],
+    maxBytes: UPLOAD_MAX_BYTES,
+    prefixes: [...UPLOAD_PREFIXES],
+  })),
+
+  /**
+   * Signs one PUT for one image. The browser sends the bytes straight to R2, so this answers with a
+   * short-lived URL and the object key the form stores; the R2 credentials stay on the server.
+   */
+  presign: adminProcedure
+    .input(requestUploadInput)
+    .output(uploadTicketSchema)
+    .handler(async ({ input }) => {
+      const plan = planUpload(input);
+
+      if (plan === null) {
+        throw new ORPCError("UNSUPPORTED_MEDIA_TYPE", {
+          message: `${input.contentType} is not an image this deployment accepts. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}.`,
+        });
+      }
+
+      if (!hasR2Config()) {
+        throw new ORPCError("SERVICE_UNAVAILABLE", {
+          message:
+            "Object storage is not configured on this deployment, so uploads are unavailable.",
+        });
+      }
+
+      return await createPresignedUpload(plan);
     }),
 };
 
@@ -177,4 +223,5 @@ export const mediaRouter = {
         return paginate(rows, totalRow[0]?.total ?? 0, input);
       }),
   },
+  uploads: uploadsRouter,
 };

@@ -1,7 +1,9 @@
 import { ORPCError } from "@orpc/server";
-import { and, asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
+import { z } from "zod";
 
+import type { Database } from "@hataraku/db";
 import {
   changelogEntries,
   friends,
@@ -10,25 +12,186 @@ import {
   skills,
   tools,
 } from "@hataraku/db/schema/content";
+import type {
+  ChangelogEntry,
+  MicroPost,
+  NewChangelogEntry,
+  NewMicroPost,
+  NewProject,
+  Project,
+} from "@hataraku/db/schema/content";
 
+import { assertStorableBody } from "#src/mdx-guard.ts";
 import { paginate } from "#src/pagination.ts";
-import { publicProcedure } from "#src/procedures.ts";
+import { adminProcedure, publicProcedure } from "#src/procedures.ts";
 import {
+  changelogEntryIdInput,
   changelogEntrySchema,
+  createChangelogEntryInput,
+  createMicroPostInput,
+  createProjectInput,
   friendSchema,
   listChangelogInput,
   listMicroInput,
   listProjectsInput,
   listToolsInput,
+  microPostIdInput,
   microPostSchema,
   paginatedSchema,
+  projectIdInput,
   projectSchema,
   skillSchema,
   slugInput,
   toolSchema,
+  updateChangelogEntryInput,
+  updateMicroPostInput,
+  updateProjectInput,
 } from "#src/schemas.ts";
+import { resolveSlug } from "#src/slug.ts";
+
+/* -------------------------------------------------------------------------- */
+/* Shared write-path helpers                                                   */
+/* -------------------------------------------------------------------------- */
+
+/** The stored instant for the day a form sent; `null` stays `null`. */
+const dayAtMidnight = (value: string | null): Date | null =>
+  value === null ? null : new Date(`${value}T00:00:00.000Z`);
+
+/** A readable conflict beats a raw unique-index violation. The index stays the invariant. */
+const assertSlugFree = (taken: boolean): void => {
+  if (taken) {
+    throw new ORPCError("CONFLICT", {
+      message: "That slug is already taken.",
+    });
+  }
+};
+
+const microSlugTaken = async (
+  db: Database,
+  slug: string,
+  exceptId: string | null
+): Promise<boolean> => {
+  const rows = await db
+    .select({ id: microPosts.id })
+    .from(microPosts)
+    .where(
+      exceptId === null
+        ? eq(microPosts.slug, slug)
+        : and(eq(microPosts.slug, slug), ne(microPosts.id, exceptId))
+    )
+    .limit(1);
+
+  return rows.length > 0;
+};
+
+const projectSlugTaken = async (
+  db: Database,
+  slug: string,
+  exceptId: string | null
+): Promise<boolean> => {
+  const rows = await db
+    .select({ id: projects.id })
+    .from(projects)
+    .where(
+      exceptId === null
+        ? eq(projects.slug, slug)
+        : and(eq(projects.slug, slug), ne(projects.id, exceptId))
+    )
+    .limit(1);
+
+  return rows.length > 0;
+};
+
+const changelogSlugTaken = async (
+  db: Database,
+  slug: string,
+  exceptId: string | null
+): Promise<boolean> => {
+  const rows = await db
+    .select({ id: changelogEntries.id })
+    .from(changelogEntries)
+    .where(
+      exceptId === null
+        ? eq(changelogEntries.slug, slug)
+        : and(
+            eq(changelogEntries.slug, slug),
+            ne(changelogEntries.id, exceptId)
+          )
+    )
+    .limit(1);
+
+  return rows.length > 0;
+};
+
+const findMicroPost = async (db: Database, id: string): Promise<MicroPost> => {
+  const [row] = await db
+    .select()
+    .from(microPosts)
+    .where(eq(microPosts.id, id))
+    .limit(1);
+
+  if (row === undefined) {
+    throw new ORPCError("NOT_FOUND", { message: "Micro post not found" });
+  }
+
+  return row;
+};
+
+const findProject = async (db: Database, id: string): Promise<Project> => {
+  const [row] = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, id))
+    .limit(1);
+
+  if (row === undefined) {
+    throw new ORPCError("NOT_FOUND", { message: "Project not found" });
+  }
+
+  return row;
+};
+
+const findChangelogEntry = async (
+  db: Database,
+  id: string
+): Promise<ChangelogEntry> => {
+  const [row] = await db
+    .select()
+    .from(changelogEntries)
+    .where(eq(changelogEntries.id, id))
+    .limit(1);
+
+  if (row === undefined) {
+    throw new ORPCError("NOT_FOUND", { message: "Changelog entry not found" });
+  }
+
+  return row;
+};
+
+/* -------------------------------------------------------------------------- */
+/* Routers                                                                     */
+/* -------------------------------------------------------------------------- */
 
 const projectsRouter = {
+  /** Every project, drafts included, most recently edited first. */
+  adminList: adminProcedure
+    .output(z.array(projectSchema))
+    .handler(
+      async ({ context }) =>
+        await context.db
+          .select()
+          .from(projects)
+          .orderBy(desc(projects.updatedAt))
+    ),
+
+  /** The editor's read: one project by id, body included, drafts included. */
+  byId: adminProcedure
+    .input(projectIdInput)
+    .output(projectSchema)
+    .handler(
+      async ({ context, input }) => await findProject(context.db, input.id)
+    ),
+
   bySlug: publicProcedure
     .input(slugInput)
     .output(projectSchema)
@@ -41,6 +204,45 @@ const projectsRouter = {
 
       if (!row) {
         throw new ORPCError("NOT_FOUND", { message: "Project not found" });
+      }
+
+      return row;
+    }),
+
+  create: adminProcedure
+    .input(createProjectInput)
+    .output(projectSchema)
+    .handler(async ({ context, input }) => {
+      assertStorableBody(input.bodyMd);
+
+      const slug = resolveSlug(input.slug, input.title, "project");
+
+      assertSlugFree(await projectSlugTaken(context.db, slug, null));
+
+      const [row] = await context.db
+        .insert(projects)
+        .values({
+          bodyMd: input.bodyMd,
+          coverKey: input.coverKey,
+          description: input.description,
+          featured: input.featured,
+          link: input.link,
+          published: input.published,
+          publishedAt: dayAtMidnight(input.publishedAt) ?? new Date(),
+          repo: input.repo,
+          slug,
+          sortOrder: input.sortOrder,
+          status: input.status,
+          tags: input.tags,
+          title: input.title,
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "The project was not stored.",
+        });
       }
 
       return row;
@@ -78,9 +280,121 @@ const projectsRouter = {
 
       return paginate(rows, totalRow[0]?.total ?? 0, input);
     }),
+
+  remove: adminProcedure
+    .input(projectIdInput)
+    .output(projectSchema)
+    .handler(async ({ context, input }) => {
+      await findProject(context.db, input.id);
+
+      const [row] = await context.db
+        .delete(projects)
+        .where(eq(projects.id, input.id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Project not found" });
+      }
+
+      return row;
+    }),
+
+  update: adminProcedure
+    .input(updateProjectInput)
+    .output(projectSchema)
+    .handler(async ({ context, input }) => {
+      const { id, publishedAt, slug, ...changes } = input;
+
+      const existing = await findProject(context.db, id);
+
+      if (changes.bodyMd !== undefined) {
+        assertStorableBody(changes.bodyMd);
+      }
+
+      const stored: Partial<NewProject> = { ...changes, updatedAt: new Date() };
+
+      if (publishedAt !== undefined) {
+        stored.publishedAt = dayAtMidnight(publishedAt);
+      }
+
+      if (slug !== undefined) {
+        const next = resolveSlug(
+          slug,
+          changes.title ?? existing.title,
+          "project"
+        );
+
+        assertSlugFree(await projectSlugTaken(context.db, next, id));
+        stored.slug = next;
+      }
+
+      const [row] = await context.db
+        .update(projects)
+        .set(stored)
+        .where(eq(projects.id, id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Project not found" });
+      }
+
+      return row;
+    }),
 };
 
 const microRouter = {
+  /** Every micro post, drafts included, newest first. */
+  adminList: adminProcedure
+    .output(z.array(microPostSchema))
+    .handler(
+      async ({ context }) =>
+        await context.db
+          .select()
+          .from(microPosts)
+          .orderBy(desc(microPosts.publishedAt), desc(microPosts.createdAt))
+    ),
+
+  /** The editor's read: one micro post by id, drafts included. */
+  byId: adminProcedure
+    .input(microPostIdInput)
+    .output(microPostSchema)
+    .handler(
+      async ({ context, input }) => await findMicroPost(context.db, input.id)
+    ),
+
+  create: adminProcedure
+    .input(createMicroPostInput)
+    .output(microPostSchema)
+    .handler(async ({ context, input }) => {
+      // `content` is plain text, not MDX: the renderer escapes it, so there is no body to guard.
+      const slug = resolveSlug(input.slug, input.content, "micro");
+
+      assertSlugFree(await microSlugTaken(context.db, slug, null));
+
+      const [row] = await context.db
+        .insert(microPosts)
+        .values({
+          content: input.content,
+          imageKeys: input.imageKeys,
+          published: input.published,
+          publishedAt:
+            dayAtMidnight(input.publishedAt) ??
+            (input.published ? new Date() : null),
+          slug,
+          tags: input.tags,
+          type: input.type,
+        })
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "The micro post was not stored.",
+        });
+      }
+
+      return row;
+    }),
+
   list: publicProcedure
     .input(listMicroInput)
     .output(paginatedSchema(microPostSchema))
@@ -107,11 +421,162 @@ const microRouter = {
           .where(where),
       ]);
 
-      return paginate(rows, totalRow[0]?.total ?? 0, input);
+      return paginate(rows, totalRow?.[0]?.total ?? 0, input);
+    }),
+
+  /** Publishing keeps the original moment, so a re-published note does not jump to the top. */
+  publish: adminProcedure
+    .input(microPostIdInput)
+    .output(microPostSchema)
+    .handler(async ({ context, input }) => {
+      const existing = await findMicroPost(context.db, input.id);
+
+      const [row] = await context.db
+        .update(microPosts)
+        .set({
+          published: true,
+          publishedAt: existing.publishedAt ?? new Date(),
+        })
+        .where(eq(microPosts.id, input.id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Micro post not found" });
+      }
+
+      return row;
+    }),
+
+  remove: adminProcedure
+    .input(microPostIdInput)
+    .output(microPostSchema)
+    .handler(async ({ context, input }) => {
+      await findMicroPost(context.db, input.id);
+
+      const [row] = await context.db
+        .delete(microPosts)
+        .where(eq(microPosts.id, input.id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Micro post not found" });
+      }
+
+      return row;
+    }),
+
+  unpublish: adminProcedure
+    .input(microPostIdInput)
+    .output(microPostSchema)
+    .handler(async ({ context, input }) => {
+      await findMicroPost(context.db, input.id);
+
+      const [row] = await context.db
+        .update(microPosts)
+        .set({ published: false })
+        .where(eq(microPosts.id, input.id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Micro post not found" });
+      }
+
+      return row;
+    }),
+
+  update: adminProcedure
+    .input(updateMicroPostInput)
+    .output(microPostSchema)
+    .handler(async ({ context, input }) => {
+      const { id, publishedAt, slug, ...changes } = input;
+
+      const existing = await findMicroPost(context.db, id);
+
+      const stored: Partial<NewMicroPost> = { ...changes };
+
+      if (publishedAt !== undefined) {
+        stored.publishedAt = dayAtMidnight(publishedAt);
+      }
+
+      if (slug !== undefined) {
+        const next = resolveSlug(
+          slug,
+          changes.content ?? existing.content,
+          "micro"
+        );
+
+        assertSlugFree(await microSlugTaken(context.db, next, id));
+        stored.slug = next;
+      }
+
+      const [row] = await context.db
+        .update(microPosts)
+        .set(stored)
+        .where(eq(microPosts.id, id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", { message: "Micro post not found" });
+      }
+
+      return row;
     }),
 };
 
 const changelogRouter = {
+  /** Every entry, highlights and plain releases alike, newest first. */
+  adminList: adminProcedure
+    .output(z.array(changelogEntrySchema))
+    .handler(
+      async ({ context }) =>
+        await context.db
+          .select()
+          .from(changelogEntries)
+          .orderBy(desc(changelogEntries.releasedAt))
+    ),
+
+  /** The editor's read: one entry by id, body included. */
+  byId: adminProcedure
+    .input(changelogEntryIdInput)
+    .output(changelogEntrySchema)
+    .handler(
+      async ({ context, input }) =>
+        await findChangelogEntry(context.db, input.id)
+    ),
+
+  create: adminProcedure
+    .input(createChangelogEntryInput)
+    .output(changelogEntrySchema)
+    .handler(async ({ context, input }) => {
+      assertStorableBody(input.bodyMd);
+
+      // The version is the natural fallback: `v1.2.0` becomes `v1-2-0`.
+      const slug = resolveSlug(input.slug, input.version, "changelog");
+
+      assertSlugFree(await changelogSlugTaken(context.db, slug, null));
+
+      const [row] = await context.db
+        .insert(changelogEntries)
+        .values({
+          bodyMd: input.bodyMd,
+          changes: input.changes,
+          highlight: input.highlight,
+          releasedAt: input.releasedAt,
+          slug,
+          title: input.title,
+          version: input.version,
+        })
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "The changelog entry was not stored.",
+        });
+      }
+
+      return row;
+    }),
+
   list: publicProcedure
     .input(listChangelogInput)
     .output(paginatedSchema(changelogEntrySchema))
@@ -139,6 +604,66 @@ const changelogRouter = {
       ]);
 
       return paginate(rows, totalRow[0]?.total ?? 0, input);
+    }),
+
+  remove: adminProcedure
+    .input(changelogEntryIdInput)
+    .output(changelogEntrySchema)
+    .handler(async ({ context, input }) => {
+      await findChangelogEntry(context.db, input.id);
+
+      const [row] = await context.db
+        .delete(changelogEntries)
+        .where(eq(changelogEntries.id, input.id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Changelog entry not found",
+        });
+      }
+
+      return row;
+    }),
+
+  update: adminProcedure
+    .input(updateChangelogEntryInput)
+    .output(changelogEntrySchema)
+    .handler(async ({ context, input }) => {
+      const { id, slug, ...changes } = input;
+
+      const existing = await findChangelogEntry(context.db, id);
+
+      if (changes.bodyMd !== undefined) {
+        assertStorableBody(changes.bodyMd);
+      }
+
+      const stored: Partial<NewChangelogEntry> = { ...changes };
+
+      if (slug !== undefined) {
+        const next = resolveSlug(
+          slug,
+          changes.version ?? existing.version,
+          "changelog"
+        );
+
+        assertSlugFree(await changelogSlugTaken(context.db, next, id));
+        stored.slug = next;
+      }
+
+      const [row] = await context.db
+        .update(changelogEntries)
+        .set(stored)
+        .where(eq(changelogEntries.id, id))
+        .returning();
+
+      if (row === undefined) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Changelog entry not found",
+        });
+      }
+
+      return row;
     }),
 };
 

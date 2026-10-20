@@ -1,3 +1,5 @@
+import { ORPCError } from "@orpc/server";
+
 /**
  * Policy for MDX coming from the editor.
  *
@@ -51,5 +53,25 @@ export const assertSafeMdx = (source: string): void => {
     if (pattern.test(source)) {
       throw new UnsafeMdxError(reason);
     }
+  }
+};
+
+/**
+ * The write-path form of the same rule: a body the renderer would refuse is answered as a readable
+ * `BAD_REQUEST` at the moment the author can still fix it, rather than surfacing as a 500. Every
+ * procedure that stores a body calls this one function, so the message and the rule cannot drift.
+ */
+export const assertStorableBody = (bodyMd: string): void => {
+  try {
+    assertSafeMdx(bodyMd);
+  } catch (error) {
+    if (error instanceof UnsafeMdxError) {
+      throw new ORPCError("BAD_REQUEST", {
+        data: { reason: error.reason },
+        message: `This body cannot be saved: ${error.reason}.`,
+      });
+    }
+
+    throw error;
   }
 };

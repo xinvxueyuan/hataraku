@@ -32,6 +32,10 @@ catalog:
   server-only: ^0.0.1
   tailwindcss: ^4.3.3
 
+  # storage
+  "@aws-sdk/client-s3": ^3.1153.0
+  "@aws-sdk/s3-request-presigner": ^3.1153.0
+
   # writing
   "@mdxeditor/editor": ^4.3.3
 

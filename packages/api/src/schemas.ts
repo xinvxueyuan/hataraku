@@ -368,6 +368,138 @@ export const listToolsInput = z.object({
   ...paginationFields,
 });
 
+/* content: the write path                                                 */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A slug as the form sends it. Free text on purpose: the procedure runs it through `resolveSlug`,
+ * which collapses accents, spaces and punctuation, so an empty box means "derive one" and a pasted
+ * title still stores a URL-safe slug. What lands in the column is what the pattern would accept.
+ */
+const slugSchema = z.string().trim().max(200);
+
+const tagListSchema = z.array(z.string().trim().min(1).max(40)).max(24);
+
+const imageKeyListSchema = z.array(z.string().trim().min(1).max(300)).max(12);
+
+/**
+ * A publish time the form can send: a calendar date, not an instant. The procedure stores it at
+ * midnight UTC, so the day the author picked is the day the reader sees on a date-only surface.
+ */
+const publishedDateSchema = z.iso.date().nullable();
+
+const microFields = {
+  content: z.string().trim().min(1).max(2000),
+  imageKeys: imageKeyListSchema,
+  published: z.boolean(),
+  publishedAt: publishedDateSchema,
+  slug: slugSchema,
+  tags: tagListSchema,
+  type: z.enum(["text", "code", "image", "dialogue", "music", "link"]),
+};
+
+export const microPostIdInput = z.object({ id: z.uuid() });
+
+export const createMicroPostInput = z.object({
+  ...microFields,
+  imageKeys: microFields.imageKeys.default([]),
+  published: microFields.published.default(true),
+  publishedAt: microFields.publishedAt.default(null),
+  slug: microFields.slug.optional(),
+  tags: microFields.tags.default([]),
+  type: microFields.type.default("text"),
+});
+
+export const updateMicroPostInput = z
+  .object(microFields)
+  .partial()
+  .extend(microPostIdInput.shape);
+
+const projectFields = {
+  bodyMd: z.string().max(200_000),
+  coverKey: z.string().trim().max(300).nullable(),
+  description: z.string().trim().max(999).nullable(),
+  featured: z.boolean(),
+  link: z.url().nullable(),
+  published: z.boolean(),
+  publishedAt: publishedDateSchema,
+  repo: z.url().nullable(),
+  slug: slugSchema,
+  sortOrder: z.int().min(0).max(10_000),
+  status: z.enum(["active", "wip", "planned", "archived"]),
+  tags: tagListSchema,
+  title: z.string().trim().min(1).max(200),
+};
+
+export const projectIdInput = z.object({ id: z.uuid() });
+
+export const createProjectInput = z.object({
+  ...projectFields,
+  bodyMd: projectFields.bodyMd.default(""),
+  coverKey: projectFields.coverKey.default(null),
+  description: projectFields.description.default(null),
+  featured: projectFields.featured.default(false),
+  link: projectFields.link.default(null),
+  published: projectFields.published.default(true),
+  publishedAt: projectFields.publishedAt.default(null),
+  repo: projectFields.repo.default(null),
+  slug: projectFields.slug.optional(),
+  sortOrder: projectFields.sortOrder.default(0),
+  status: projectFields.status.default("active"),
+  tags: projectFields.tags.default([]),
+});
+
+export const updateProjectInput = z
+  .object(projectFields)
+  .partial()
+  .extend(projectIdInput.shape);
+
+const changelogFields = {
+  bodyMd: z.string().max(200_000),
+  changes: tagListSchema,
+  highlight: z.boolean(),
+  releasedAt: z.iso.date().nullable(),
+  slug: slugSchema,
+  title: z.string().trim().max(200).nullable(),
+  version: z.string().trim().min(1).max(40),
+};
+
+export const changelogEntryIdInput = z.object({ id: z.uuid() });
+
+export const createChangelogEntryInput = z.object({
+  ...changelogFields,
+  bodyMd: changelogFields.bodyMd.default(""),
+  changes: changelogFields.changes.default([]),
+  highlight: changelogFields.highlight.default(false),
+  releasedAt: changelogFields.releasedAt.default(null),
+  slug: changelogFields.slug.optional(),
+  title: changelogFields.title.default(null),
+});
+
+export const updateChangelogEntryInput = z
+  .object(changelogFields)
+  .partial()
+  .extend(changelogEntryIdInput.shape);
+
+/* -------------------------------------------------------------------------- */
+/* uploads                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export const uploadTicketSchema = z.object({
+  contentType: z.string(),
+  expiresIn: z.int(),
+  key: z.string(),
+  maxBytes: z.int(),
+  publicUrl: z.string(),
+  uploadUrl: z.string(),
+});
+
+export const uploadPolicySchema = z.object({
+  allowedMimeTypes: z.array(z.string()),
+  maxBytes: z.int(),
+  prefixes: z.array(z.string()),
+});
+
 /* -------------------------------------------------------------------------- */
 /* media                                                                       */
 /* -------------------------------------------------------------------------- */
