@@ -14,11 +14,10 @@ const PATH = "/settings/admin";
  * while writing (how much is still a draft).
  *
  * The counts come from the same procedures the lists use, so an entry can never disagree with the
- * page it opens. The login allowlist has no `/settings/admin` entry yet, so the redirect value stays
- * on the posts list — the closest page the login page will return to.
+ * page it opens.
  */
 const AdminIndexPage = async () => {
-  await requireSession("/settings/admin/posts");
+  await requireSession(PATH);
 
   let forbidden = false;
 
