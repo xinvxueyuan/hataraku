@@ -32,6 +32,10 @@ catalog:
   server-only: ^0.0.1
   tailwindcss: ^4.3.3
 
+  # sheet (read-only Univer embed)
+  "@univerjs/preset-sheets-core": 1.1.0
+  "@univerjs/presets": 1.1.0
+
   # ui
   "@base-ui/react": ^1.9.0
   "@fontsource-variable/geist": ^5.3.0
