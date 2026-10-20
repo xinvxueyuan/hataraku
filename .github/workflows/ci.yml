@@ -61,7 +61,12 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        # `minimumReleaseAge` (24 h, in pnpm-workspace.yaml) guards *resolution*: it stops a fresh
+        # release from being picked up the moment it is published. CI installs the versions the
+        # committed lockfile already pins, so re-applying the cut-off here only rejects a reviewed
+        # lockfile whenever one of its dependencies happened to publish in the last day. The policy
+        # stays on locally, where new versions are actually chosen.
+        run: pnpm install --frozen-lockfile --config.minimumReleaseAge=0
 
       - name: Install the end-to-end browser
         run: pnpm --filter @hataraku/web exec e2e-web install chromium
