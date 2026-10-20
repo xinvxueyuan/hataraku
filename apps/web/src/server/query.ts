@@ -22,6 +22,15 @@ const serverClient: AppRouterClient = createORPCClient(
   })
 );
 
+/**
+ * The typed client itself, for server components that render data and hydrate nothing.
+ *
+ * `serverApi` exists for the prefetch-then-hydrate path: a client component reads the same query
+ * from the cache. A page that only prints data on the server does not need that machinery, and
+ * calling the procedure directly says so.
+ */
+export const serverCall = serverClient;
+
 export const serverApi = createTanstackQueryUtils(serverClient);
 
 export const getQueryClient = cache(() => new QueryClient());
