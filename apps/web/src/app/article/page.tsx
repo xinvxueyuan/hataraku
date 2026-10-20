@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -102,33 +103,42 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
         <ul className="flex flex-col gap-4" data-slot="article-list">
           {result.items.map((post) => (
             <li key={post.id}>
-              <article className="flex flex-col gap-1">
-                <Link
-                  className="text-lg font-medium hover:underline"
-                  href={`/posts/${post.slug}`}
-                >
-                  {post.title}
-                </Link>
-                {post.description === null ? null : (
-                  <p className="text-muted-foreground text-sm">
-                    {post.description}
-                  </p>
-                )}
-                <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-xs">
-                  {post.publishedAt === null ? null : (
-                    <time dateTime={post.publishedAt.toISOString()}>
-                      {dateFormatter.format(post.publishedAt)}
-                    </time>
+              <article className="flex gap-4">
+                <PostCover
+                  className="w-28 shrink-0 sm:w-40"
+                  coverKey={post.coverKey}
+                  coverSrc={post.cover?.src ?? null}
+                  sizes="(min-width: 640px) 160px, 112px"
+                  title={post.title}
+                />
+                <div className="flex min-w-0 flex-col gap-1">
+                  <Link
+                    className="text-lg font-medium hover:underline"
+                    href={`/posts/${post.slug}`}
+                  >
+                    {post.title}
+                  </Link>
+                  {post.description === null ? null : (
+                    <p className="text-muted-foreground text-sm">
+                      {post.description}
+                    </p>
                   )}
-                  {post.tags.map((slug) => (
-                    <a
-                      className="hover:underline"
-                      href={listHref({ tag: slug })}
-                      key={slug}
-                    >
-                      #{slug}
-                    </a>
-                  ))}
+                  <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-xs">
+                    {post.publishedAt === null ? null : (
+                      <time dateTime={post.publishedAt.toISOString()}>
+                        {dateFormatter.format(post.publishedAt)}
+                      </time>
+                    )}
+                    {post.tags.map((slug) => (
+                      <a
+                        className="hover:underline"
+                        href={listHref({ tag: slug })}
+                        key={slug}
+                      >
+                        #{slug}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </article>
             </li>

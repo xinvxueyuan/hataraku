@@ -1,0 +1,27 @@
+H30 — 前台文章封面渲染与站点默认 OG 卡（真机证据）
+时间: 2026-10-21 (Asia/Shanghai)
+实例: http://localhost:3302（R2_PUBLIC_BASE_URL 由环境注入，未写死）
+夹具: h30-cover-post（cover_key=albums/acg-example/1.webp）、h30-no-cover-post（cover_key=NULL）
+
+== 列表缩略图（160×90，16:9） ==
+页面                  | 有封面 | img.naturalWidth | 无封面 | 无封面 frame | 有封面 frame
+/                     | 是     | 1920             | 无 img | 160×90       | 160×90
+/article              | 是     | 1920             | 无 img | 160×90       | 160×90
+/taxonomy/category/frontend | 是 | 1920             | 无 img | 160×90       | 160×90
+
+说明：有封面卡片的 <img> complete=true、naturalWidth=1920、alt=「H30 有封面的文章」；
+无封面卡片没有 <img>（不会出现破图），占位块与有封面块的宽高完全一致，行高一致。
+
+== 详情页顶图（2:1） ==
+/posts/h30-cover-post     → frame 592×296，img naturalWidth=1920
+/posts/h30-no-cover-post  → frame 592×296，无 <img>，显示首字占位（标题 «H30 无封面的文章» → «H»）
+
+== 站点默认 OG（layout 级） ==
+- /        og:image = /api/og?description=<tagline>&title=<站点名> → 200 image/png，1200×630，73,379 bytes
+- /about   og:image 与首页完全相同（页面未自建 openGraph，继承 layout 默认）
+- /posts/<slug> og:image 带该文章 title/description/category/date，与站点默认不同（页面级覆盖生效）
+
+== 说明：sizes ==
+MediaImage 透传 sizes=(min-width:640px) 160px,112px（详情页为 768px/100vw）。由于对象在 CDN 且未列
+images.remotePatterns，MediaImage 固定使用 unoptimized——Next 不为未优化图片生成 srcset，因此 DOM 上没有
+sizes 属性；尺寸提示交给未来启用优化时使用。当前 CLS 由固定 aspect 容器保证（列表 16:9、详情 2:1）。

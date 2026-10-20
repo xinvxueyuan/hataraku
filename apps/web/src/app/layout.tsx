@@ -7,6 +7,7 @@ import { Providers } from "#src/components/providers.tsx";
 import { loadSiteIdentity } from "#src/components/site-content.ts";
 import { SiteFooter } from "#src/components/site-footer.tsx";
 import {
+  absoluteUrl,
   SITE_LOCALE,
   SITE_OG_LOCALE,
   siteOrigin,
@@ -28,6 +29,13 @@ import {
 export const generateMetadata = async (): Promise<Metadata> => {
   const [origin, site] = await Promise.all([siteOrigin(), loadSiteIdentity()]);
 
+  const card = new URLSearchParams({
+    description: site.tagline ?? site.description,
+    title: site.title,
+  });
+
+  const image = absoluteUrl(origin, `/api/og?${card.toString()}`);
+
   return {
     alternates: {
       canonical: "./",
@@ -42,6 +50,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
     metadataBase: new URL(origin),
     openGraph: {
       description: site.description,
+      images: [{ alt: site.title, height: 630, url: image, width: 1200 }],
       locale: SITE_OG_LOCALE,
       siteName: site.title,
       title: site.title,
@@ -51,8 +60,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
     robots: { follow: true, index: true },
     title: { default: site.title, template: `%s · ${site.name}` },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       description: site.description,
+      images: [image],
       title: site.title,
     },
   };

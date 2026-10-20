@@ -6,6 +6,7 @@ import { cache } from "react";
 import { Badge } from "@hataraku/ui/components/badge";
 
 import { Pager } from "#src/components/pager.tsx";
+import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -232,41 +233,50 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
         <ul className="flex flex-col gap-5" data-slot="taxonomy-posts">
           {posts.items.map((post) => (
             <li key={post.id}>
-              <article className="flex flex-col gap-1">
-                <h2 className="text-lg leading-snug font-medium">
-                  <Link
-                    className={`${focusRing} hover:underline`}
-                    href={`/posts/${post.slug}`}
-                  >
-                    {post.title}
-                  </Link>
-                </h2>
-                {post.description === null ? null : (
-                  <p className="text-muted-foreground text-sm">
-                    {post.description}
-                  </p>
-                )}
-                <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                  {post.publishedAt === null ? null : (
-                    <time dateTime={post.publishedAt.toISOString()}>
-                      {dateFormatter.format(post.publishedAt)}
-                    </time>
-                  )}
-                  {post.categorySlug === null ? null : (
-                    <Badge variant="secondary">{post.categorySlug}</Badge>
-                  )}
-                  {post.tags.map((tag) => (
+              <article className="flex gap-4">
+                <PostCover
+                  className="w-28 shrink-0 sm:w-40"
+                  coverKey={post.coverKey}
+                  coverSrc={post.cover?.src ?? null}
+                  sizes="(min-width: 640px) 160px, 112px"
+                  title={post.title}
+                />
+                <div className="flex min-w-0 flex-col gap-1">
+                  <h2 className="text-lg leading-snug font-medium">
                     <Link
                       className={`${focusRing} hover:underline`}
-                      href={`/taxonomy/tag/${tag}`}
-                      key={tag}
+                      href={`/posts/${post.slug}`}
                     >
-                      #{tag}
+                      {post.title}
                     </Link>
-                  ))}
-                  {post.readingMinutes === null ? null : (
-                    <span>{post.readingMinutes} 分钟</span>
+                  </h2>
+                  {post.description === null ? null : (
+                    <p className="text-muted-foreground text-sm">
+                      {post.description}
+                    </p>
                   )}
+                  <div className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                    {post.publishedAt === null ? null : (
+                      <time dateTime={post.publishedAt.toISOString()}>
+                        {dateFormatter.format(post.publishedAt)}
+                      </time>
+                    )}
+                    {post.categorySlug === null ? null : (
+                      <Badge variant="secondary">{post.categorySlug}</Badge>
+                    )}
+                    {post.tags.map((tag) => (
+                      <Link
+                        className={`${focusRing} hover:underline`}
+                        href={`/taxonomy/tag/${tag}`}
+                        key={tag}
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                    {post.readingMinutes === null ? null : (
+                      <span>{post.readingMinutes} 分钟</span>
+                    )}
+                  </div>
                 </div>
               </article>
             </li>

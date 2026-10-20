@@ -1,0 +1,5 @@
+BEGIN;
+
+DELETE FROM posts WHERE slug LIKE 'h30-%';
+
+COMMIT;

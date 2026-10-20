@@ -19,6 +19,8 @@ interface MediaImageProps {
   /** Stretch to a `relative` parent's box. */
   fill?: boolean;
   height?: number | null;
+  /** Responsive width hint for the `fill` branch; pass the real rendered width from the caller. */
+  sizes?: string;
   src?: string | null;
   width?: number | null;
 }
@@ -29,6 +31,7 @@ export const MediaImage = ({
   className,
   fill = false,
   height,
+  sizes = "(min-width: 1024px) 50vw, 100vw",
   src,
   width,
 }: MediaImageProps) => {
@@ -64,7 +67,7 @@ export const MediaImage = ({
       alt={alt}
       className={className}
       fill
-      sizes="(min-width: 1024px) 50vw, 100vw"
+      sizes={sizes}
       src={url}
       unoptimized
     />

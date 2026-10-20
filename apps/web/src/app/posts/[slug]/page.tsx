@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { PostCover } from "#src/components/post-cover.tsx";
 import { absoluteUrl, dateOnly, siteOrigin } from "#src/components/site.ts";
 import { renderMdx } from "#src/server/mdx.ts";
 import { getQueryClient, serverApi } from "#src/server/query.ts";
@@ -90,6 +91,14 @@ const PostPage = async ({ params }: PageProps) => {
 
   return (
     <article className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
+      <PostCover
+        aspectClassName="aspect-[2/1]"
+        coverKey={post.coverKey}
+        coverSrc={post.cover?.src ?? null}
+        sizes="(min-width: 768px) 768px, 100vw"
+        title={post.title}
+      />
+
       <header className="flex flex-col gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">{post.title}</h1>
         {post.description === null ? null : (

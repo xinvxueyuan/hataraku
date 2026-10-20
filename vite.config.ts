@@ -75,6 +75,12 @@ export default defineConfig({
         rules: { "node/callback-return": "off" },
       },
       {
+        // satori (next/og) only understands inline style objects; it does not load the app's
+        // Tailwind CSS, so the rule that pushes classes cannot apply to an OG card.
+        files: ["apps/web/src/app/api/og/**"],
+        rules: { "shadcn/no-inline-styles": "off" },
+      },
+      {
         files: ["apps/mobile/**"],
         rules: {
           "react/style-prop-object": ["error", { allow: ["StatusBar"] }],

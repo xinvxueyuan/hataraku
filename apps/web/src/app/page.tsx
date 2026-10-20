@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ApiStatusPill } from "#src/components/api-status-pill.tsx";
+import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -84,23 +85,32 @@ const HomePage = async () => {
             {latest.items.map((post) => (
               <li key={post.id}>
                 <Link
-                  className="hover:bg-accent flex flex-col gap-1 rounded-lg border p-4 transition-colors"
+                  className="hover:bg-accent flex gap-4 rounded-lg border p-4 transition-colors"
                   href={`/posts/${post.slug}`}
                 >
-                  <span className="font-medium">{post.title}</span>
-                  {post.description === null ? null : (
-                    <span className="text-muted-foreground text-sm">
-                      {post.description}
-                    </span>
-                  )}
-                  {post.publishedAt === null ? null : (
-                    <time
-                      className="text-muted-foreground text-xs"
-                      dateTime={post.publishedAt.toISOString()}
-                    >
-                      {dateFormatter.format(post.publishedAt)}
-                    </time>
-                  )}
+                  <PostCover
+                    className="w-28 shrink-0 sm:w-40"
+                    coverKey={post.coverKey}
+                    coverSrc={post.cover?.src ?? null}
+                    sizes="(min-width: 640px) 160px, 112px"
+                    title={post.title}
+                  />
+                  <span className="flex min-w-0 flex-col gap-1">
+                    <span className="font-medium">{post.title}</span>
+                    {post.description === null ? null : (
+                      <span className="text-muted-foreground text-sm">
+                        {post.description}
+                      </span>
+                    )}
+                    {post.publishedAt === null ? null : (
+                      <time
+                        className="text-muted-foreground text-xs"
+                        dateTime={post.publishedAt.toISOString()}
+                      >
+                        {dateFormatter.format(post.publishedAt)}
+                      </time>
+                    )}
+                  </span>
                 </Link>
               </li>
             ))}
