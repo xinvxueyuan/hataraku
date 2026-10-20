@@ -1,6 +1,9 @@
+import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vite-plus/test";
 
-import { createClient, signUp } from "../support/api.ts";
+import { postTags } from "@hataraku/db/schema/taxonomy";
+
+import { createClient, db, signUp } from "../support/api.ts";
 
 const anonymous = createClient();
 
@@ -167,5 +170,215 @@ describe("posts write path", () => {
     await expect(
       owner.posts.byId({ id: crypto.randomUUID() })
     ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+});
+
+/**
+ * Filing fields for one post: a category and two tags that exist nowhere yet, so the test proves the
+ * write path creates them rather than only linking to what the migration left behind.
+ */
+const filed = () => {
+  const suffix = crypto.randomUUID().slice(0, 8);
+
+  const firstTag = `tag-a-${suffix}`;
+  const secondTag = `tag-b-${suffix}`;
+
+  return {
+    categorySlug: `cat-${suffix}`,
+    coverKey: `posts/${suffix}/cover.webp`,
+    firstTag,
+    post: {
+      bodyMd: "## 归档\n\n正文。\n",
+      slug: `filed-${suffix}`,
+      title: "Filed post",
+    },
+    secondTag,
+    tagSlugs: [firstTag, secondTag],
+  };
+};
+
+describe("posts filing: category, tags, cover, featured, publish day", () => {
+  it("stores every filed field on create", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    const created = await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      coverKey: filing.coverKey,
+      featured: true,
+      publishedAt: "2026-09-01",
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    expect(created).toMatchObject({
+      categorySlug: filing.categorySlug,
+      coverKey: filing.coverKey,
+      featured: true,
+      tagSlugs: filing.tagSlugs.toSorted(),
+    });
+    expect(created.publishedAt?.toISOString()).toBe("2026-09-01T00:00:00.000Z");
+  });
+
+  it("makes the post reachable from its category and from each tag", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    const byCategory = await anonymous.posts.list({
+      categorySlug: filing.categorySlug,
+      page: 1,
+      pageSize: 50,
+    });
+
+    expect(byCategory.items.map((row) => row.slug)).toContain(filing.post.slug);
+
+    const byTag = await anonymous.posts.list({
+      page: 1,
+      pageSize: 50,
+      tagSlugs: [filing.secondTag],
+    });
+
+    expect(byTag.items.map((row) => row.slug)).toContain(filing.post.slug);
+  });
+
+  it("counts the new category and tags in the taxonomy overview", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    const overview = await anonymous.taxonomy.overview();
+
+    expect(
+      overview.categories.find((row) => row.slug === filing.categorySlug)
+        ?.postCount
+    ).toBe(1);
+    expect(
+      overview.tags.find((row) => row.slug === filing.firstTag)?.postCount
+    ).toBe(1);
+  });
+
+  it("names a new category after its slug", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      status: "published",
+    });
+
+    const categories = await anonymous.taxonomy.categories();
+
+    expect(
+      categories.find((row) => row.slug === filing.categorySlug)?.name
+    ).toBe(filing.categorySlug);
+  });
+
+  it("applies only the tag difference, and the same list twice is a no-op", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    const created = await owner.posts.create({
+      ...filing.post,
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    await owner.posts.update({ id: created.id, tagSlugs: [filing.secondTag] });
+    await owner.posts.update({ id: created.id, tagSlugs: [filing.secondTag] });
+
+    const reread = await owner.posts.byId({ id: created.id });
+
+    expect(reread.tagSlugs).toStrictEqual([filing.secondTag]);
+
+    const dropped = await anonymous.posts.list({
+      page: 1,
+      pageSize: 50,
+      tagSlugs: [filing.firstTag],
+    });
+
+    expect(dropped.items.map((row) => row.slug)).not.toContain(
+      filing.post.slug
+    );
+  });
+
+  it("keeps the stored filing when an update omits it", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    const created = await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      coverKey: filing.coverKey,
+      featured: true,
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    const updated = await owner.posts.update({
+      bodyMd: "## 新正文\n",
+      id: created.id,
+    });
+
+    expect(updated).toMatchObject({
+      categorySlug: filing.categorySlug,
+      coverKey: filing.coverKey,
+      featured: true,
+      tagSlugs: filing.tagSlugs.toSorted(),
+    });
+  });
+
+  it("clears the category and the cover when they are set to null", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    const created = await owner.posts.create({
+      ...filing.post,
+      categorySlug: filing.categorySlug,
+      coverKey: filing.coverKey,
+      status: "published",
+    });
+
+    const cleared = await owner.posts.update({
+      categorySlug: null,
+      coverKey: null,
+      id: created.id,
+    });
+
+    expect(cleared).toMatchObject({ categorySlug: null, coverKey: null });
+  });
+
+  it("deletes the tag links together with the post", async () => {
+    const owner = await signUp();
+    const filing = filed();
+
+    const created = await owner.posts.create({
+      ...filing.post,
+      status: "published",
+      tagSlugs: filing.tagSlugs,
+    });
+
+    await owner.posts.remove({ id: created.id });
+
+    const orphans = await db
+      .select()
+      .from(postTags)
+      .where(eq(postTags.postId, created.id));
+
+    expect(orphans).toHaveLength(0);
   });
 });

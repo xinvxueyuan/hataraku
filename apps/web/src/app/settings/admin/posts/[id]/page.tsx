@@ -32,7 +32,8 @@ const shell = (children: ReactNode) => (
  *
  * `/settings/admin/posts/new` opens an empty form; every other id loads that post, drafts included.
  * A post that does not exist is a 404, and an account outside the allowlist gets the API's FORBIDDEN
- * rendered as a 403 page.
+ * rendered as a 403 page. The category list is public taxonomy, so the form can offer it before it
+ * knows whether the caller may write.
  */
 const AdminPostPage = async ({
   params,
@@ -41,11 +42,13 @@ const AdminPostPage = async ({
 
   await requireSession("/settings/admin/posts");
 
+  const categories = await serverCall.taxonomy.categories();
+
   if (id === "new") {
     return shell(
       <>
         <h1 className="text-3xl font-semibold tracking-tight">新建文章</h1>
-        <PostEditor post={null} />
+        <PostEditor categories={categories} post={null} />
       </>
     );
   }
@@ -72,7 +75,7 @@ const AdminPostPage = async ({
   return shell(
     <>
       <h1 className="text-3xl font-semibold tracking-tight">编辑文章</h1>
-      <PostEditor post={post} />
+      <PostEditor categories={categories} post={post} />
     </>
   );
 };

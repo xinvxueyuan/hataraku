@@ -11,7 +11,17 @@ import { Label } from "@hataraku/ui/components/label";
 import { assetUrl } from "#src/components/asset-url.ts";
 import { api } from "#src/lib/api.ts";
 
-type UploadPrefix = "micro" | "projects";
+type PresignOptions = ReturnType<
+  typeof api.media.uploads.presign.mutationOptions
+>;
+
+/**
+ * The prefixes the API accepts, read out of the client's own contract rather than retyped here: the
+ * uploader cannot offer a prefix the procedure would reject.
+ */
+type UploadPrefix = NonNullable<
+  Parameters<NonNullable<PresignOptions["mutationFn"]>>[0]
+>["prefix"];
 
 interface UploadTicket {
   contentType: string;

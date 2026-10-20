@@ -58,6 +58,20 @@ const navMetaSchema = z.object({
   cta: z.object({ href: z.string(), label: z.string() }).optional(),
 });
 
+/**
+ * A date the editor sends for "went live": a calendar day, not an instant. The procedures store it at
+ * midnight UTC, so the day the author picked is the day a reader sees on a date-only surface.
+ */
+const publishedDateSchema = z.iso.date().nullable();
+
+/** A taxonomy slug from the form: trimmed, lowercased, whitespace collapsed to single dashes. */
+const taxonomySlugSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(80)
+  .transform((value) => value.toLowerCase().replaceAll(/\s+/gu, "-"));
+
 /* -------------------------------------------------------------------------- */
 /* posts                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -138,7 +152,11 @@ export const adminPostSummarySchema = z.object({
 
 export const adminPostDetailSchema = adminPostSummarySchema.extend({
   bodyMd: z.string(),
+  categorySlug: z.string().nullable(),
+  coverKey: z.string().nullable(),
   description: z.string().nullable(),
+  featured: z.boolean(),
+  tagSlugs: z.array(z.string()),
 });
 
 export const postIdInput = z.object({ id: z.uuid() });
@@ -154,20 +172,37 @@ const postSlug = z
     "Use lowercase letters, digits and single dashes"
   );
 
-/** The editable fields, without defaults: a default on an omitted field would overwrite it. */
+/**
+ * The editable fields, without defaults: a default on an omitted field would overwrite it.
+ *
+ * The taxonomy travels as slugs, not ids, because that is what a URL addresses and what an author
+ * types; the procedure resolves (and, for a new one, creates) the row behind the slug.
+ */
 const postFields = {
   bodyMd: z.string(),
+  /** Read only when `categorySlug` names a category that does not exist yet. */
+  categoryName: z.string().trim().min(1).max(80).optional(),
+  categorySlug: taxonomySlugSchema.nullable(),
+  coverKey: z.string().trim().max(300).nullable(),
   description: z.string().max(999).nullable(),
+  featured: z.boolean(),
+  publishedAt: publishedDateSchema,
   slug: postSlug,
   status: postStatusSchema,
+  tagSlugs: z.array(taxonomySlugSchema).max(24),
   title: z.string().trim().min(1).max(200),
 };
 
 export const createPostInput = z.object({
   ...postFields,
   bodyMd: postFields.bodyMd.default(""),
+  categorySlug: postFields.categorySlug.default(null),
+  coverKey: postFields.coverKey.default(null),
   description: postFields.description.default(null),
+  featured: postFields.featured.default(false),
+  publishedAt: postFields.publishedAt.default(null),
   status: postFields.status.default("draft"),
+  tagSlugs: postFields.tagSlugs.default([]),
 });
 
 /** Every field but the id is optional, and an omitted field is left as stored. */
@@ -381,12 +416,6 @@ const slugSchema = z.string().trim().max(200);
 const tagListSchema = z.array(z.string().trim().min(1).max(40)).max(24);
 
 const imageKeyListSchema = z.array(z.string().trim().min(1).max(300)).max(12);
-
-/**
- * A publish time the form can send: a calendar date, not an instant. The procedure stores it at
- * midnight UTC, so the day the author picked is the day the reader sees on a date-only surface.
- */
-const publishedDateSchema = z.iso.date().nullable();
 
 const microFields = {
   content: z.string().trim().min(1).max(2000),
