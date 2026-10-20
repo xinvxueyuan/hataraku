@@ -69,6 +69,13 @@ export default defineConfig({
           "shadcn/no-restyle": "off",
         },
       },
+      {
+        // Better Auth documents its lifecycle hooks as Promise-returning functions whose bodies
+        // often await nothing (databaseHooks.user.create.before only validates the incoming user).
+        // The library's signature is the idiom here, so `async` stays and require-await steps aside.
+        files: ["packages/auth/src/index.ts"],
+        rules: { "require-await": "off" },
+      },
     ],
     rules: {
       "vite-plus/prefer-vite-plus-imports": "error",
