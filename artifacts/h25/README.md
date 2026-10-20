@@ -38,7 +38,7 @@ Get-Content -Raw artifacts/h25/cleanup.sql | docker exec -i hataraku-db-1 psql -
 - 两种模式全 PASS（`evidence-baseline.txt`、`evidence-fixtures.txt`）。
 - 断言覆盖：sitemap 154 个 URL（11 静态 + 38 文章 + 7 分类 + 97 标签 + 1 相册）且含四页、无 `?page=`；llms.txt 四页链接 + 计数 + 三个内容段（fixture 模式下微文 3/更新日志 3）；llms-full 无“正文摘要”、含文章正文尾部标记（`archives/127348.html`）、fixture 模式下含微文全文与 changes；RSS/Atom 各 20 条且正文标记数=条目数。
 - `raw-empty/`、`raw-fixtures/` 保留了 `curl -D` 的响应头与响应体（Content-Type 分别为 `application/xml`、`text/plain; charset=utf-8`、`application/rss+xml; charset=utf-8`、`application/atom+xml; charset=utf-8`）。
-- 门禁：`vp check`（含 fmt）在 6 个文件上 0 error；`pnpm run ready` 见 `evidence-ready.txt`。
+- 门禁：`vp check`（含 fmt）在 6 个文件上 0 error；`pnpm run ready` **EXIT=0**（typegen / vp check / knip / vp test / e2e / build，见 `evidence-ready.txt`）。
 
 ## 备注
 
