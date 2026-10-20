@@ -5,6 +5,7 @@ export type AdminPath =
   | "/settings/admin/changelog"
   | "/settings/admin/micro"
   | "/settings/admin/posts"
+  | "/settings/admin/profile"
   | "/settings/admin/projects"
   | "/settings/password"
   | "/settings/security";
@@ -14,6 +15,7 @@ const SECTIONS: readonly { href: AdminPath; label: string }[] = [
   { href: "/settings/admin/micro", label: "微言" },
   { href: "/settings/admin/projects", label: "项目" },
   { href: "/settings/admin/changelog", label: "更新日志" },
+  { href: "/settings/admin/profile", label: "站点" },
   { href: "/settings/security", label: "安全" },
   { href: "/settings/password", label: "密码" },
 ] as const;

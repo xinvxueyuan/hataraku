@@ -1,0 +1,83 @@
+{
+  "base": "http://localhost:3302",
+  "checkedAt": "2026-10-20T20:19:04.003Z",
+  "checks": [
+    {
+      "name": "the writing account is created",
+      "passed": true,
+      "detail": "http://localhost:3302/todos"
+    },
+    {
+      "name": "the settings navigation links to the profile editor",
+      "passed": true,
+      "detail": "/settings/admin/profile"
+    },
+    {
+      "name": "the profile editor opens from the navigation",
+      "passed": true,
+      "detail": "http://localhost:3302/settings/admin/profile"
+    },
+    {
+      "name": "the profile is saved",
+      "passed": true,
+      "detail": "站点资料已保存。"
+    },
+    {
+      "name": "the home page and the header show the saved name",
+      "passed": true,
+      "detail": "夜行栈 / 夜行栈"
+    },
+    {
+      "name": "the home page shows the saved tagline",
+      "passed": true,
+      "detail": "昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思"
+    },
+    {
+      "name": "the footer shows the saved name and description",
+      "passed": true,
+      "detail": "夜行栈 NightStack"
+    },
+    {
+      "name": "the about page shows the saved social link",
+      "passed": true,
+      "detail": "https://github.com/xinvstar"
+    },
+    {
+      "name": "a changed name reaches the home heading and the footer",
+      "passed": true,
+      "detail": "夜行栈 · H29"
+    },
+    {
+      "name": "a changed tagline reaches the home page",
+      "passed": true,
+      "detail": "H29 联动验证副标题"
+    },
+    {
+      "name": "clearing a social link removes it from the about page",
+      "passed": true,
+      "detail": "no GitHub link"
+    },
+    {
+      "name": "the original name is restored on the home page and the footer",
+      "passed": true,
+      "detail": "夜行栈"
+    },
+    {
+      "name": "the original tagline is restored",
+      "passed": true,
+      "detail": "昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思"
+    },
+    {
+      "name": "the social link is restored on the about page",
+      "passed": true,
+      "detail": "https://github.com/xinvstar"
+    }
+  ],
+  "screenshots": [
+    "profile-form.png",
+    "home-after-save.png",
+    "about-after-save.png",
+    "home-after-change.png",
+    "home-restored.png"
+  ]
+}

@@ -273,6 +273,47 @@ export const searchResultSchema = paginatedSchema(searchHitSchema).extend({
 /* site                                                                        */
 /* -------------------------------------------------------------------------- */
 
+/*
+ * The editable half of the profile. Every text field is trimmed, and an empty box is not an empty
+ * string on the wire: the procedure stores NULL, which is the value the readers treat as "use the
+ * constant fallback". `name` is the exception — the column is NOT NULL, so it is required.
+ *
+ * `social` and `hero` arrive as flat strings because that is what a form edits; the procedure
+ * drops the empty ones and stores NULL when none is left, so a cleared section cannot linger as {}.
+ */
+
+/** An http(s) URL, or an empty box. A site-relative path is not accepted here. */
+const profileUrl = z.union([z.url({ protocol: /^https?$/u }), z.literal("")]);
+
+/** An http(s) URL, a path on this site, or an empty box (a hero CTA may point either way). */
+const profileLink = z.union([
+  z.url({ protocol: /^https?$/u }),
+  z
+    .string()
+    .trim()
+    .regex(/^\/(?!\/)/u, "Use an http(s) URL or a path on this site"),
+  z.literal(""),
+]);
+
+export const updateSiteProfileInput = z.object({
+  author: z.string().trim().max(80),
+  avatarUrl: profileUrl,
+  description: z.string().trim().max(400),
+  email: z.union([z.string().trim().pipe(z.email()), z.literal("")]),
+  hero: z.object({
+    badge: z.string().trim().max(60),
+    cta: z.string().trim().max(60),
+    ctaHref: profileLink,
+    description: z.string().trim().max(400),
+    meta: z.string().trim().max(120),
+    title: z.string().trim().max(120),
+  }),
+  name: z.string().trim().min(1, "The site name is required").max(80),
+  nameEn: z.string().trim().max(80),
+  social: z.record(z.string().trim().min(1).max(40), profileUrl),
+  tagline: z.string().trim().max(200),
+});
+
 export const siteProfileSchema = z.object({
   author: z.string().nullable(),
   avatarKey: z.string().nullable(),

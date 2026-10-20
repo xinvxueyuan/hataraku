@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { ModeToggle } from "#src/components/mode-toggle.tsx";
 import { MobileNav, NavLinks } from "#src/components/nav-links.tsx";
-import { SITE_NAME } from "#src/components/site.ts";
+import { loadSiteIdentity } from "#src/components/site-content.ts";
 import { UserMenu } from "#src/components/user-menu.tsx";
 import { getSession } from "#src/server/session.ts";
 
@@ -18,6 +18,7 @@ const focusRing =
  */
 export const Header = async () => {
   const session = await getSession();
+  const site = await loadSiteIdentity();
 
   return (
     <header className="bg-background/80 sticky top-0 z-20 border-b backdrop-blur-md">
@@ -27,7 +28,7 @@ export const Header = async () => {
           href="/"
         >
           <span aria-hidden="true" className="bg-primary size-2.5 rounded-sm" />
-          {SITE_NAME}
+          {site.name}
         </Link>
 
         <div className="hidden md:block">

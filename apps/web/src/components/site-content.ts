@@ -1,10 +1,12 @@
 import "server-only";
 import { ORPCError } from "@orpc/client";
+import { cache } from "react";
 
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
   SITE_EMAIL,
+  SITE_NAME,
   SITE_TAGLINE,
   SITE_TITLE,
 } from "#src/components/site.ts";
@@ -39,6 +41,8 @@ export interface SiteIdentity {
   author: string;
   description: string;
   email: string;
+  /** The short name, as the header and the copyright line use it. */
+  name: string;
   tagline: string;
   title: string;
 }
@@ -53,6 +57,7 @@ export const describeSite = (profile: SiteProfile | null): SiteIdentity => ({
   author: profile?.author ?? SITE_AUTHOR,
   description: profile?.description ?? SITE_DESCRIPTION,
   email: profile?.email ?? SITE_EMAIL,
+  name: profile?.name ?? SITE_NAME,
   tagline: profile?.tagline ?? SITE_TAGLINE,
   title:
     profile === null
@@ -160,6 +165,14 @@ export const loadSiteProfile = async (): Promise<SiteProfile | null> => {
     throw error;
   }
 };
+
+/**
+ * The identity the shell renders, cached for the request so the header and the footer share one
+ * read; a profile changed in the editor shows up on the next request, not on a rebuilt constant.
+ */
+export const loadSiteIdentity = cache(async (): Promise<SiteIdentity> =>
+  describeSite(await loadSiteProfile())
+);
 
 /** The article body for an `llms-full` excerpt; a slug deleted mid-read is simply absent. */
 export const loadPostBody = async (slug: string): Promise<string | null> => {
