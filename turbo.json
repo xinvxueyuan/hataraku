@@ -24,7 +24,8 @@
       "persistent": true
     },
     "typegen": {
-      "outputs": [".next/types/**", ".next/dev/types/**"]
+      "dependsOn": ["content"],
+      "outputs": [".next/types/**", ".next/dev/types/**", ".velite/**"]
     },
     "test:e2e": {
       "cache": false,
