@@ -4,26 +4,29 @@ import type { ReactNode } from "react";
 
 import { Header } from "#src/components/header.tsx";
 import { Providers } from "#src/components/providers.tsx";
+import { loadSiteIdentity } from "#src/components/site-content.ts";
 import { SiteFooter } from "#src/components/site-footer.tsx";
 import {
-  SITE_AUTHOR,
-  SITE_DESCRIPTION,
   SITE_LOCALE,
-  SITE_NAME,
   SITE_OG_LOCALE,
-  SITE_TITLE,
   siteOrigin,
 } from "#src/components/site.ts";
 
 /**
  * Site metadata, inherited by every page that does not override a field.
  *
+ * The names come from the site profile, through the same `loadSiteIdentity()` the header and the
+ * footer read: the identity falls back to the `SITE_*` constants when the row (or a column) is
+ * missing, so a fresh database renders the same title a configured one does. The helper is wrapped
+ * in React `cache`, and the docs name exactly this case — "React `cache` can be used if `fetch` is
+ * unavailable" — so `generateMetadata` and the layout body share one profile read per request.
+ *
  * `metadataBase` makes the relative canonical and Open Graph URLs absolute, and the title template
  * turns a page's own title ("归档") into "归档 · 夜行栈" without each page repeating the suffix.
  * `url: "./"` is resolved against the current path, so every page reports its own address.
  */
 export const generateMetadata = async (): Promise<Metadata> => {
-  const origin = await siteOrigin();
+  const [origin, site] = await Promise.all([siteOrigin(), loadSiteIdentity()]);
 
   return {
     alternates: {
@@ -33,24 +36,24 @@ export const generateMetadata = async (): Promise<Metadata> => {
         "application/rss+xml": "/rss.xml",
       },
     },
-    applicationName: SITE_TITLE,
-    authors: [{ name: SITE_AUTHOR }],
-    description: SITE_DESCRIPTION,
+    applicationName: site.title,
+    authors: [{ name: site.author }],
+    description: site.description,
     metadataBase: new URL(origin),
     openGraph: {
-      description: SITE_DESCRIPTION,
+      description: site.description,
       locale: SITE_OG_LOCALE,
-      siteName: SITE_TITLE,
-      title: SITE_TITLE,
+      siteName: site.title,
+      title: site.title,
       type: "website",
       url: "./",
     },
     robots: { follow: true, index: true },
-    title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
+    title: { default: site.title, template: `%s · ${site.name}` },
     twitter: {
       card: "summary",
-      description: SITE_DESCRIPTION,
-      title: SITE_TITLE,
+      description: site.description,
+      title: site.title,
     },
   };
 };

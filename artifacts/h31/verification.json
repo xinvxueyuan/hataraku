@@ -1,0 +1,66 @@
+{
+  "base": "http://localhost:3302",
+  "checkedAt": "2026-10-20T20:34:04.791Z",
+  "checks": [
+    {
+      "name": "the settings navigation links to the profile editor",
+      "passed": true,
+      "detail": "/settings/admin/profile"
+    },
+    {
+      "name": "the home tab title is the profile name",
+      "passed": true,
+      "detail": "夜行栈 NightStack"
+    },
+    {
+      "name": "the home og:title matches the tab title",
+      "passed": true,
+      "detail": "og=夜行栈 NightStack twitter=夜行栈 NightStack"
+    },
+    {
+      "name": "metadataBase still resolves canonical and og:url",
+      "passed": true,
+      "detail": "canonical=http://localhost:3302/ og:url=http://localhost:3302"
+    },
+    {
+      "name": "a list page keeps the title template",
+      "passed": true,
+      "detail": "归档 · 夜行栈"
+    },
+    {
+      "name": "a list page resolves its own canonical",
+      "passed": true,
+      "detail": "canonical=http://localhost:3302/archive"
+    },
+    {
+      "name": "a renamed site reaches the home tab title",
+      "passed": true,
+      "detail": "夜行栈 · H31 NightStack"
+    },
+    {
+      "name": "the renamed site reaches the home og:title",
+      "passed": true,
+      "detail": "og=夜行栈 · H31 NightStack"
+    },
+    {
+      "name": "the list page template uses the renamed site",
+      "passed": true,
+      "detail": "归档 · 夜行栈 · H31"
+    },
+    {
+      "name": "restoring the name restores the tab title",
+      "passed": true,
+      "detail": "夜行栈 NightStack"
+    },
+    {
+      "name": "restoring the name restores the list page template",
+      "passed": true,
+      "detail": "归档 · 夜行栈"
+    }
+  ],
+  "screenshots": [
+    "home-title.png",
+    "home-changed-title.png",
+    "home-restored-title.png"
+  ]
+}
