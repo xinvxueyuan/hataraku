@@ -18,7 +18,7 @@ Next.js · Hono · oRPC · PostgreSQL · Drizzle · Better Auth · Expo · Node,
 
 ```sh
 vp install
-docker compose up -d db   # or point DATABASE_URL at any Postgres; host port 55432
+docker compose up -d db   # or point DATABASE_URL at any Postgres
 vp run db:migrate
 vp run dev
 vp run dev:mobile         # in a second terminal
@@ -41,16 +41,12 @@ SERVER_URL=http://localhost:3001
 `apps/server/.env`
 
 ```dotenv
-DATABASE_URL=postgres://postgres:postgres@localhost:55432/hataraku
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/hataraku
 BETTER_AUTH_URL=http://localhost:3000
 BETTER_AUTH_SECRET=
 NODE_ENV=development
 PORT=3001
 ```
-
-The container publishes Postgres on host port 55432, not 5432: Windows reserves 5432 inside a
-Hyper-V range, so Docker cannot bind it. `docker-compose.override.yml` carries the override; the
-base compose file keeps the conventional 5432 for other platforms.
 
 `apps/mobile/.env`
 
