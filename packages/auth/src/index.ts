@@ -9,6 +9,7 @@ import type { Database } from "@hataraku/db";
 import * as schema from "@hataraku/db/schema/auth";
 
 import { createEmailAllowlist } from "./allowlist.ts";
+import { withLoginAttempts } from "./login-attempts.ts";
 
 /**
  * Sign-in budget per client address. The acceptance criterion carried over from the
@@ -62,7 +63,7 @@ export const createAuth = ({
   const hasTurnstile =
     turnstileSecretKey !== undefined && turnstileSecretKey !== "";
 
-  return betterAuth({
+  const auth = betterAuth({
     baseURL,
     database: drizzleAdapter(db, { provider: "pg", schema }),
     databaseHooks: {
@@ -131,6 +132,10 @@ export const createAuth = ({
     secret,
     trustedOrigins: ["hataraku://"],
   });
+
+  // Every deployment reaches Better Auth through this handler, so the audit lives there rather than
+  // in one app's route handler; see login-attempts.ts for why the hooks cannot see all refusals.
+  return withLoginAttempts(auth, { db, secret });
 };
 
 export type Auth = ReturnType<typeof createAuth>;

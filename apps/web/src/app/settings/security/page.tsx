@@ -47,6 +47,7 @@ const OUTCOME_LABELS = new Map<string, string>([
   ["password_fail", "密码错误"],
   ["pending", "进行中"],
   ["sent", "已发送"],
+  ["success", "成功"],
   ["throttled", "被限流"],
   ["turnstile_fail", "人机验证失败"],
 ]);

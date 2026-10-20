@@ -1,0 +1,47 @@
+{
+  "base": "http://localhost:3370",
+  "checkedAt": "2026-10-20T19:05:44.941Z",
+  "checks": [
+    {
+      "name": "the owner signs in through the form",
+      "passed": true,
+      "detail": "http://localhost:3370/todos"
+    },
+    {
+      "name": "a wrong password is refused",
+      "passed": true,
+      "detail": "status 401"
+    },
+    {
+      "name": "the owner sees both attempts on the security page",
+      "passed": true,
+      "detail": "2 rows: 凭据无效2026年10月21日, 成功2026年10月21日"
+    },
+    {
+      "name": "the rows carry the truncated IP digest",
+      "passed": true,
+      "detail": "凭据无效2026年10月21日 03:05165 msIP 摘要 9b8447e2640c"
+    },
+    {
+      "name": "another account sees no attempt rows",
+      "passed": true,
+      "detail": "0 rows"
+    },
+    {
+      "name": "another account gets the explanation instead",
+      "passed": true,
+      "detail": "refusal text present"
+    }
+  ],
+  "observations": {
+    "ownerRows": [
+      "凭据无效2026年10月21日 03:05165 msIP 摘要 9b8447e2640c",
+      "成功2026年10月21日 03:05217 msIP 摘要 9b8447e2640c"
+    ],
+    "digestVisible": true
+  },
+  "screenshots": [
+    "owner-login-attempts.png",
+    "other-security.png"
+  ]
+}
