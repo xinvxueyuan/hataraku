@@ -53,7 +53,7 @@ node artifacts/h17/probe.mjs http://localhost:3300
 
 - 本任务文件 scoped `vp check`：全绿（4 页 + 2 组件）。
 - `pnpm --filter @hataraku/web build`：通过。
-- `pnpm run ready` 当前在 `vp check` 失败，命中的是**其他任务在途文件**：`AGENTS.md`、`CLAUDE.md`、`packages/api/tests/integration/admin-content.test.ts` 的格式问题；`vp run knip` 也只剩 `packages/api/src/r2.ts` 的 3 个未用导出（同属 admin 内容任务）。这些文件不在 H17 写范围（`packages/api/**`、根指令文件），未改动。
+- `pnpm run ready` 当前在 `vp check` 失败，命中的是**其他任务在途文件**：`AGENTS.md`、`CLAUDE.md`、`packages/api/tests/integration/admin-content.test.ts`、`packages/auth/src/login-attempts.ts` 的格式问题（重跑时命中的在途文件会随并行任务变化）；`vp run knip` 也只剩 `packages/api/src/r2.ts` 的 3 个未用导出（同属 admin 内容任务）。这些文件不在 H17 写范围（`packages/api/**`、`packages/auth/**`、根指令文件），未改动；这些文件修好后 `ready` 即可全绿，H17 无需返工。
 
 ## 已知边界
 

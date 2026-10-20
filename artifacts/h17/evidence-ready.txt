@@ -5,22 +5,23 @@ $ turbo run typegen && vp check && knip && vp test && turbo run test:e2e && turb
    • Running typegen in 8 packages
    • Remote caching disabled
 
-@hataraku/web:content: cache miss, executing 9fd19c4b4655caf5
+@hataraku/web:content: cache hit, replaying logs 9fd19c4b4655caf5
 @hataraku/web:content: $ velite
 @hataraku/web:content: [32m[VELITE][0m build finished in 234.97ms
-@hataraku/web:typegen: cache miss, executing 8ee01e6c723647d6
+@hataraku/web:typegen: cache hit, replaying logs 8ee01e6c723647d6
 @hataraku/web:typegen: $ next typegen
 @hataraku/web:typegen: Generating route types...
 @hataraku/web:typegen: ✓ Types generated successfully
 
  Tasks:    2 successful, 2 total
-Cached:    0 cached, 2 total
-  Time:    6.856s 
+Cached:    2 cached, 2 total
+  Time:    141ms >>> FULL TURBO
 
-AGENTS.md (3ms)
 error: Formatting issues found
-CLAUDE.md (19ms)
+AGENTS.md (3ms)
+CLAUDE.md (0ms)
 packages/api/tests/integration/admin-content.test.ts (1ms)
+packages/auth/src/login-attempts.ts (1ms)
 
-Found formatting issues in 3 files (2735ms, 8 threads). Run `vp check --fix` to fix them.
+Found formatting issues in 4 files (1573ms, 8 threads). Run `vp check --fix` to fix them.
 [ELIFECYCLE] Command failed with exit code 1.
