@@ -1,0 +1,85 @@
+ok - /micro returns 200
+ok - /micro renders the heading
+ok - /micro has one h1
+ok - /micro has one main landmark
+ok - /micro title carries the site name
+ok - /micro has a description
+ok - /micro canonical is absolute for this page
+ok - /micro og:url is absolute for this page
+ok - /micro shows focus on its links
+ok - /micro gives every image an alt
+ok - /micro reports 23 fragments
+ok - /micro renders ten fragments on page one
+ok - /micro paginates
+ok - /micro preserves line breaks
+ok - /micro renders the type badge
+ok - /micro links tags into the taxonomy
+ok - /micro renders an uploaded image with alt
+ok - /micro renders music metadata
+ok - /micro shows a listening link
+ok - /micro?page=3 has the remaining three
+ok - /micro?page=3 paginates
+ok - /projects returns 200
+ok - /projects renders the heading
+ok - /projects has one h1
+ok - /projects has one main landmark
+ok - /projects title carries the site name
+ok - /projects has a description
+ok - /projects canonical is absolute for this page
+ok - /projects og:url is absolute for this page
+ok - /projects shows focus on its links
+ok - /projects gives every image an alt
+ok - /projects reports 13 projects
+ok - /projects renders twelve cards on page one
+ok - /projects paginates
+ok - /projects renders status labels
+ok - /projects renders a featured badge
+ok - /projects links out safely
+ok - /projects renders a cover image with alt
+ok - /projects?page=2 has the last card
+ok - /toolbox returns 200
+ok - /toolbox renders the heading
+ok - /toolbox has one h1
+ok - /toolbox has one main landmark
+ok - /toolbox title carries the site name
+ok - /toolbox has a description
+ok - /toolbox canonical is absolute for this page
+ok - /toolbox og:url is absolute for this page
+ok - /toolbox shows focus on its links
+ok - /toolbox gives every image an alt
+ok - /toolbox counts tools, devices and skills
+ok - /toolbox renders twelve tools and two devices on page one
+ok - /toolbox paginates tools
+ok - /toolbox renders devices
+ok - /toolbox renders device specs
+ok - /toolbox renders device images with alt
+ok - /toolbox groups skills
+ok - /toolbox?page=2 has the last tool
+ok - /changelog returns 200
+ok - /changelog renders the heading
+ok - /changelog has one h1
+ok - /changelog has one main landmark
+ok - /changelog title carries the site name
+ok - /changelog has a description
+ok - /changelog canonical is absolute for this page
+ok - /changelog og:url is absolute for this page
+ok - /changelog shows focus on its links
+ok - /changelog gives every image an alt
+ok - /changelog reports 21 releases
+ok - /changelog renders ten entries on page one
+ok - /changelog paginates
+ok - /changelog highlights a release
+ok - /changelog renders the change list
+ok - /changelog?page=3 has the body-only entry
+ok - /changelog?page=3 marks no highlight badge
+ok - /rss.xml keeps its content type
+ok - /rss.xml links are absolute on this origin
+ok - /atom.xml keeps its content type
+ok - /atom.xml links are absolute on this origin
+ok - /sitemap.xml keeps its content type
+ok - /sitemap.xml locs are absolute on this origin
+ok - /llms.txt keeps its content type
+ok - /llms.txt uses this origin
+ok - /robots.txt names this origin
+
+PASS http://localhost:3300

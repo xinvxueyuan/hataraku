@@ -1,0 +1,63 @@
+ok - /micro returns 200
+ok - /micro renders the heading
+ok - /micro has one h1
+ok - /micro has one main landmark
+ok - /micro title carries the site name
+ok - /micro has a description
+ok - /micro canonical is absolute for this page
+ok - /micro og:url is absolute for this page
+ok - /micro shows focus on its links
+ok - /micro gives every image an alt
+ok - /micro reports no fragments
+ok - /micro invites the first fragment
+ok - /micro has no pager when empty
+ok - /projects returns 200
+ok - /projects renders the heading
+ok - /projects has one h1
+ok - /projects has one main landmark
+ok - /projects title carries the site name
+ok - /projects has a description
+ok - /projects canonical is absolute for this page
+ok - /projects og:url is absolute for this page
+ok - /projects shows focus on its links
+ok - /projects gives every image an alt
+ok - /projects reports two projects
+ok - /projects renders two cards
+ok - /projects has no pager for one page
+ok - /toolbox returns 200
+ok - /toolbox renders the heading
+ok - /toolbox has one h1
+ok - /toolbox has one main landmark
+ok - /toolbox title carries the site name
+ok - /toolbox has a description
+ok - /toolbox canonical is absolute for this page
+ok - /toolbox og:url is absolute for this page
+ok - /toolbox shows focus on its links
+ok - /toolbox gives every image an alt
+ok - /toolbox reports no tools yet
+ok - /toolbox invites the first tool
+ok - /toolbox still renders devices and skills
+ok - /changelog returns 200
+ok - /changelog renders the heading
+ok - /changelog has one h1
+ok - /changelog has one main landmark
+ok - /changelog title carries the site name
+ok - /changelog has a description
+ok - /changelog canonical is absolute for this page
+ok - /changelog og:url is absolute for this page
+ok - /changelog shows focus on its links
+ok - /changelog gives every image an alt
+ok - /changelog reports no releases
+ok - /changelog invites the first release
+ok - /changelog has no pager when empty
+ok - /rss.xml keeps its content type
+ok - /rss.xml links are absolute on this origin
+ok - /atom.xml keeps its content type
+ok - /atom.xml links are absolute on this origin
+ok - /sitemap.xml keeps its content type
+ok - /sitemap.xml locs are absolute on this origin
+ok - /llms.txt keeps its content type
+ok - /llms.txt uses this origin
+ok - /robots.txt names this origin
+
+PASS http://localhost:3300
