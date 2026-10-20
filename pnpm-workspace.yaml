@@ -96,6 +96,7 @@ catalog:
   shiki: ^4.5.0
   "@tailwindcss/typography": ^0.5.20
   velite: ^0.4.0
+  turbo: 2.11.9
 
 overrides:
   vite@*: "catalog:"

@@ -63,6 +63,25 @@ ADMIN_EMAILS=
 EXPO_PUBLIC_API_URL=
 ```
 
+## Task orchestration
+
+Turborepo runs the workspace tasks. Each package owns its own script; the root only delegates, so
+`turbo run build` builds the packages that have a build in dependency order and caches the output.
+
+```sh
+pnpm run build        # turbo run build — caches .next, dist and .velite
+pnpm run typegen      # turbo run typegen
+pnpm run test:e2e     # turbo run test:e2e — never cached, the suite starts its own stack
+pnpm run ready        # the gate: typegen, check, knip, test, e2e, build
+```
+
+A second `pnpm run build` with no source change replays from cache (`FULL TURBO`). `vp check`, `vp test`
+and `knip` stay direct calls: each is one repo-wide invocation rather than a per-package task.
+
+`pnpm run dev` starts the web and API watchers through `turbo run dev`. On this machine ports 3000
+and 3001 are held by `wslrelay`, so pass `PORT=3301` and `SERVER_URL=http://localhost:3301` and run
+the web app with `npx next dev -p 3300` when those ports are unavailable.
+
 ## Commands
 
 ```sh

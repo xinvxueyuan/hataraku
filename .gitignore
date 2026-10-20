@@ -6,6 +6,7 @@ coverage
 *.local
 *.log
 .next
+.turbo
 .velite
 .next-test-*
 next-env.d.ts
