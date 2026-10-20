@@ -82,9 +82,20 @@ node artifacts/h10/probe.mjs http://127.0.0.1:3320
 
 fixture 覆盖了三类真实数据到不了的状态：101 篇同分类文章（分页到第 6 页、第 7 页空态）、0 篇文章的分类/标签（空状态）、13 本无照片相册（列表分页 + 相册空态），外加 draft / unpublished / 无发布日期三种可见性。断言确认 draft 与 unpublished 不会出现在任何列表里，无日期文章进入「日期待定」。
 
-## 门禁现状（2026-10-20 21:5x，共享工作树）
+## 门禁现状（2026-10-20 22:16，共享工作树）
 
-本任务开始时 `vp run ready` 因**其他任务在途文件**的格式问题失败（`apps/web/src/components/sheet.tsx`、`univer-canvas.tsx`、`scripts/migrate-content.ts`）。本任务文件本身 `vp check` 通过；全仓 `ready` 的最终结果记录在任务报告里（共享树上会被并行任务影响，不能据此判断本任务）。
+最近一次 `vp run ready`（完整输出：`gate-ready.txt`）：
+
+| 步骤 | 结果 |
+| --- | --- |
+| `next typegen` | ✓ |
+| `vp check`（170 文件格式 / 124 文件 lint+type） | ✓ 0 warning / 0 error |
+| `knip` | ✓ |
+| `vp test`（integration + unit） | ✓ 11 files / 100 tests |
+| `e2e` | ✗ **1 failed / 7**：`the home page reports the API as connected` 找不到 `Connected` |
+| `build`（gate 因 e2e 失败未跑到） | 单独跑 `vp run --filter @hataraku/web build` ✓ 2/2，输出含本任务全部 6 条路由（见 `gate-web-build.txt`） |
+
+唯一失败与 H10 无关：e2e 规格要求首页出现 `Connected`（`apps/web/tests/e2e/app.e2e.ts`），而首页 `apps/web/src/app/page.tsx` 不渲染任何 API 状态，且 `api-status.tsx` 已被删除。首页与 e2e 断言都不在本任务写范围（`page.tsx` 明确排除、e2e 改动需用户批准），因此留给负责站点外壳/首页的任务修复；修好后重跑 `vp run ready` 即可全绿。
 
 ## 已知边界 / 后续建议
 

@@ -1,0 +1,72 @@
+~/apps/web$ next typegen ⊘ cache disabled
+Generating route types...
+✓ Types generated successfully
+
+$ vp check ⊘ cache disabled
+pass: All 170 files are correctly formatted (2125ms, 8 threads)
+pass: Found no warnings, lint errors, or type errors in 124 files (12.9s, 8 threads)
+
+$ knip ⊘ cache disabled
+
+$ vp test ⊘ cache disabled
+
+ RUN  v5.0.5 C:/dev/dsh/projects/hataraku
+
+ ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 931ms
+ ✓ |integration| packages/api/tests/integration/taxonomy.test.ts (7 tests) 890ms
+ ✓ |integration| packages/api/tests/integration/media.test.ts (11 tests) 956ms
+ ✓ |integration| packages/api/tests/integration/posts.test.ts (21 tests) 1028ms
+ ✓ |integration| packages/api/tests/integration/search.test.ts (12 tests) 1019ms
+ ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 1011ms
+ ✓ |integration| packages/api/tests/integration/todos.test.ts (10 tests) 1717ms
+   ✓ todos (10)
+     ✓ creates a todo with a trimmed title, not yet completed 372ms
+ ✓ |unit| apps/web/src/server/mdx-guard.test.ts (10 tests) 20ms
+ ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 13ms
+ ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 12ms
+ ✓ |unit| apps/web/src/components/sheet-table.test.ts (5 tests) 16ms
+
+ Test Files  11 passed (11)
+      Tests  100 passed (100)
+   Start at  22:15:40
+   Duration  11.76s (import 87%, tests 10%, transform 3%)
+
+
+~/apps/web$ e2e run ⊘ cache disabled
+
+ RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
+      run 01a159ab-2f0e-7969-81c0-c40b29489b8e · targets: web
+
+ ✓ target "web" command ready 14.27s
+ ❯ |web| tests/e2e/app.e2e.ts (7 tests | 1 failed) 37.23s
+   × the home page reports the API as connected 17.22s
+     → expect.toBeVisible failed
+   ✓ visitors are sent to sign in before seeing todos 1.71s
+   ✓ a new user signs up and manages todos that persist across reloads 6.51s
+   ✓ an existing user signs in and returns to the page they asked for 2.93s
+   ✓ a wrong password is rejected 2.17s
+   ✓ signing out ends the session 4.14s
+   ✓ the dark theme survives a reload 2.56s
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |web| tests/e2e/app.e2e.ts > the home page reports the API as connected
+ASSERTION_FAILED: expect.toBeVisible failed
+locator: getByText("Connected")
+expected: visible
+observed: no node (match count 0)
+ ❯ at http://localhost:3200/
+ ❯ trace .e2e/results/app-the-home-page-reports-the-api-as-0515826e8673760c/trace.md
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 0 passed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  22:15:56
+   Duration  55.67s (startup 14.27s)
+     Traces  .e2e/results/ (1 page, trace.md in each test's directory)
+
+
+---
+vp run: 4/5 successful. (Run `vp run --last-details` for full details)

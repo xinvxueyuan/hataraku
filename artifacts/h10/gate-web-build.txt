@@ -1,0 +1,46 @@
+~/apps/web$ velite ⊘ cache disabled
+[32m[VELITE][0m build finished in 72.92ms
+
+~/apps/web$ next build ⊘ cache disabled
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 41ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1270ms
+  Running TypeScript ...
+  Finished TypeScript in 1764ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/16) ...
+  Generating static pages using 7 workers (4/16) 
+  Generating static pages using 7 workers (8/16) 
+  Generating static pages using 7 workers (12/16) 
+✓ Generating static pages using 7 workers (16/16) in 927ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /albums
+├ ƒ /albums/[slug]
+├ ƒ /api/[[...rest]]
+├ ƒ /archive
+├ ƒ /article
+├ ƒ /docs
+├ ƒ /docs/[slug]
+├ ƒ /login
+├ ƒ /posts/[slug]
+├ ƒ /rpc/[[...rest]]
+├ ƒ /search
+├ ƒ /settings/two-factor
+├ ƒ /taxonomy
+├ ƒ /taxonomy/[type]/[slug]
+└ ƒ /todos
+
+
+ƒ  (Dynamic)  server-rendered on demand
+
+
+---
+vp run: 2/2 successful. (Run `vp run --last-details` for full details)
