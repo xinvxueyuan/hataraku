@@ -22,22 +22,6 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 /**
  * Reads the site profile, treating "not configured yet" as absent.
  *
- * A fresh database has no profile row, and the procedure answers NOT_FOUND. The home page is the
- * route the end-to-end stack polls for health, so turning that into a 500 would make an unconfigured
- * site look broken — and would stop the suite before it reached a single assertion. The page renders
- * without the profile instead.
- */
-const readProfile = async () => {
-  try {
-    return await serverCall.site.profile();
-  } catch {
-    return null;
-  }
-};
-
-/**
- * Reads the site profile, treating "not configured yet" as absent.
- *
  * A fresh database has no profile row and the procedure answers NOT_FOUND. The home page is the
  * route the end-to-end stack polls for health, so turning that into a 500 would make an unconfigured
  * site look broken and would stop the suite before its first assertion. The page renders without the
