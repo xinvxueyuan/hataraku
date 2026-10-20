@@ -3,7 +3,14 @@
   "compilerOptions": {
     "types": ["node"],
     "jsx": "preserve",
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@content": ["./.velite"]
+    }
   },
   "include": [
     "next-env.d.ts",

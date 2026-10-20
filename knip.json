@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": ["artifacts/**"],
+  "ignore": [".velite/**", "artifacts/**"],
   "workspaces": {
     "apps/mobile": {
       "ignoreDependencies": ["expo-updates"]
@@ -8,6 +8,7 @@
     "apps/web": {
       "entry": [
         "e2e.config.ts",
+        "velite.config.ts",
         "tests/e2e/**/*.e2e.ts",
         "tests/support/start.ts"
       ]

@@ -9,6 +9,7 @@ import { defineConfig, loadEnv } from "vite-plus";
 
 const generatedFiles = [
   "**/.next/**",
+  "**/.velite/**",
   "**/.next-test-*/**",
   "**/next-env.d.ts",
   "packages/db/src/migrations/**",

@@ -7,11 +7,12 @@
     "#src/*": "./src/*"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "velite && next dev",
+    "build": "velite && next build",
     "start": "next start",
     "typegen": "next typegen",
-    "test:e2e": "e2e run"
+    "test:e2e": "e2e run",
+    "content": "velite"
   },
   "dependencies": {
     "@hataraku/ui": "workspace:*",
@@ -50,6 +51,7 @@
     "e2e": "catalog:",
     "es-toolkit": "catalog:",
     "typescript": "catalog:",
-    "undici": "catalog:"
+    "undici": "catalog:",
+    "velite": "catalog:"
   }
 }
