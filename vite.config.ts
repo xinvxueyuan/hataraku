@@ -17,10 +17,19 @@ const generatedFiles = [
 
 const vendoredFiles = ["packages/ui/src/components/**"];
 
+// Verification artifacts: probe scripts and captured evidence under artifacts/. They are run by
+// hand to prove a behaviour and are never imported by the product, so they are evidence rather than
+// source. Linting them as product code turns a throwaway probe into a build blocker.
+const verificationArtifacts = ["artifacts/**"];
+
 export default defineConfig({
   fmt: {
     ...oxfmt,
-    ignorePatterns: [...(oxfmt.ignorePatterns ?? []), ...generatedFiles],
+    ignorePatterns: [
+      ...(oxfmt.ignorePatterns ?? []),
+      ...generatedFiles,
+      ...verificationArtifacts,
+    ],
     proseWrap: "preserve",
     sortImports: {
       customGroups: [
@@ -49,6 +58,7 @@ export default defineConfig({
       ...(core.ignorePatterns ?? []),
       ...generatedFiles,
       ...vendoredFiles,
+      ...verificationArtifacts,
     ],
     jsPlugins: [
       // Knip reads this string. A spread of `shadcn.jsPlugins` is invisible to it.
