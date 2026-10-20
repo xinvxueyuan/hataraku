@@ -1,4 +1,3 @@
-/* oxlint-disable shadcn/no-inline-styles -- satori (next/og) only understands inline style objects; it does not load the app's Tailwind CSS. */
 import { ImageResponse } from "next/og";
 import type { NextRequest } from "next/server";
 
