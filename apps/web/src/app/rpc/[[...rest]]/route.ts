@@ -1,8 +1,18 @@
+import type { NextRequest } from "next/server";
+
+import { handleApiRequest } from "#src/server/api.ts";
+
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+const handle = async (request: NextRequest) =>
+  await handleApiRequest(request, "/rpc");
+
 export {
-  proxyToServer as DELETE,
-  proxyToServer as GET,
-  proxyToServer as HEAD,
-  proxyToServer as PATCH,
-  proxyToServer as POST,
-  proxyToServer as PUT,
-} from "#src/server/proxy.ts";
+  handle as DELETE,
+  handle as GET,
+  handle as HEAD,
+  handle as PATCH,
+  handle as POST,
+  handle as PUT,
+};

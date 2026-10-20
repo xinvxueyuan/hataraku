@@ -105,6 +105,12 @@ export const startTestServer = async (baseURL: string) => {
         webDir,
         ["node_modules/next/dist/bin/next", "dev", "--port", String(webPort)],
         {
+          // The web deployment answers /api and /rpc in process, so it opens the same test database
+          // the standalone server uses; without it the browser tests would read the development
+          // database. The origin is the one the browser sends, which Better Auth checks.
+          BETTER_AUTH_SECRET: "test-secret-that-is-at-least-32-characters",
+          BETTER_AUTH_URL: baseURL,
+          DATABASE_URL: database.url,
           NEXT_DIST_DIR: `.next-test-${webPort}`,
           SERVER_URL: `http://localhost:${serverPort}`,
         }

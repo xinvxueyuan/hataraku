@@ -1,26 +1,30 @@
 import "server-only";
-import { createORPCClient } from "@orpc/client";
-import { RPCLink } from "@orpc/client/fetch";
+import { createRouterClient } from "@orpc/server";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryClient } from "@tanstack/react-query";
-import { headers } from "next/headers";
 import { cache } from "react";
 
+import { appRouter } from "@hataraku/api";
 import type { AppRouterClient } from "@hataraku/api";
 
+import { getDb } from "#src/server/api.ts";
 import { readEnv } from "#src/server/env.ts";
+import { getSession } from "#src/server/session.ts";
 
-// Server Components call the API server directly, with the visitor's cookies.
-const serverClient: AppRouterClient = createORPCClient(
-  new RPCLink({
-    headers: async () => {
-      const requestHeaders = await headers();
-
-      return { cookie: requestHeaders.get("cookie") ?? "" };
-    },
-    url: () => `${readEnv().SERVER_URL}/rpc`,
-  })
-);
+/**
+ * Server Components call the router in this process, through the same middleware and validation a
+ * request takes, with the visitor's session.
+ *
+ * The context is a function because oRPC resolves it per call: the session belongs to the request
+ * being rendered, and a module-level client cannot hold one request's session for the next.
+ */
+const serverClient: AppRouterClient = createRouterClient(appRouter, {
+  context: async () => ({
+    adminEmails: readEnv().ADMIN_EMAILS,
+    db: getDb(),
+    session: await getSession(),
+  }),
+});
 
 /**
  * The typed client itself, for server components that render data and hydrate nothing.

@@ -1,0 +1,69 @@
+{
+  "base": "http://localhost:3400",
+  "apiBase": "http://localhost:3401",
+  "checkedAt": "2026-10-20T16:43:19.685Z",
+  "checks": [
+    {
+      "name": "the standalone API process is up before the experiment",
+      "passed": true,
+      "detail": "http://localhost:3401 -> 200"
+    },
+    {
+      "name": "the home page renders server-read content",
+      "passed": true,
+      "detail": "h1: 夜行栈; 最新文章 present"
+    },
+    {
+      "name": "the home page reports the API as connected",
+      "passed": true,
+      "detail": "api status pill present"
+    },
+    {
+      "name": "the article index renders through the in-process router",
+      "passed": true,
+      "detail": "http://localhost:3400/article"
+    },
+    {
+      "name": "sign-up is served in process",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "the session endpoint reads the cookie in process",
+      "passed": true,
+      "detail": "get-session user: probe-before-1792514589701@example.com"
+    },
+    {
+      "name": "a protected procedure writes over /rpc in process",
+      "passed": true,
+      "detail": "status 200, id 1"
+    },
+    {
+      "name": "the same procedure reads it back",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "the OpenAPI transport answers at /api",
+      "passed": true,
+      "detail": "status 200, text/html"
+    },
+    {
+      "name": "a protected page renders its data",
+      "passed": true,
+      "detail": "http://localhost:3400/todos"
+    },
+    {
+      "name": "the two-factor page reads the session in process",
+      "passed": true,
+      "detail": "http://localhost:3400/settings/two-factor"
+    }
+  ],
+  "phase": "before",
+  "screenshots": [
+    "before-01-home.png",
+    "before-02-article.png",
+    "before-03-todos.png",
+    "before-04-two-factor.png"
+  ]
+}

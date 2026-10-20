@@ -579,6 +579,12 @@ importers:
       '@hataraku/api':
         specifier: workspace:*
         version: link:../../packages/api
+      '@hataraku/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@hataraku/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@hataraku/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -588,9 +594,18 @@ importers:
       '@orpc/client':
         specifier: 'catalog:'
         version: 1.15.7
+      '@orpc/openapi':
+        specifier: 'catalog:'
+        version: 1.15.7(ws@8.22.0)
+      '@orpc/server':
+        specifier: 'catalog:'
+        version: 1.15.7(ws@8.22.0)
       '@orpc/tanstack-query':
         specifier: 'catalog:'
         version: 1.15.7(@orpc/client@1.15.7)(@tanstack/query-core@5.104.5)
+      '@orpc/zod':
+        specifier: 'catalog:'
+        version: 1.15.7(@orpc/contract@1.15.7)(@orpc/server@1.15.7(ws@8.22.0))(ws@8.22.0)(zod@4.6.7)
       '@t3-oss/env-core':
         specifier: 'catalog:'
         version: 0.13.11(typescript@7.0.2)(zod@4.6.7)
@@ -609,9 +624,6 @@ importers:
       better-auth:
         specifier: 'catalog:'
         version: 1.7.11(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(zod@4.6.7))(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(solid-js@1.9.17)(vitest@5.0.5)
-      hono:
-        specifier: 'catalog:'
-        version: 4.13.13
       lucide-react:
         specifier: 'catalog:'
         version: 1.60.0(@types/react@19.3.0)(react@19.3.0)
@@ -664,9 +676,6 @@ importers:
       '@hataraku/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@hataraku/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.3.3
