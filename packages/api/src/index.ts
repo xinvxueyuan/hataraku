@@ -5,6 +5,7 @@ import { health } from "#src/routers/health.ts";
 import { mediaRouter } from "#src/routers/media.ts";
 import { postsRouter } from "#src/routers/posts.ts";
 import { searchRouter } from "#src/routers/search.ts";
+import { securityRouter } from "#src/routers/security.ts";
 import { siteRouter } from "#src/routers/site.ts";
 import { taxonomyRouter } from "#src/routers/taxonomy.ts";
 import { todosRouter } from "#src/routers/todos.ts";
@@ -17,6 +18,7 @@ export const appRouter = {
   media: mediaRouter,
   posts: postsRouter,
   search: searchRouter,
+  security: securityRouter,
   site: siteRouter,
   taxonomy: taxonomyRouter,
   todos: todosRouter,

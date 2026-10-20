@@ -1,0 +1,96 @@
+{
+  "base": "http://localhost:3360",
+  "checkedAt": "2026-10-20T18:48:20.869Z",
+  "checks": [
+    {
+      "name": "the page is protected and remembers its address",
+      "passed": true,
+      "detail": "http://localhost:3360/login?redirect=%2Fsettings%2Fsecurity"
+    },
+    {
+      "name": "the owner sees the security overview",
+      "passed": true,
+      "detail": "http://localhost:3360/settings/security"
+    },
+    {
+      "name": "the overview names the signed-in account",
+      "passed": true,
+      "detail": "owner address shown"
+    },
+    {
+      "name": "the owner's own session is listed and marked current",
+      "passed": true,
+      "detail": "one active session, current badge"
+    },
+    {
+      "name": "the attempts table renders the stored rows",
+      "passed": true,
+      "detail": "password_fail + sent, digest rows: 2"
+    },
+    {
+      "name": "the sent attempt keeps its duration",
+      "passed": true,
+      "detail": "123 ms"
+    },
+    {
+      "name": "the two-factor state is shown with a link to its page",
+      "passed": true,
+      "detail": "未开启 + /settings/two-factor"
+    },
+    {
+      "name": "the owner never sees the admin-only explanation",
+      "passed": true,
+      "detail": "no refusal text"
+    },
+    {
+      "name": "another account reaches its own overview",
+      "passed": true,
+      "detail": "http://localhost:3360/settings/security"
+    },
+    {
+      "name": "another account sees exactly its own session",
+      "passed": true,
+      "detail": "one active session"
+    },
+    {
+      "name": "another account sees no attempt rows",
+      "passed": true,
+      "detail": "no attempt data"
+    },
+    {
+      "name": "another account is told why, and is not shown the owner's address",
+      "passed": true,
+      "detail": "refusal text present, owner address absent"
+    },
+    {
+      "name": "a published old article URL answers 308 to the new one",
+      "passed": true,
+      "detail": "308 -> /posts/legacy-article"
+    },
+    {
+      "name": "an unpublished slug answers 307 to the list",
+      "passed": true,
+      "detail": "307 -> /article"
+    },
+    {
+      "name": "an unknown slug answers 307 to the list",
+      "passed": true,
+      "detail": "307 -> /article"
+    },
+    {
+      "name": "the list page still answers 200 and is not swallowed by the redirect",
+      "passed": true,
+      "detail": "status 200"
+    },
+    {
+      "name": "the new URL serves the article",
+      "passed": true,
+      "detail": "status 200"
+    }
+  ],
+  "screenshots": [
+    "anonymous-login.png",
+    "owner-security.png",
+    "other-security.png"
+  ]
+}

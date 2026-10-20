@@ -8,6 +8,7 @@ const redirectTargets: Route[] = [
   "/",
   "/todos",
   "/settings/admin/posts",
+  "/settings/security",
   "/settings/two-factor",
 ];
 
