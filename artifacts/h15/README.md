@@ -57,6 +57,13 @@ node artifacts/h15/probe.mjs http://localhost:3300 38 38 7 96 1
 | `screenshots/h15-mobile-shell.png` | 390px 移动端：站名 + 菜单按钮 |
 | `screenshots/h15-mobile-menu.png` | 390px 展开菜单：当前项「归档」高亮 |
 
+## 门禁
+
+- 2026-10-21 00:53 在包含本任务全部改动的树上跑 `vp run ready`：**6/6 成功，EXIT=0**（typegen / vp check 192 文件 / knip / vp test 117 tests / e2e / build），完整输出见 `evidence-ready.txt`。
+- 01:02 复跑确认时，`vp check` 仅因 `AGENTS.md`、`CLAUDE.md` 的格式问题失败；这两个文件是 GitNexus 集成写入的指令文件（不在本任务写范围），执行 `vp check --fix AGENTS.md CLAUDE.md` 即可恢复全绿。产品代码、测试与构建在 00:53 的运行里全部通过。
+- `vp run knip`：干净（无输出）。
+- GitNexus：提交前跑过 `detect_changes(scope: all)`（risk high；受影响流程是 RootLayout / Header / NavLinks 这类每个页面都会走的路径，已用 probe + 浏览器逐页验证）。随后索引被重建为不兼容的存储版本，MCP 报 "index was written by a different @ladybugdb/core build"，因此提交后无法再跑一次；未擅自 `analyze --force` 重建他人的索引。
+
 ## 本地运行说明
 
 本次验证时，仓库已把 API 收进 web 进程（`apps/web/src/server/api.ts`，HEAD `3f1c147`），web 启动需要数据库与 Better Auth 变量。为避免改动任何 `.env` 文件，验证实例以 `apps/server/.env` 的值注入当前进程，然后：
