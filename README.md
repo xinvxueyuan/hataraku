@@ -32,6 +32,10 @@ Open http://localhost:3000 and create an account. API docs are at http://localho
 
 Each app loads the `.env` in its directory. Project creation wrote them with the values below and generated a unique `BETTER_AUTH_SECRET`. Git ignores these files. For a fresh clone, recreate them from these examples and fill in the empty `BETTER_AUTH_SECRET` with the output of `openssl rand -base64 32`; the server rejects an unset secret.
 
+The web app serves the API in process and opens its own database connection, so it needs the
+server variables too — `DATABASE_URL`, `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` — in addition to
+`SERVER_URL`. `apps/server/.env` still applies when that Hono server runs on its own.
+
 `apps/web/.env`
 
 ```dotenv
