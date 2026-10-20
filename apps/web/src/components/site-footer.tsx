@@ -12,9 +12,13 @@ const focusRing =
 const SITE_LINKS = [
   { href: "/", label: "首页" },
   { href: "/article", label: "文章" },
+  { href: "/micro", label: "微文" },
+  { href: "/projects", label: "项目" },
+  { href: "/changelog", label: "更新日志" },
   { href: "/archive", label: "归档" },
   { href: "/taxonomy", label: "分类与标签" },
   { href: "/albums", label: "相册" },
+  { href: "/toolbox", label: "工具箱" },
   { href: "/about", label: "关于" },
   { href: "/docs", label: "文档" },
   { href: "/search", label: "搜索" },

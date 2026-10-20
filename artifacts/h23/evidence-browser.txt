@@ -1,0 +1,61 @@
+H23 — 站内入口（主导航 + 页脚）浏览器证据
+生成时间: 2026-10-21 (Asia/Shanghai)
+被测实例: http://localhost:3302 （dev，BETTER_AUTH_URL 指向自身）
+
+说明：共享 Chromium 的页面缩放为 90%，因此 setViewportSize 传入的是目标 CSS 宽度的 0.9 倍；
+      window.innerWidth 实测分别为 1280 / 390。
+
+== 1280px（innerWidth 1280） ==
+{
+  "scrollWidth": 1263,
+  "clientWidth": 1263,
+  "hasHorizontalScroll": false,
+  "navRows": 1,
+  "navItems": ["首页", "文章", "微文", "项目", "更新日志", "更多", "关于", "搜索"],
+  "overlaps": []
+}
+
+== 390px（innerWidth 390） ==
+{
+  "scrollWidth": 373,
+  "clientWidth": 373,
+  "hasHorizontalScroll": false,
+  "desktopBarVisible": false,
+  "mobileMenuLinks": 11,
+  "menu": ["首页", "文章", "微文", "项目", "更新日志", "关于", "搜索", "归档", "分类", "相册", "工具箱"]
+}
+
+== 键盘：桌面 ==
+1. Tab 序列：跳到正文 → 夜行栈 → 首页 → 文章 → 微文 → 项目 → 更新日志 → 更多（summary）
+2. Enter 展开「更多」：details.open = true，焦点进入面板首项 → 归档 (/archive)
+3. Escape：details.open = false，焦点回到「更多」summary
+
+== 键盘：移动（390） ==
+1. Tab 序列：跳到正文 → 夜行栈 → Sign in → 主题按钮 → 菜单（summary）
+2. Enter 展开菜单：details.open = true，焦点进入面板首项 → 首页 (/)
+3. Tab ×2 → 微文 (/micro)
+4. Enter：URL = /micro，标题「微动态 · 夜行栈」，h1 = 微动态，/micro 返回 200
+5. Escape：details.open = false，焦点回到「菜单」summary
+
+== 点击后收起 ==
+- 桌面「更多」中点击「归档」→ /archive，details.open = false
+- 移动菜单点击「微文」→ /micro，details.open = false
+
+== aria-current="page" 覆盖 ==
+（桌面 bar 与移动菜单各渲染一份，因此每页命中两条相同链接）
+/              → 首页      (href="/")
+/article       → 文章      (href="/article")
+/posts/...     → 文章      (href="/article")
+/archive       → 归档      (href="/archive")
+/taxonomy      → 分类      (href="/taxonomy")
+/albums        → 相册      (href="/albums")
+/micro         → 微文      (href="/micro")
+/projects      → 项目      (href="/projects")
+/toolbox       → 工具箱    (href="/toolbox")   ← 位于「更多」分组内
+/changelog     → 更新日志  (href="/changelog")
+/about         → 关于      (href="/about")
+/search        → 搜索      (href="/search")
+
+== 页脚 ==
+页面导航新增：微文 /micro、项目 /projects、工具箱 /toolbox、更新日志 /changelog；
+订阅与机器端点保留：RSS、Atom、Sitemap、llms.txt、llms-full.txt。

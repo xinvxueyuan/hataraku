@@ -1,8 +1,7 @@
-import { Menu } from "lucide-react";
 import Link from "next/link";
 
 import { ModeToggle } from "#src/components/mode-toggle.tsx";
-import { NavLinks } from "#src/components/nav-links.tsx";
+import { MobileNav, NavLinks } from "#src/components/nav-links.tsx";
 import { SITE_NAME } from "#src/components/site.ts";
 import { UserMenu } from "#src/components/user-menu.tsx";
 import { getSession } from "#src/server/session.ts";
@@ -38,17 +37,7 @@ export const Header = async () => {
         <div className="ml-auto flex items-center gap-2">
           <UserMenu user={session?.user ?? null} />
           <ModeToggle />
-          <details className="relative md:hidden">
-            <summary
-              className={`${focusRing} border-border flex cursor-pointer list-none items-center gap-1 rounded-md border px-2.5 py-1.5 text-sm [&::-webkit-details-marker]:hidden`}
-            >
-              <Menu aria-hidden="true" className="size-4" />
-              菜单
-            </summary>
-            <div className="bg-popover absolute top-full right-0 z-30 mt-2 w-44 rounded-lg border p-2 shadow-lg">
-              <NavLinks label="主导航（移动）" variant="menu" />
-            </div>
-          </details>
+          <MobileNav />
         </div>
       </div>
     </header>
