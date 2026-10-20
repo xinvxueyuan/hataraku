@@ -60,7 +60,14 @@ const formValue = (form: FormData, name: string) => {
 const captchaHeaders = (token: string) =>
   token === "" ? undefined : { "x-captcha-response": token };
 
-export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
+export const AuthForm = ({
+  minPasswordLength,
+  redirectTo,
+}: {
+  /** The floor `packages/auth` enforces, so the browser does not accept a password the API refuses. */
+  minPasswordLength: number;
+  redirectTo: Route;
+}) => {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("sign-in");
   const [step, setStep] = useState<Step>("credentials");
@@ -264,7 +271,9 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
                 mode === "sign-in" ? "current-password" : "new-password"
               }
               id="password"
-              minLength={8}
+              // Only sign-up creates a password; signing in must accept whatever an older account
+              // already has, and the server checks the ceiling on both paths.
+              minLength={mode === "sign-up" ? minPasswordLength : undefined}
               name="password"
               required
               type="password"

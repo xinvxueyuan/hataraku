@@ -34,6 +34,20 @@ const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password";
 /** The only part of a sign-in body this hook reads; Better Auth validates the rest. */
 const signInBodySchema = z.object({ email: z.string() });
 
+/**
+ * v2 enforced at least 16 characters and at most 200
+ * (nightstack/src/lib/supabase/password-policy.ts). Better Auth enforces the same two bounds on
+ * sign-up, set-password, change-password and reset-password; sign-in only checks the ceiling, so an
+ * account created under the old eight-character default can still sign in and raise its password.
+ *
+ * Better Auth has no option for a local common-password blocklist, so v2's weak-password list and
+ * its "must not contain your email" rule have no counterpart here. The supported alternative is the
+ * `haveIBeenPwned` plugin (a breached-password check that calls an external service); it is not
+ * enabled — see artifacts/h26/README.md for the tradeoff.
+ */
+export const PASSWORD_MIN_LENGTH = 16;
+export const PASSWORD_MAX_LENGTH = 200;
+
 interface AuthOptions {
   db: Database;
   baseURL: string;
@@ -82,7 +96,11 @@ export const createAuth = ({
         },
       },
     },
-    emailAndPassword: { enabled: true },
+    emailAndPassword: {
+      enabled: true,
+      maxPasswordLength: PASSWORD_MAX_LENGTH,
+      minPasswordLength: PASSWORD_MIN_LENGTH,
+    },
     hooks: {
       before: createAuthMiddleware(async (ctx) => {
         if (isAllowedEmail === undefined || ctx.path !== "/sign-in/email") {

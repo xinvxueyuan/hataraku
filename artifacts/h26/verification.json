@@ -1,0 +1,58 @@
+{
+  "base": "http://localhost:3300",
+  "checkedAt": "2026-10-20T20:06:02.958Z",
+  "checks": [
+    {
+      "name": "the account is created",
+      "passed": true,
+      "detail": "http://localhost:3300/todos"
+    },
+    {
+      "name": "the initial password signs in",
+      "passed": true,
+      "detail": "http://localhost:3300/todos"
+    },
+    {
+      "name": "the settings navigation links to the password page",
+      "passed": true,
+      "detail": "/settings/password"
+    },
+    {
+      "name": "the password page opens from the navigation",
+      "passed": true,
+      "detail": "http://localhost:3300/settings/password"
+    },
+    {
+      "name": "a wrong current password is explained",
+      "passed": true,
+      "detail": "当前密码不正确。"
+    },
+    {
+      "name": "a correct change is confirmed",
+      "passed": true,
+      "detail": "success message shown"
+    },
+    {
+      "name": "the old password no longer signs in",
+      "passed": true,
+      "detail": "http://localhost:3300/login | toast visible"
+    },
+    {
+      "name": "the new password signs in",
+      "passed": true,
+      "detail": "http://localhost:3300/todos"
+    },
+    {
+      "name": "a visitor without a session is sent to sign in",
+      "passed": true,
+      "detail": "http://localhost:3300/login?redirect=%2Fsettings%2Fpassword"
+    }
+  ],
+  "screenshots": [
+    "password-form.png",
+    "wrong-current-password.png",
+    "password-updated.png",
+    "old-password-rejected.png",
+    "new-password-signed-in.png"
+  ]
+}

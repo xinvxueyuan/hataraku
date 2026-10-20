@@ -1,6 +1,8 @@
 import type { Route } from "next";
 import { redirect } from "next/navigation";
 
+import { PASSWORD_MIN_LENGTH } from "@hataraku/auth";
+
 import { AuthForm } from "#src/components/auth-form.tsx";
 import { getSession } from "#src/server/session.ts";
 
@@ -8,6 +10,7 @@ const redirectTargets: Route[] = [
   "/",
   "/todos",
   "/settings/admin/posts",
+  "/settings/password",
   "/settings/security",
   "/settings/two-factor",
 ];
@@ -23,7 +26,9 @@ const LoginPage = async ({ searchParams }: PageProps<"/login">) => {
     redirect(redirectTo);
   }
 
-  return <AuthForm redirectTo={redirectTo} />;
+  return (
+    <AuthForm minPasswordLength={PASSWORD_MIN_LENGTH} redirectTo={redirectTo} />
+  );
 };
 
 export default LoginPage;
