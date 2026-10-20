@@ -20,7 +20,7 @@ const signIn = async (index) => {
 };
 
 const statuses = await Promise.all(
-  Array.from({ length: ATTEMPTS },  async (_, index) => signIn(index))
+  Array.from({ length: ATTEMPTS }, async (_, index) => await signIn(index))
 );
 
 const counts = statuses.reduce((tally, status) => {
