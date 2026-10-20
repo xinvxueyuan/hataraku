@@ -58,8 +58,7 @@ export const createAuth = ({
     databaseHooks: {
       user: {
         create: {
-          // Returns a promise without `async`: the signature requires one, and the body never awaits.
-          before: (user) => {
+          before: async (user) => {
             if (isAllowedEmail !== undefined && !isAllowedEmail(user.email)) {
               throw new APIError("FORBIDDEN", {
                 message:
@@ -67,7 +66,11 @@ export const createAuth = ({
               });
             }
 
-            return Promise.resolve({ data: user });
+            // The hook signature is Promise-returning and the check above is synchronous, so the
+            // await is what keeps the function honestly async instead of a wrapper around a value.
+            await Promise.resolve();
+
+            return { data: user };
           },
         },
       },
