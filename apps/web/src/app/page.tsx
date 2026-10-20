@@ -42,19 +42,21 @@ const HomePage = async () => {
     readProfile(),
   ]);
 
+  // Normalised once so the markup compares against a single "absent" value rather than
+  // reaching through a possibly-null profile three times.
+  const siteName = profile?.name ?? "夜行栈";
+  const tagline = profile?.tagline ?? null;
+  const description = profile?.description ?? null;
+
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-12">
       <header className="flex flex-col gap-3">
-        <h1 className="text-4xl font-semibold tracking-tight">
-          {profile?.name ?? "夜行栈"}
-        </h1>
-        {profile?.tagline == null ? null : (
-          <p className="text-muted-foreground text-lg">{profile.tagline}</p>
+        <h1 className="text-4xl font-semibold tracking-tight">{siteName}</h1>
+        {tagline === null ? null : (
+          <p className="text-muted-foreground text-lg">{tagline}</p>
         )}
-        {profile?.description == null ? null : (
-          <p className="text-muted-foreground max-w-2xl">
-            {profile.description}
-          </p>
+        {description === null ? null : (
+          <p className="text-muted-foreground max-w-2xl">{description}</p>
         )}
       </header>
 
