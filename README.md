@@ -78,6 +78,23 @@ pnpm run ready        # the gate: typegen, check, knip, test, e2e, build
 A second `pnpm run build` with no source change replays from cache (`FULL TURBO`). `vp check`, `vp test`
 and `knip` stay direct calls: each is one repo-wide invocation rather than a per-package task.
 
+### Remote cache
+
+Turborepo shares task results through a remote cache when `TURBO_TOKEN` and `TURBO_TEAM` are set;
+with neither present every task runs locally, which is the default. To turn it on against Vercel:
+
+```sh
+pnpm exec turbo login        # opens the browser once
+pnpm exec turbo link         # links this directory to the team's cache
+```
+
+Then add the two values as repository secrets so CI shares the same cache:
+
+```sh
+gh secret set TURBO_TOKEN --body "<token from turbo login>"
+gh secret set TURBO_TEAM  --body "<team slug>"
+```
+
 `pnpm run dev` starts the web and API watchers through `turbo run dev`. On this machine ports 3000
 and 3001 are held by `wslrelay`, so pass `PORT=3301` and `SERVER_URL=http://localhost:3301` and run
 the web app with `npx next dev -p 3300` when those ports are unavailable.

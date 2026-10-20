@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      # The integration and end-to-end suites create a fresh database per test file beside
+      # DATABASE_URL, so the job needs a real PostgreSQL server rather than a stub.
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: hataraku
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d hataraku"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/hataraku
+      # The server validates this at boot: at least 32 characters. CI has no real secret to use.
+      BETTER_AUTH_SECRET: ci-only-secret-that-is-long-enough-to-pass
+      BETTER_AUTH_URL: http://localhost:3200
+      SERVER_URL: http://localhost:3201
+      E2E_TELEMETRY_DISABLED: "1"
+      TURBO_TELEMETRY_DISABLED: "1"
+      # Remote cache is optional: with no token Turborepo simply runs without it.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # A full history lets `turbo run <task> --affected` compare against the base branch when
+          # the repository grows enough for a partial run to pay off.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install the end-to-end browser
+        run: pnpm --filter @hataraku/web exec e2e-web install chromium
+
+      # The same sequence the local gate runs (`pnpm run ready`). `vp check`, `vp test` and `knip`
+      # are single repo-wide invocations, so they stay direct rather than becoming package tasks.
+      - name: Generate route types
+        run: pnpm exec turbo run typegen
+
+      - name: Format, lint and type check
+        run: pnpm exec vp check
+
+      - name: Look for unused code and dependencies
+        run: pnpm exec knip
+
+      - name: Unit and integration tests
+        run: pnpm exec vp test
+
+      - name: End-to-end tests
+        run: pnpm exec turbo run test:e2e
+
+      - name: Build
+        run: pnpm exec turbo run build
