@@ -34,7 +34,7 @@ Get-Content -Raw artifacts/h28/cleanup.sql | docker exec -i hataraku-db-1 psql -
 - 像素统计（Playwright + OffscreenCanvas，见 `evidence-og.txt`）：1200×630、85,835 bytes、423 个颜色桶、亮像素 22,525（2.98%）、luma 标准差 38.39 —— 非空白。
 - 截图：`h28-about-empty.png`、`h28-about-filled.png`、`h28-toolbox-empty.png`、`h28-toolbox-filled.png`、`og.png`。
 - fixture 已清理（`h28-%` 在 timeline_entries / friends 均为 0），清理后基线 probe 复跑 PASS。
-- 门禁：`vp check`（含 fmt）4 个改动文件 0 error；`pnpm run ready` 见 `evidence-ready.txt`。
+- 门禁：`vp check`（含 fmt）4 个改动文件 0 error；`pnpm run ready` **EXIT=0**（typegen / vp check / knip / vp test / e2e / build，见 `evidence-ready.txt`；期间曾因 content 任务在途的 admin 测试 lint 短暂变红，其修复后复跑即绿）。
 
 ## 备注
 
