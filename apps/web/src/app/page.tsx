@@ -19,23 +19,55 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   timeZone: "Asia/Shanghai",
 });
 
+/**
+ * Reads the site profile, treating "not configured yet" as absent.
+ *
+ * A fresh database has no profile row, and the procedure answers NOT_FOUND. The home page is the
+ * route the end-to-end stack polls for health, so turning that into a 500 would make an unconfigured
+ * site look broken — and would stop the suite before it reached a single assertion. The page renders
+ * without the profile instead.
+ */
+const readProfile = async () => {
+  try {
+    return await serverCall.site.profile();
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Reads the site profile, treating "not configured yet" as absent.
+ *
+ * A fresh database has no profile row and the procedure answers NOT_FOUND. The home page is the
+ * route the end-to-end stack polls for health, so turning that into a 500 would make an unconfigured
+ * site look broken and would stop the suite before its first assertion. The page renders without the
+ * profile instead.
+ */
+const readProfile = async () => {
+  try {
+    return await serverCall.site.profile();
+  } catch {
+    return null;
+  }
+};
+
 const HomePage = async () => {
   const [latest, taxonomy, profile] = await Promise.all([
     serverCall.posts.list({ page: 1, pageSize: 6 }),
     serverCall.taxonomy.overview(),
-    serverCall.site.profile(),
+    readProfile(),
   ]);
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-12">
       <header className="flex flex-col gap-3">
         <h1 className="text-4xl font-semibold tracking-tight">
-          {profile.name}
+          {profile?.name ?? "夜行栈"}
         </h1>
-        {profile.tagline === null ? null : (
+        {profile?.tagline == null ? null : (
           <p className="text-muted-foreground text-lg">{profile.tagline}</p>
         )}
-        {profile.description === null ? null : (
+        {profile?.description == null ? null : (
           <p className="text-muted-foreground max-w-2xl">
             {profile.description}
           </p>
