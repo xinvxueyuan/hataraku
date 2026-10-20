@@ -5,22 +5,22 @@ $ turbo run typegen ⊘ cache disabled
    • Running typegen in 8 packages
    • Remote caching disabled
 
-@hataraku/web:content: cache hit, replaying logs a4e9ee5c371d0aff
+@hataraku/web:content: cache hit, replaying logs e45c14ffbd03dd81
 @hataraku/web:content: $ velite
-@hataraku/web:content: [32m[VELITE][0m build finished in 203.86ms
-@hataraku/web:typegen: cache hit, replaying logs 1ec9a2e6a8180857
+@hataraku/web:content: [32m[VELITE][0m build finished in 113.61ms
+@hataraku/web:typegen: cache hit, replaying logs be0a8236559928e6
 @hataraku/web:typegen: $ next typegen
 @hataraku/web:typegen: Generating route types...
 @hataraku/web:typegen: ✓ Types generated successfully
 
  Tasks:    2 successful, 2 total
 Cached:    2 cached, 2 total
-  Time:    251ms >>> FULL TURBO
+  Time:    197ms >>> FULL TURBO
 
 
 $ vp check ⊘ cache disabled
-pass: All 192 files are correctly formatted (2685ms, 8 threads)
-pass: Found no warnings, lint errors, or type errors in 143 files (26.8s, 8 threads)
+pass: All 192 files are correctly formatted (1658ms, 8 threads)
+pass: Found no warnings, lint errors, or type errors in 143 files (14.6s, 8 threads)
 
 $ knip ⊘ cache disabled
 
@@ -28,29 +28,28 @@ $ vp test ⊘ cache disabled
 
  RUN  v5.0.5 C:/dev/dsh/projects/hataraku
 
- ✓ |integration| packages/api/tests/integration/taxonomy.test.ts (7 tests) 2018ms
- ✓ |integration| packages/api/tests/integration/media.test.ts (11 tests) 2155ms
- ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 2154ms
- ✓ |integration| packages/api/tests/integration/admin-posts.test.ts (17 tests) 2869ms
-   ✓ posts write path (17)
-     ✓ refuses an account outside ADMIN_EMAILS with FORBIDDEN 356ms
-     ✓ keeps a draft off the public read path until it is published 647ms
- ✓ |integration| packages/api/tests/integration/search.test.ts (12 tests) 2232ms
- ✓ |integration| packages/api/tests/integration/todos.test.ts (10 tests) 2723ms
+ ✓ |integration| packages/api/tests/integration/taxonomy.test.ts (7 tests) 1275ms
+ ✓ |integration| packages/api/tests/integration/media.test.ts (11 tests) 1344ms
+ ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 1453ms
+ ✓ |integration| packages/api/tests/integration/todos.test.ts (10 tests) 3704ms
    ✓ todos (10)
-     ✓ creates a todo with a trimmed title, not yet completed 378ms
-     ✓ rejects the title "   " with BAD_REQUEST 347ms
- ✓ |integration| packages/api/tests/integration/posts.test.ts (21 tests) 2270ms
- ✓ |unit| packages/api/src/mdx-guard.test.ts (10 tests) 21ms
- ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 15ms
- ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 16ms
- ✓ |unit| apps/web/src/components/sheet-table.test.ts (5 tests) 20ms
- ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 458ms
+     ✓ creates a todo with a trimmed title, not yet completed 2091ms
+ ✓ |integration| packages/api/tests/integration/search.test.ts (12 tests) 1385ms
+ ✓ |integration| packages/api/tests/integration/posts.test.ts (21 tests) 1439ms
+ ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 14ms
+ ✓ |unit| packages/api/src/mdx-guard.test.ts (10 tests) 22ms
+ ✓ |integration| packages/api/tests/integration/admin-posts.test.ts (17 tests) 4295ms
+   ✓ posts write path (17)
+     ✓ refuses an account outside ADMIN_EMAILS with FORBIDDEN 2075ms
+     ✓ keeps a draft off the public read path until it is published 412ms
+ ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 13ms
+ ✓ |unit| apps/web/src/components/sheet-table.test.ts (5 tests) 17ms
+ ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 180ms
 
  Test Files  12 passed (12)
       Tests  117 passed (117)
-   Start at  00:53:43
-   Duration  28.51s (import 82%, tests 12%, transform 5%)
+   Start at  01:06:01
+   Duration  18.33s (import 82%, tests 16%, transform 2%)
 
 
 $ turbo run test:e2e ⊘ cache disabled
@@ -60,31 +59,31 @@ $ turbo run test:e2e ⊘ cache disabled
    • Running test:e2e in 8 packages
    • Remote caching disabled
 
-@hataraku/web:test:e2e: cache bypass, force executing 3642cc528770d5f2
+@hataraku/web:test:e2e: cache bypass, force executing bc08273c0b1365ab
 @hataraku/web:test:e2e: $ e2e run
 @hataraku/web:test:e2e: 
 @hataraku/web:test:e2e:  RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
-@hataraku/web:test:e2e:       run 01a15a3c-309a-79c3-bdc4-2c9a6b1815ba · targets: web
+@hataraku/web:test:e2e:       run 01a15a47-420c-7988-816e-a97d01b8a426 · targets: web
 @hataraku/web:test:e2e: 
-@hataraku/web:test:e2e:  ✓ target "web" command ready 19.30s
-@hataraku/web:test:e2e:  ✓ |web| tests/e2e/app.e2e.ts (7 tests) 36.08s
-@hataraku/web:test:e2e:    ✓ the home page reports the API as connected 2.49s
-@hataraku/web:test:e2e:    ✓ visitors are sent to sign in before seeing todos 1.76s
-@hataraku/web:test:e2e:    ✓ a new user signs up and manages todos that persist across reloads 12.36s
-@hataraku/web:test:e2e:    ✓ an existing user signs in and returns to the page they asked for 4.31s
-@hataraku/web:test:e2e:    ✓ a wrong password is rejected 3.12s
-@hataraku/web:test:e2e:    ✓ signing out ends the session 6.99s
-@hataraku/web:test:e2e:    ✓ the dark theme survives a reload 5.05s
+@hataraku/web:test:e2e:  ✓ target "web" command ready 14.29s
+@hataraku/web:test:e2e:  ✓ |web| tests/e2e/app.e2e.ts (7 tests) 21.04s
+@hataraku/web:test:e2e:    ✓ the home page reports the API as connected 2.39s
+@hataraku/web:test:e2e:    ✓ visitors are sent to sign in before seeing todos 1.95s
+@hataraku/web:test:e2e:    ✓ a new user signs up and manages todos that persist across reloads 5.46s
+@hataraku/web:test:e2e:    ✓ an existing user signs in and returns to the page they asked for 2.85s
+@hataraku/web:test:e2e:    ✓ a wrong password is rejected 1.85s
+@hataraku/web:test:e2e:    ✓ signing out ends the session 4.13s
+@hataraku/web:test:e2e:    ✓ the dark theme survives a reload 2.41s
 @hataraku/web:test:e2e: 
 @hataraku/web:test:e2e:  Test Files  1 passed (1)
 @hataraku/web:test:e2e:       Tests  7 passed (7)
-@hataraku/web:test:e2e:    Start at  00:54:21
-@hataraku/web:test:e2e:    Duration  62.36s (1m 2s, startup 19.30s)
+@hataraku/web:test:e2e:    Start at  01:06:25
+@hataraku/web:test:e2e:    Duration  38.67s (startup 14.29s)
 @hataraku/web:test:e2e: 
 
  Tasks:    1 successful, 1 total
 Cached:    0 cached, 1 total
-  Time:    1m12.933s 
+  Time:    45.883s 
 
 
 $ turbo run build ⊘ cache disabled
@@ -94,18 +93,12 @@ $ turbo run build ⊘ cache disabled
    • Running build in 8 packages
    • Remote caching disabled
 
-@hataraku/web:build: cache miss, executing 14dcee20f3142232
-@hataraku/server:build: cache miss, executing 33c812000f300fd8
-@hataraku/web:build: $ velite && next build
+@hataraku/server:build: cache hit, replaying logs 33c812000f300fd8
 @hataraku/server:build: $ vp pack
-@hataraku/web:build: [32m[VELITE][0m build finished in 278.86ms
 @hataraku/server:build: ℹ entry: src/index.ts, src/migrate.ts
 @hataraku/server:build: ℹ tsconfig: tsconfig.json
 @hataraku/server:build: ℹ Build start
 @hataraku/server:build: ℹ Cleaning 30 files
-@hataraku/web:build: ▲ Next.js 16.4.2 (Turbopack)
-@hataraku/web:build: - Environments: .env
-@hataraku/web:build: ✓ Running next.config.ts took 164ms
 @hataraku/server:build: ℹ Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
 @hataraku/server:build: See more at https://tsdown.dev/options/dependencies#deps-onlybundle
 @hataraku/server:build: Detected dependencies in bundle:
@@ -160,11 +153,17 @@ $ turbo run build ⊘ cache disabled
 @hataraku/server:build: ℹ dist\kysely-adapter-CrrhQo-h.mjs                      0.08 kB │ gzip:  0.09 kB
 @hataraku/server:build: ℹ 16 files, total: 2.39 MB
 @hataraku/server:build: ✔ Build complete in 3286ms
+@hataraku/web:build: cache miss, executing 14dcee20f3142232
+@hataraku/web:build: $ velite && next build
+@hataraku/web:build: [32m[VELITE][0m build finished in 142.86ms
+@hataraku/web:build: ▲ Next.js 16.4.2 (Turbopack)
+@hataraku/web:build: - Environments: .env
+@hataraku/web:build: ✓ Running next.config.ts took 53ms
 @hataraku/web:build: 
 @hataraku/web:build:   Creating an optimized production build ...
-@hataraku/web:build: ✓ Compiled successfully in 6.3s
+@hataraku/web:build: ✓ Compiled successfully in 3.5s
 @hataraku/web:build:   Running TypeScript ...
-@hataraku/web:build:   Finished TypeScript in 6.1s ...
+@hataraku/web:build:   Finished TypeScript in 3.5s ...
 @hataraku/web:build:   Collecting page data using 7 workers ...
 @hataraku/web:build:   Generating static pages using 7 workers (0/18) ...
 @hataraku/web:build: ❌ Invalid environment variables: [
@@ -227,7 +226,6 @@ $ turbo run build ⊘ cache disabled
 @hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
 @hataraku/web:build:   }
 @hataraku/web:build: ]
-@hataraku/web:build:   Generating static pages using 7 workers (4/18) 
 @hataraku/web:build: ❌ Invalid environment variables: [
 @hataraku/web:build:   {
 @hataraku/web:build:     expected: 'string',
@@ -248,6 +246,7 @@ $ turbo run build ⊘ cache disabled
 @hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
 @hataraku/web:build:   }
 @hataraku/web:build: ]
+@hataraku/web:build:   Generating static pages using 7 workers (4/18) 
 @hataraku/web:build:   Generating static pages using 7 workers (8/18) 
 @hataraku/web:build: ❌ Invalid environment variables: [
 @hataraku/web:build:   {
@@ -330,7 +329,7 @@ $ turbo run build ⊘ cache disabled
 @hataraku/web:build:     message: 'Invalid input: expected string, received undefined'
 @hataraku/web:build:   }
 @hataraku/web:build: ]
-@hataraku/web:build: ✓ Generating static pages using 7 workers (18/18) in 1484ms
+@hataraku/web:build: ✓ Generating static pages using 7 workers (18/18) in 1910ms
 @hataraku/web:build:   Finalizing page optimization ...
 @hataraku/web:build: 
 @hataraku/web:build: Route (app)
@@ -367,8 +366,8 @@ $ turbo run build ⊘ cache disabled
 @hataraku/web:build: 
 
  Tasks:    2 successful, 2 total
-Cached:    0 cached, 2 total
-  Time:    29.347s 
+Cached:    1 cached, 2 total
+  Time:    20.535s 
 
 
 ---
