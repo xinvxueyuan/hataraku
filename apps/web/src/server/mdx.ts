@@ -27,9 +27,12 @@ import { assertSafeMdx } from "#src/server/mdx-guard.ts";
  */
 
 /**
- * Components an article body may use. Empty on purpose: lowercase tags are HTML, and nothing here
- * needs a React component yet. A component added later must render props only, never evaluate a
- * string, or it reopens the boundary this map exists to hold.
+ * Components an article body may use. Lowercase tags are HTML, so only components that need to be
+ * React belong here. A component added later must render props only and never evaluate a string, or
+ * it reopens the boundary this map exists to hold.
+ *
+ * `src/components/sheet.tsx` is written but not listed yet: its Univer mount still throws on
+ * hydration, so it stays out of the content surface until that is fixed and verified in a browser.
  */
 const ALLOWED_COMPONENTS = {};
 

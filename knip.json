@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": [".velite/**", "artifacts/**"],
+  "ignore": ["artifacts/**"],
   "workspaces": {
     "apps/mobile": {
       "ignoreDependencies": ["expo-updates"]
