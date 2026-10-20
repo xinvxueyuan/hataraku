@@ -12,6 +12,11 @@ import { Card } from "@hataraku/ui/components/card";
 
 import { api } from "#src/lib/api.ts";
 
+/** The list's input, taken from the client's own contract so the page cannot pass a wrong shape. */
+type PostsListInput = NonNullable<
+  Parameters<typeof api.posts.adminList.queryKey>[0]
+>["input"];
+
 const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
   dateStyle: "medium",
   timeZone: "Asia/Shanghai",
@@ -26,12 +31,21 @@ const statusClassName = (status: "draft" | "published"): string =>
     : "bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs font-medium";
 
 /**
- * Every post, drafts included, with the two actions the index needs: publish or unpublish, and
- * delete. Editing happens on its own page, so the title is a link.
+ * One page of posts, drafts included, with the two actions the index needs: publish or unpublish,
+ * and delete. Editing happens on its own page, so the title is a link.
  */
-export const AdminPostList = () => {
+export const AdminPostList = ({
+  filtered,
+  input,
+}: {
+  filtered: boolean;
+  input: PostsListInput;
+}) => {
   const queryClient = useQueryClient();
-  const { data: posts } = useSuspenseQuery(api.posts.adminList.queryOptions());
+
+  const { data } = useSuspenseQuery(
+    api.posts.adminList.queryOptions({ input })
+  );
 
   const invalidate = {
     onSuccess: async () => {
@@ -47,11 +61,13 @@ export const AdminPostList = () => {
 
   const remove = useMutation(api.posts.remove.mutationOptions(invalidate));
 
-  if (posts.length === 0) {
+  if (data.items.length === 0) {
     return (
       <Card>
         <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-          还没有文章。新建一篇，写点什么。
+          {filtered
+            ? "没有匹配的文章。换个关键词或清掉筛选再看看。"
+            : "还没有文章。新建一篇，写点什么。"}
         </p>
       </Card>
     );
@@ -60,7 +76,7 @@ export const AdminPostList = () => {
   return (
     <Card>
       <ul className="divide-y" data-slot="admin-post-list">
-        {posts.map((post) => (
+        {data.items.map((post) => (
           <li
             className="flex flex-wrap items-center gap-3 px-4 py-3"
             key={post.id}
@@ -92,7 +108,7 @@ export const AdminPostList = () => {
               type="button"
               variant="outline"
             >
-              {post.status === "published" ? "取消发布" : "发布"}
+              {post.status === "published" ? "撤下" : "发布"}
             </Button>
 
             <Button

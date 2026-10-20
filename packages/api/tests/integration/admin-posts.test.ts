@@ -16,7 +16,7 @@ const draft = () => ({
 
 describe("posts write path", () => {
   it.each([
-    ["adminList", async () => await anonymous.posts.adminList()],
+    ["adminList", async () => await anonymous.posts.adminList({})],
     [
       "create",
       async () =>
@@ -53,7 +53,7 @@ describe("posts write path", () => {
     await expect(
       client.posts.create({ bodyMd: "", slug: "nope", title: "nope" })
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
-    await expect(client.posts.adminList()).rejects.toMatchObject({
+    await expect(client.posts.adminList({})).rejects.toMatchObject({
       code: "FORBIDDEN",
     });
   });
@@ -84,7 +84,9 @@ describe("posts write path", () => {
       anonymous.posts.bySlug({ slug: post.slug })
     ).rejects.toMatchObject({ code: "NOT_FOUND" });
     await expect(
-      owner.posts.adminList().then((rows) => rows.map((row) => row.slug))
+      owner.posts
+        .adminList({})
+        .then((page) => page.items.map((row) => row.slug))
     ).resolves.toContain(post.slug);
 
     await owner.posts.publish({ id: created.id });
@@ -129,7 +131,9 @@ describe("posts write path", () => {
       await expect(attempt).rejects.toMatchObject({ code: "BAD_REQUEST" });
       await expect(attempt).rejects.toThrow(reason);
       await expect(
-        owner.posts.adminList().then((rows) => rows.map((row) => row.slug))
+        owner.posts
+          .adminList({})
+          .then((page) => page.items.map((row) => row.slug))
       ).resolves.not.toContain(slug);
     }
   );
@@ -380,5 +384,176 @@ describe("posts filing: category, tags, cover, featured, publish day", () => {
       .where(eq(postTags.postId, created.id));
 
     expect(orphans).toHaveLength(0);
+  });
+});
+
+/** A token unique to one test, so a search only matches rows that test created. */
+const token = () => `q-${crypto.randomUUID().slice(0, 8)}`;
+
+const createListedPost = async (
+  owner: Awaited<ReturnType<typeof signUp>>,
+  title: string,
+  bodyMd = ""
+) => {
+  const suffix = crypto.randomUUID().slice(0, 8);
+
+  return await owner.posts.create({
+    bodyMd,
+    slug: `list-${suffix}`,
+    title,
+  });
+};
+
+describe("admin list query", () => {
+  it("pages through its own rows and reports a stable total", async () => {
+    const owner = await signUp();
+    const mark = token();
+
+    await createListedPost(owner, `${mark} one`);
+    await createListedPost(owner, `${mark} two`);
+    await createListedPost(owner, `${mark} three`);
+
+    const first = await owner.posts.adminList({
+      pageSize: 2,
+      query: mark,
+      status: "draft",
+    });
+
+    expect(first).toMatchObject({
+      page: 1,
+      pageSize: 2,
+      total: 3,
+      totalPages: 2,
+    });
+    expect(first.items).toHaveLength(2);
+
+    const second = await owner.posts.adminList({
+      page: 2,
+      pageSize: 2,
+      query: mark,
+      status: "draft",
+    });
+
+    expect(second.items).toHaveLength(1);
+    expect(second.items[0]?.id).not.toBe(first.items[0]?.id);
+  });
+
+  it("matches the term in the title, the slug and the body", async () => {
+    const owner = await signUp();
+    const mark = token();
+    const suffix = crypto.randomUUID().slice(0, 8);
+
+    await owner.posts.create({
+      bodyMd: `正文里有 ${mark}`,
+      slug: `body-${suffix}`,
+      title: "正文命中",
+    });
+    await owner.posts.create({
+      bodyMd: "",
+      slug: `${mark}-${suffix}`,
+      title: "slug 命中",
+    });
+    await owner.posts.create({
+      bodyMd: "",
+      slug: `title-${suffix}`,
+      title: `${mark} 标题命中`,
+    });
+
+    const hits = await owner.posts.adminList({ pageSize: 50, query: mark });
+
+    expect(hits.total).toBe(3);
+  });
+
+  it("filters by status", async () => {
+    const owner = await signUp();
+    const mark = token();
+
+    const draftPost = await createListedPost(owner, `${mark} draft`);
+
+    const publishedPost = await owner.posts.create({
+      bodyMd: "",
+      slug: `pub-${crypto.randomUUID().slice(0, 8)}`,
+      status: "published",
+      title: `${mark} published`,
+    });
+
+    const drafts = await owner.posts.adminList({
+      pageSize: 50,
+      query: mark,
+      status: "draft",
+    });
+
+    expect(drafts.items.map((row) => row.id)).toStrictEqual([draftPost.id]);
+
+    const published = await owner.posts.adminList({
+      pageSize: 50,
+      query: mark,
+      status: "published",
+    });
+
+    expect(published.items.map((row) => row.id)).toStrictEqual([
+      publishedPost.id,
+    ]);
+  });
+
+  it("rejects a page below one and a page size above the cap", async () => {
+    const owner = await signUp();
+
+    await expect(owner.posts.adminList({ page: 0 })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+    });
+    await expect(
+      owner.posts.adminList({ pageSize: 500 })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+
+  it("orders by publish day when asked, and by edit time otherwise", async () => {
+    const owner = await signUp();
+    const mark = token();
+
+    const older = await owner.posts.create({
+      bodyMd: "",
+      publishedAt: "2025-01-01",
+      slug: `older-${crypto.randomUUID().slice(0, 8)}`,
+      status: "published",
+      title: `${mark} older`,
+    });
+
+    const newer = await owner.posts.create({
+      bodyMd: "",
+      publishedAt: "2026-01-01",
+      slug: `newer-${crypto.randomUUID().slice(0, 8)}`,
+      status: "published",
+      title: `${mark} newer`,
+    });
+
+    const byPublishDay = await owner.posts.adminList({
+      pageSize: 50,
+      query: mark,
+      sort: "published",
+    });
+
+    expect(byPublishDay.items.map((row) => row.id)).toStrictEqual([
+      newer.id,
+      older.id,
+    ]);
+  });
+
+  it("counts drafts and published posts in adminStats", async () => {
+    const owner = await signUp();
+
+    await createListedPost(owner, `${token()} draft`);
+    await owner.posts.create({
+      bodyMd: "",
+      slug: `stat-${crypto.randomUUID().slice(0, 8)}`,
+      status: "published",
+      title: `${token()} published`,
+    });
+
+    const stats = await owner.posts.adminStats();
+
+    expect(stats.total).toBe(stats.drafts + stats.published);
+    expect(stats.drafts).toBeGreaterThanOrEqual(1);
+    expect(stats.published).toBeGreaterThanOrEqual(1);
   });
 });

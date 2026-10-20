@@ -12,14 +12,22 @@ import { Card } from "@hataraku/ui/components/card";
 
 import { api } from "#src/lib/api.ts";
 
-/**
- * Every release entry, newest first. The list only deletes; editing lives on the entry's page.
- */
-export const ChangelogList = () => {
+type ChangelogListInput = NonNullable<
+  Parameters<typeof api.content.changelog.adminList.queryKey>[0]
+>["input"];
+
+/** One page of release entries. The list only deletes; editing lives on the entry's page. */
+export const ChangelogList = ({
+  filtered,
+  input,
+}: {
+  filtered: boolean;
+  input: ChangelogListInput;
+}) => {
   const queryClient = useQueryClient();
 
-  const { data: entries } = useSuspenseQuery(
-    api.content.changelog.adminList.queryOptions()
+  const { data } = useSuspenseQuery(
+    api.content.changelog.adminList.queryOptions({ input })
   );
 
   const invalidate = {
@@ -32,11 +40,13 @@ export const ChangelogList = () => {
     api.content.changelog.remove.mutationOptions(invalidate)
   );
 
-  if (entries.length === 0) {
+  if (data.items.length === 0) {
     return (
       <Card>
         <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-          还没有更新日志。发版时记一条，读者才知道改了什么。
+          {filtered
+            ? "没有匹配的更新日志。换个关键词或清掉筛选再看看。"
+            : "还没有更新日志。发版时记一条，读者才知道改了什么。"}
         </p>
       </Card>
     );
@@ -45,7 +55,7 @@ export const ChangelogList = () => {
   return (
     <Card>
       <ul className="divide-y" data-slot="admin-changelog-list">
-        {entries.map((entry) => (
+        {data.items.map((entry) => (
           <li
             className="flex flex-wrap items-center gap-3 px-4 py-3"
             key={entry.id}
@@ -60,8 +70,7 @@ export const ChangelogList = () => {
               </Link>
               <span className="text-muted-foreground truncate text-xs">
                 {entry.releasedAt ?? "未定日期"} · {entry.changes.length} 条变更
-                · /changelog/
-                {entry.slug}
+                · /changelog/{entry.slug}
               </span>
             </div>
 

@@ -13,18 +13,28 @@ import { Card } from "@hataraku/ui/components/card";
 import { formatDay } from "#src/components/admin-dates.ts";
 import { api } from "#src/lib/api.ts";
 
+type MicroListInput = NonNullable<
+  Parameters<typeof api.content.micro.adminList.queryKey>[0]
+>["input"];
+
 const excerpt = (content: string): string =>
   content.length > 60 ? `${content.slice(0, 60)}…` : content;
 
 /**
- * Every note, drafts included, with the two actions the index needs: publish or take down, and
- * delete. Editing happens on the note's own page.
+ * One page of micro posts, drafts included, with the two actions the index needs: publish or take
+ * down, and delete. Editing happens on the note's own page.
  */
-export const MicroPostList = () => {
+export const MicroPostList = ({
+  filtered,
+  input,
+}: {
+  filtered: boolean;
+  input: MicroListInput;
+}) => {
   const queryClient = useQueryClient();
 
-  const { data: posts } = useSuspenseQuery(
-    api.content.micro.adminList.queryOptions()
+  const { data } = useSuspenseQuery(
+    api.content.micro.adminList.queryOptions({ input })
   );
 
   const invalidate = {
@@ -45,11 +55,13 @@ export const MicroPostList = () => {
     api.content.micro.remove.mutationOptions(invalidate)
   );
 
-  if (posts.length === 0) {
+  if (data.items.length === 0) {
     return (
       <Card>
         <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-          还没有微言。写一条，几十个字就够。
+          {filtered
+            ? "没有匹配的微言。换个关键词或清掉筛选再看看。"
+            : "还没有微言。写一条，几十个字就够。"}
         </p>
       </Card>
     );
@@ -58,7 +70,7 @@ export const MicroPostList = () => {
   return (
     <Card>
       <ul className="divide-y" data-slot="admin-micro-list">
-        {posts.map((post) => (
+        {data.items.map((post) => (
           <li
             className="flex flex-wrap items-center gap-3 px-4 py-3"
             key={post.id}

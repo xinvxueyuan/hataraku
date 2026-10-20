@@ -12,15 +12,25 @@ import { Card } from "@hataraku/ui/components/card";
 
 import { api } from "#src/lib/api.ts";
 
+type ProjectsListInput = NonNullable<
+  Parameters<typeof api.content.projects.adminList.queryKey>[0]
+>["input"];
+
 /**
- * Every project, drafts included, most recently edited first. The list is the only place that flips
- * "published" without opening the form; everything else lives on the project's own page.
+ * One page of projects, drafts included. The list is the only place that flips "published" without
+ * opening the form; everything else lives on the project's own page.
  */
-export const ProjectList = () => {
+export const ProjectList = ({
+  filtered,
+  input,
+}: {
+  filtered: boolean;
+  input: ProjectsListInput;
+}) => {
   const queryClient = useQueryClient();
 
-  const { data: projects } = useSuspenseQuery(
-    api.content.projects.adminList.queryOptions()
+  const { data } = useSuspenseQuery(
+    api.content.projects.adminList.queryOptions({ input })
   );
 
   const invalidate = {
@@ -37,11 +47,13 @@ export const ProjectList = () => {
     api.content.projects.remove.mutationOptions(invalidate)
   );
 
-  if (projects.length === 0) {
+  if (data.items.length === 0) {
     return (
       <Card>
         <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-          还没有项目。先建一个，把状态和封面填上。
+          {filtered
+            ? "没有匹配的项目。换个关键词或清掉筛选再看看。"
+            : "还没有项目。先建一个，把状态和封面填上。"}
         </p>
       </Card>
     );
@@ -50,7 +62,7 @@ export const ProjectList = () => {
   return (
     <Card>
       <ul className="divide-y" data-slot="admin-project-list">
-        {projects.map((project) => (
+        {data.items.map((project) => (
           <li
             className="flex flex-wrap items-center gap-3 px-4 py-3"
             key={project.id}

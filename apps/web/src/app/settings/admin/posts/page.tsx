@@ -2,26 +2,54 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
+import {
+  adminListHref,
+  readAdminChoice,
+  readAdminFilter,
+  readAdminPage,
+  readAdminQuery,
+} from "#src/components/admin-list-query.ts";
+import { AdminListToolbar } from "#src/components/admin-list-toolbar.tsx";
 import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
 import { AdminPostList } from "#src/components/admin-post-list.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
-import { getQueryClient, serverApi } from "#src/server/query.ts";
+import { getQueryClient, serverApi, serverCall } from "#src/server/query.ts";
+
+const PATH = "/settings/admin/posts";
+const PAGE_SIZE = 10;
+const SORTS = ["updated", "published"] as const;
+const STATUSES = ["draft", "published"] as const;
 
 /**
- * The posts index: every article with its status, newest edit first.
+ * The posts index: search, filter, sort and one page at a time.
  *
- * The list is prefetched on the server and hydrated into the client list, which owns the publish and
- * delete actions. An account that is signed in but not on the allowlist gets the API's FORBIDDEN,
- * rendered as a 403 page rather than a crash.
+ * The query string is the whole state — the page reads it, the procedure filters on it, and every
+ * link keeps it — so a filtered page is a URL that can be shared or bookmarked.
  */
-const AdminPostsPage = async () => {
-  await requireSession("/settings/admin/posts");
+const AdminPostsPage = async ({
+  searchParams,
+}: PageProps<"/settings/admin/posts">) => {
+  await requireSession(PATH);
 
-  const queryClient = getQueryClient();
+  const params = await searchParams;
+  const status = readAdminFilter(params.status, STATUSES);
+  const sort = readAdminChoice(params.sort, SORTS, "updated");
+
+  const input = {
+    page: readAdminPage(params.page),
+    pageSize: PAGE_SIZE,
+    query: readAdminQuery(params.q),
+    sort,
+    status,
+  };
+
   let forbidden = false;
 
+  let list: Awaited<ReturnType<typeof serverCall.posts.adminList>> | null =
+    null;
+
   try {
-    await queryClient.query(serverApi.posts.adminList.queryOptions());
+    list = await serverCall.posts.adminList(input);
   } catch (error) {
     if (isForbidden(error)) {
       forbidden = true;
@@ -30,9 +58,13 @@ const AdminPostsPage = async () => {
     }
   }
 
-  if (forbidden) {
+  if (forbidden || list === null) {
     return <AdminForbidden />;
   }
+
+  const queryClient = getQueryClient();
+
+  queryClient.setQueryData(serverApi.posts.adminList.queryKey({ input }), list);
 
   return (
     <AdminPageShell
@@ -44,12 +76,51 @@ const AdminPostsPage = async () => {
           新建文章
         </Link>
       }
-      current="/settings/admin/posts"
+      current={PATH}
       description="文章存在 Postgres 里，正文是 MDX；保存和发布都走 API。"
       title="文章"
     >
+      <AdminListToolbar
+        fields={[
+          {
+            label: "状态",
+            name: "status",
+            options: [
+              { label: "草稿", value: "draft" },
+              { label: "已发布", value: "published" },
+            ],
+          },
+          {
+            label: "排序",
+            name: "sort",
+            options: [
+              { label: "更新时间倒序", value: "updated" },
+              { label: "发布时间倒序", value: "published" },
+            ],
+          },
+        ]}
+        hrefFor={(page) =>
+          adminListHref(PATH, {
+            page,
+            q: input.query,
+            sort: input.sort,
+            status: input.status,
+          })
+        }
+        label="文章分页"
+        page={list.page}
+        path={PATH}
+        query={input.query}
+        selected={{ sort: input.sort, status: input.status }}
+        total={list.total}
+        totalPages={list.totalPages}
+      />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <AdminPostList />
+        <AdminPostList
+          filtered={input.query !== undefined || status !== undefined}
+          input={input}
+        />
       </HydrationBoundary>
     </AdminPageShell>
   );

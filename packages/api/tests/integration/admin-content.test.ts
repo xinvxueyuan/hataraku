@@ -51,7 +51,10 @@ describe("content write path", () => {
           size: 1024,
         }),
     ],
-    ["micro.adminList", async () => await anonymous.content.micro.adminList()],
+    [
+      "micro.adminList",
+      async () => await anonymous.content.micro.adminList({}),
+    ],
   ])("rejects an anonymous %s with UNAUTHORIZED", async (_, call) => {
     await expect(call()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
@@ -290,5 +293,136 @@ describe("uploads.presign without storage configured", () => {
         size: 1024,
       })
     ).rejects.toMatchObject({ code: "SERVICE_UNAVAILABLE" });
+  });
+});
+
+/** A token unique to one test, so a search only matches rows that test created. */
+const listToken = () => `cq-${crypto.randomUUID().slice(0, 8)}`;
+
+describe("content admin list query", () => {
+  it("filters micro posts by kind and by visibility", async () => {
+    const owner = await signUp();
+    const mark = listToken();
+
+    const note = await owner.content.micro.create({
+      content: `${mark} text`,
+      published: true,
+      type: "text",
+    });
+
+    const snippet = await owner.content.micro.create({
+      content: `${mark} code`,
+      published: false,
+      type: "code",
+    });
+
+    const codes = await owner.content.micro.adminList({
+      pageSize: 50,
+      query: mark,
+      type: "code",
+    });
+
+    expect(codes.items.map((row) => row.id)).toStrictEqual([snippet.id]);
+
+    const drafts = await owner.content.micro.adminList({
+      pageSize: 50,
+      published: false,
+      query: mark,
+    });
+
+    expect(drafts.items.map((row) => row.id)).toStrictEqual([snippet.id]);
+
+    const published = await owner.content.micro.adminList({
+      pageSize: 50,
+      published: true,
+      query: mark,
+    });
+
+    expect(published.items.map((row) => row.id)).toStrictEqual([note.id]);
+  });
+
+  it("filters projects by state and by visibility", async () => {
+    const owner = await signUp();
+    const mark = listToken();
+
+    const active = await owner.content.projects.create({
+      ...project(),
+      status: "active",
+      title: `${mark} active`,
+    });
+
+    const archived = await owner.content.projects.create({
+      ...project(),
+      published: false,
+      status: "archived",
+      title: `${mark} archived`,
+    });
+
+    const archivedPage = await owner.content.projects.adminList({
+      pageSize: 50,
+      query: mark,
+      status: "archived",
+    });
+
+    expect(archivedPage.items.map((row) => row.id)).toStrictEqual([
+      archived.id,
+    ]);
+
+    const publishedPage = await owner.content.projects.adminList({
+      pageSize: 50,
+      published: true,
+      query: mark,
+    });
+
+    expect(publishedPage.items.map((row) => row.id)).toStrictEqual([active.id]);
+  });
+
+  it("filters changelog entries to highlighted releases and searches versions", async () => {
+    const owner = await signUp();
+    const mark = listToken();
+
+    const plain = await owner.content.changelog.create({
+      ...entry(),
+      title: `${mark} plain`,
+    });
+
+    const highlighted = await owner.content.changelog.create({
+      ...entry(),
+      highlight: true,
+      title: `${mark} highlighted`,
+    });
+
+    const highlightedPage = await owner.content.changelog.adminList({
+      highlight: true,
+      pageSize: 50,
+      query: mark,
+    });
+
+    expect(highlightedPage.items.map((row) => row.id)).toStrictEqual([
+      highlighted.id,
+    ]);
+
+    const all = await owner.content.changelog.adminList({
+      pageSize: 50,
+      query: mark,
+    });
+
+    expect(all.items.map((row) => row.id).toSorted()).toStrictEqual(
+      [plain.id, highlighted.id].toSorted()
+    );
+  });
+
+  it("rejects an out-of-range page on every content list", async () => {
+    const owner = await signUp();
+
+    await expect(
+      owner.content.micro.adminList({ page: 0 })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      owner.content.projects.adminList({ pageSize: 0 })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(
+      owner.content.changelog.adminList({ pageSize: 500 })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
   });
 });

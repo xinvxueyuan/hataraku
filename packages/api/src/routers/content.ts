@@ -1,7 +1,6 @@
 import { ORPCError } from "@orpc/server";
-import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, ne, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
-import { z } from "zod";
 
 import type { Database } from "@hataraku/db";
 import {
@@ -25,6 +24,9 @@ import { assertStorableBody } from "#src/mdx-guard.ts";
 import { paginate } from "#src/pagination.ts";
 import { adminProcedure, publicProcedure } from "#src/procedures.ts";
 import {
+  adminChangelogListInput,
+  adminMicroListInput,
+  adminProjectsListInput,
   changelogEntryIdInput,
   changelogEntrySchema,
   createChangelogEntryInput,
@@ -173,16 +175,61 @@ const findChangelogEntry = async (
 /* -------------------------------------------------------------------------- */
 
 const projectsRouter = {
-  /** Every project, drafts included, most recently edited first. */
+  /**
+   * Every project, drafts included: search, filter, sort and a page at a time.
+   *
+   * The search term is matched by PostgreSQL, not by the browser: the list is paged, so filtering in
+   * the client would only ever search the page it already has.
+   */
   adminList: adminProcedure
-    .output(z.array(projectSchema))
-    .handler(
-      async ({ context }) =>
-        await context.db
+    .input(adminProjectsListInput)
+    .output(paginatedSchema(projectSchema))
+    .handler(async ({ context, input }) => {
+      const filters: SQL[] = [];
+
+      if (input.query !== undefined) {
+        const needle = `%${input.query}%`;
+
+        filters.push(
+          or(
+            ilike(projects.title, needle),
+            ilike(projects.slug, needle),
+            ilike(projects.description, needle),
+            ilike(projects.bodyMd, needle)
+          ) ?? sql`false`
+        );
+      }
+
+      if (input.status !== undefined) {
+        filters.push(eq(projects.status, input.status));
+      }
+
+      if (input.published !== undefined) {
+        filters.push(eq(projects.published, input.published));
+      }
+
+      const where = filters.length === 0 ? undefined : and(...filters);
+
+      const [rows, totalRow] = await Promise.all([
+        context.db
           .select()
           .from(projects)
-          .orderBy(desc(projects.updatedAt))
-    ),
+          .where(where)
+          .orderBy(
+            ...(input.sort === "published"
+              ? [desc(projects.publishedAt), desc(projects.updatedAt)]
+              : [desc(projects.updatedAt)])
+          )
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize),
+        context.db
+          .select({ total: sql<number>`count(*)::int` })
+          .from(projects)
+          .where(where),
+      ]);
+
+      return paginate(rows, totalRow[0]?.total ?? 0, input);
+    }),
 
   /** The editor's read: one project by id, body included, drafts included. */
   byId: adminProcedure
@@ -343,16 +390,54 @@ const projectsRouter = {
 };
 
 const microRouter = {
-  /** Every micro post, drafts included, newest first. */
+  /** Every micro post, drafts included, one page of search/filter/sort results at a time. */
   adminList: adminProcedure
-    .output(z.array(microPostSchema))
-    .handler(
-      async ({ context }) =>
-        await context.db
+    .input(adminMicroListInput)
+    .output(paginatedSchema(microPostSchema))
+    .handler(async ({ context, input }) => {
+      const filters: SQL[] = [];
+
+      if (input.query !== undefined) {
+        const needle = `%${input.query}%`;
+
+        filters.push(
+          or(
+            ilike(microPosts.content, needle),
+            ilike(microPosts.slug, needle)
+          ) ?? sql`false`
+        );
+      }
+
+      if (input.type !== undefined) {
+        filters.push(eq(microPosts.type, input.type));
+      }
+
+      if (input.published !== undefined) {
+        filters.push(eq(microPosts.published, input.published));
+      }
+
+      const where = filters.length === 0 ? undefined : and(...filters);
+
+      const [rows, totalRow] = await Promise.all([
+        context.db
           .select()
           .from(microPosts)
-          .orderBy(desc(microPosts.publishedAt), desc(microPosts.createdAt))
-    ),
+          .where(where)
+          .orderBy(
+            ...(input.sort === "created"
+              ? [desc(microPosts.createdAt)]
+              : [desc(microPosts.publishedAt), desc(microPosts.createdAt)])
+          )
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize),
+        context.db
+          .select({ total: sql<number>`count(*)::int` })
+          .from(microPosts)
+          .where(where),
+      ]);
+
+      return paginate(rows, totalRow[0]?.total ?? 0, input);
+    }),
 
   /** The editor's read: one micro post by id, drafts included. */
   byId: adminProcedure
@@ -524,16 +609,55 @@ const microRouter = {
 };
 
 const changelogRouter = {
-  /** Every entry, highlights and plain releases alike, newest first. */
+  /** Every entry, highlights and plain releases alike, one page at a time. */
   adminList: adminProcedure
-    .output(z.array(changelogEntrySchema))
-    .handler(
-      async ({ context }) =>
-        await context.db
+    .input(adminChangelogListInput)
+    .output(paginatedSchema(changelogEntrySchema))
+    .handler(async ({ context, input }) => {
+      const filters: SQL[] = [];
+
+      if (input.query !== undefined) {
+        const needle = `%${input.query}%`;
+
+        filters.push(
+          or(
+            ilike(changelogEntries.version, needle),
+            ilike(changelogEntries.slug, needle),
+            ilike(changelogEntries.title, needle),
+            ilike(changelogEntries.bodyMd, needle)
+          ) ?? sql`false`
+        );
+      }
+
+      if (input.highlight !== undefined) {
+        filters.push(eq(changelogEntries.highlight, input.highlight));
+      }
+
+      const where = filters.length === 0 ? undefined : and(...filters);
+
+      const [rows, totalRow] = await Promise.all([
+        context.db
           .select()
           .from(changelogEntries)
-          .orderBy(desc(changelogEntries.releasedAt))
-    ),
+          .where(where)
+          .orderBy(
+            ...(input.sort === "created"
+              ? [desc(changelogEntries.createdAt)]
+              : [
+                  desc(changelogEntries.releasedAt),
+                  desc(changelogEntries.createdAt),
+                ])
+          )
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize),
+        context.db
+          .select({ total: sql<number>`count(*)::int` })
+          .from(changelogEntries)
+          .where(where),
+      ]);
+
+      return paginate(rows, totalRow[0]?.total ?? 0, input);
+    }),
 
   /** The editor's read: one entry by id, body included. */
   byId: adminProcedure

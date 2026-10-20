@@ -2,6 +2,7 @@ import Link from "next/link";
 
 /** The four writing surfaces. Naming them as literals is what keeps `<Link href>` type-checked. */
 export type AdminPath =
+  | "/settings/admin"
   | "/settings/admin/changelog"
   | "/settings/admin/micro"
   | "/settings/admin/posts"
@@ -11,6 +12,7 @@ export type AdminPath =
   | "/settings/security";
 
 const SECTIONS: readonly { href: AdminPath; label: string }[] = [
+  { href: "/settings/admin", label: "总览" },
   { href: "/settings/admin/posts", label: "文章" },
   { href: "/settings/admin/micro", label: "微言" },
   { href: "/settings/admin/projects", label: "项目" },

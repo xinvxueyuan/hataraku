@@ -458,6 +458,16 @@ const tagListSchema = z.array(z.string().trim().min(1).max(40)).max(24);
 
 const imageKeyListSchema = z.array(z.string().trim().min(1).max(300)).max(12);
 
+/** The note kinds the editor offers; the admin list filters on the same closed set. */
+const microPostTypeSchema = z.enum([
+  "text",
+  "code",
+  "image",
+  "dialogue",
+  "music",
+  "link",
+]);
+
 const microFields = {
   content: z.string().trim().min(1).max(2000),
   imageKeys: imageKeyListSchema,
@@ -465,7 +475,7 @@ const microFields = {
   publishedAt: publishedDateSchema,
   slug: slugSchema,
   tags: tagListSchema,
-  type: z.enum(["text", "code", "image", "dialogue", "music", "link"]),
+  type: microPostTypeSchema,
 };
 
 export const microPostIdInput = z.object({ id: z.uuid() });
@@ -485,6 +495,9 @@ export const updateMicroPostInput = z
   .partial()
   .extend(microPostIdInput.shape);
 
+/** The project states the editor offers; the admin list filters on the same closed set. */
+const projectStatusSchema = z.enum(["active", "wip", "planned", "archived"]);
+
 const projectFields = {
   bodyMd: z.string().max(200_000),
   coverKey: z.string().trim().max(300).nullable(),
@@ -496,7 +509,7 @@ const projectFields = {
   repo: z.url().nullable(),
   slug: slugSchema,
   sortOrder: z.int().min(0).max(10_000),
-  status: z.enum(["active", "wip", "planned", "archived"]),
+  status: projectStatusSchema,
   tags: tagListSchema,
   title: z.string().trim().min(1).max(200),
 };
@@ -550,6 +563,64 @@ export const updateChangelogEntryInput = z
   .object(changelogFields)
   .partial()
   .extend(changelogEntryIdInput.shape);
+
+/* -------------------------------------------------------------------------- */
+/* admin lists                                                                 */
+/* -------------------------------------------------------------------------- */
+
+const ADMIN_MAX_PAGE_SIZE = 50;
+
+/**
+ * Paging shared by the four admin lists.
+ *
+ * An out-of-range `page` or `pageSize` is rejected with BAD_REQUEST instead of being clamped: a
+ * shared link that points at page 0 is a broken link, and quietly showing page 1 would hide that.
+ * `pageSize` is capped so no caller can pull a whole table in one request.
+ */
+const adminPagingFields = {
+  page: z.int().min(1).default(1),
+  pageSize: z.int().min(1).max(ADMIN_MAX_PAGE_SIZE).default(10),
+};
+
+/** A search term, matched server-side against the text that identifies a row. */
+const adminQueryField = z.string().trim().min(1).max(120);
+
+export const adminPostsListInput = z.object({
+  ...adminPagingFields,
+  query: adminQueryField.optional(),
+  sort: z.enum(["updated", "published"]).default("updated"),
+  status: postStatusSchema.optional(),
+});
+
+export const adminMicroListInput = z.object({
+  ...adminPagingFields,
+  published: z.boolean().optional(),
+  query: adminQueryField.optional(),
+  sort: z.enum(["published", "created"]).default("published"),
+  type: microPostTypeSchema.optional(),
+});
+
+export const adminProjectsListInput = z.object({
+  ...adminPagingFields,
+  published: z.boolean().optional(),
+  query: adminQueryField.optional(),
+  sort: z.enum(["updated", "published"]).default("updated"),
+  status: projectStatusSchema.optional(),
+});
+
+export const adminChangelogListInput = z.object({
+  ...adminPagingFields,
+  highlight: z.boolean().optional(),
+  query: adminQueryField.optional(),
+  sort: z.enum(["released", "created"]).default("released"),
+});
+
+/** Counts for the admin index; one query, so the four numbers agree with each other. */
+export const adminPostStatsSchema = z.object({
+  drafts: z.int(),
+  published: z.int(),
+  total: z.int(),
+});
 
 /* -------------------------------------------------------------------------- */
 /* uploads                                                                     */

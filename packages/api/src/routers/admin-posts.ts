@@ -1,6 +1,6 @@
 import { ORPCError } from "@orpc/server";
-import { and, desc, eq, inArray, ne } from "drizzle-orm";
-import { z } from "zod";
+import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 
 import type { Database } from "@hataraku/db";
 import { posts } from "@hataraku/db/schema/posts";
@@ -8,11 +8,15 @@ import type { NewPost, Post } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
 import { assertStorableBody } from "#src/mdx-guard.ts";
+import { paginate } from "#src/pagination.ts";
 import { adminProcedure } from "#src/procedures.ts";
 import {
   adminPostDetailSchema,
+  adminPostStatsSchema,
   adminPostSummarySchema,
+  adminPostsListInput,
   createPostInput,
+  paginatedSchema,
   postIdInput,
   updatePostInput,
 } from "#src/schemas.ts";
@@ -221,16 +225,76 @@ const syncPostTags = async (
  * These are spread into `postsRouter`, so callers still see one `posts` namespace.
  */
 export const adminPostsRouter = {
-  /** Every post, drafts included, newest edit first. The read path never sees drafts. */
+  /**
+   * Every post, drafts included: search, filter, sort and a page at a time.
+   *
+   * PostgreSQL does the matching and the slicing, so a search covers the whole table rather than the
+   * page the browser happens to hold.
+   */
   adminList: adminProcedure
-    .output(z.array(adminPostSummarySchema))
-    .handler(async ({ context }) => {
-      const rows = await context.db
-        .select()
-        .from(posts)
-        .orderBy(desc(posts.updatedAt), desc(posts.createdAt));
+    .input(adminPostsListInput)
+    .output(paginatedSchema(adminPostSummarySchema))
+    .handler(async ({ context, input }) => {
+      const filters: SQL[] = [];
 
-      return rows.map(toAdminSummary);
+      if (input.query !== undefined) {
+        const needle = `%${input.query}%`;
+
+        filters.push(
+          or(
+            ilike(posts.title, needle),
+            ilike(posts.slug, needle),
+            ilike(posts.bodyMd, needle)
+          ) ?? sql`false`
+        );
+      }
+
+      if (input.status === "published") {
+        filters.push(
+          and(eq(posts.published, true), eq(posts.draft, false)) ?? sql`false`
+        );
+      } else if (input.status === "draft") {
+        filters.push(
+          or(eq(posts.draft, true), eq(posts.published, false)) ?? sql`false`
+        );
+      }
+
+      const where = filters.length === 0 ? undefined : and(...filters);
+
+      const [rows, totalRow] = await Promise.all([
+        context.db
+          .select()
+          .from(posts)
+          .where(where)
+          .orderBy(
+            ...(input.sort === "published"
+              ? [desc(posts.publishedAt), desc(posts.createdAt)]
+              : [desc(posts.updatedAt), desc(posts.createdAt)])
+          )
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize),
+        context.db
+          .select({ total: sql<number>`count(*)::int` })
+          .from(posts)
+          .where(where),
+      ]);
+
+      return paginate(rows.map(toAdminSummary), totalRow[0]?.total ?? 0, input);
+    }),
+
+  /** The counts the admin index shows, from one query so the three numbers agree. */
+  adminStats: adminProcedure
+    .output(adminPostStatsSchema)
+    .handler(async ({ context }) => {
+      const [row] = await context.db
+        .select({
+          drafts: sql<number>`(count(*) filter (where ${posts.draft} = true or ${posts.published} = false))::int`,
+          published: sql<number>`(count(*) filter (where ${posts.draft} = false and ${posts.published} = true))::int`,
+          total: sql<number>`count(*)::int`,
+        })
+        .from(posts);
+
+      return row ?? { drafts: 0, published: 0, total: 0 };
     }),
 
   /** The editor's read: one row by id, body and taxonomy included, drafts included. */

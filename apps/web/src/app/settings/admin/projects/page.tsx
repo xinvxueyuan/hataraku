@@ -2,28 +2,53 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
+import {
+  adminListHref,
+  readAdminBoolean,
+  readAdminChoice,
+  readAdminFilter,
+  readAdminPage,
+  readAdminQuery,
+} from "#src/components/admin-list-query.ts";
+import { AdminListToolbar } from "#src/components/admin-list-toolbar.tsx";
 import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
 import { ProjectList } from "#src/components/project-list.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
-import { getQueryClient, serverApi } from "#src/server/query.ts";
+import { getQueryClient, serverApi, serverCall } from "#src/server/query.ts";
 
 const PATH = "/settings/admin/projects";
+const PAGE_SIZE = 10;
+const SORTS = ["updated", "published"] as const;
+const STATUSES = ["active", "wip", "planned", "archived"] as const;
 
-/**
- * The 项目 index: every row, drafts included. The list is prefetched on the server and hydrated
- * into the client list, which owns the publish and delete actions; an account outside the allowlist
- * gets the API's FORBIDDEN rendered as a 403 page.
- */
-const AdminProjectsPage = async () => {
+/** The projects index: search, filter by state or visibility, sort, one page at a time. */
+const AdminProjectsPage = async ({
+  searchParams,
+}: PageProps<"/settings/admin/projects">) => {
   await requireSession(PATH);
 
-  const queryClient = getQueryClient();
+  const params = await searchParams;
+  const status = readAdminFilter(params.status, STATUSES);
+  const published = readAdminBoolean(params.published);
+  const sort = readAdminChoice(params.sort, SORTS, "updated");
+
+  const input = {
+    page: readAdminPage(params.page),
+    pageSize: PAGE_SIZE,
+    published,
+    query: readAdminQuery(params.q),
+    sort,
+    status,
+  };
+
   let forbidden = false;
 
+  let list: Awaited<
+    ReturnType<typeof serverCall.content.projects.adminList>
+  > | null = null;
+
   try {
-    await queryClient.query(
-      serverApi.content.projects.adminList.queryOptions()
-    );
+    list = await serverCall.content.projects.adminList(input);
   } catch (error) {
     if (isForbidden(error)) {
       forbidden = true;
@@ -32,9 +57,16 @@ const AdminProjectsPage = async () => {
     }
   }
 
-  if (forbidden) {
+  if (forbidden || list === null) {
     return <AdminForbidden />;
   }
+
+  const queryClient = getQueryClient();
+
+  queryClient.setQueryData(
+    serverApi.content.projects.adminList.queryKey({ input }),
+    list
+  );
 
   return (
     <AdminPageShell
@@ -50,8 +82,65 @@ const AdminProjectsPage = async () => {
       description="做过的项目与实验，含状态、排序与封面。"
       title="项目"
     >
+      <AdminListToolbar
+        fields={[
+          {
+            label: "状态",
+            name: "status",
+            options: STATUSES.map((option) => ({
+              label: option,
+              value: option,
+            })),
+          },
+          {
+            label: "可见性",
+            name: "published",
+            options: [
+              { label: "已发布", value: "true" },
+              { label: "草稿", value: "false" },
+            ],
+          },
+          {
+            label: "排序",
+            name: "sort",
+            options: [
+              { label: "更新时间倒序", value: "updated" },
+              { label: "发布时间倒序", value: "published" },
+            ],
+          },
+        ]}
+        hrefFor={(page) =>
+          adminListHref(PATH, {
+            page,
+            published: input.published,
+            q: input.query,
+            sort: input.sort,
+            status: input.status,
+          })
+        }
+        label="项目分页"
+        page={list.page}
+        path={PATH}
+        query={input.query}
+        selected={{
+          published:
+            input.published === undefined ? undefined : String(input.published),
+          sort: input.sort,
+          status: input.status,
+        }}
+        total={list.total}
+        totalPages={list.totalPages}
+      />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList />
+        <ProjectList
+          filtered={
+            input.query !== undefined ||
+            status !== undefined ||
+            published !== undefined
+          }
+          input={input}
+        />
       </HydrationBoundary>
     </AdminPageShell>
   );
