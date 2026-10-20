@@ -1,0 +1,98 @@
+ok - /archive returns 200
+ok - /archive renders 归档
+ok - /archive has one h1
+ok - /archive has one main landmark
+ok - /archive turns focus visible on its own links
+ok - /archive gives every image an alt
+ok - /archive serves images without the optimizer
+ok - /archive groups by year
+ok - /archive prints a time element
+ok - /archive uses no placeholder numbers
+ok - /archive title
+ok - /taxonomy returns 200
+ok - /taxonomy renders 分类与标签
+ok - /taxonomy has one h1
+ok - /taxonomy has one main landmark
+ok - /taxonomy turns focus visible on its own links
+ok - /taxonomy gives every image an alt
+ok - /taxonomy serves images without the optimizer
+ok - /taxonomy title
+ok - /taxonomy renders its category or tag sections
+ok - /albums returns 200
+ok - /albums renders 相册
+ok - /albums has one h1
+ok - /albums has one main landmark
+ok - /albums turns focus visible on its own links
+ok - /albums gives every image an alt
+ok - /albums serves images without the optimizer
+ok - /albums title
+ok - /albums lists albums or invites one
+ok - /about returns 200
+ok - /about renders 关于
+ok - /about has one h1
+ok - /about has one main landmark
+ok - /about turns focus visible on its own links
+ok - /about gives every image an alt
+ok - /about serves images without the optimizer
+ok - /about title
+ok - /about shows site stats
+ok - /about shows the site map
+ok - /about does not link a missing feed
+ok - /taxonomy/category/frontend returns 200
+ok - /taxonomy/category/frontend renders 分类：Frontend
+ok - /taxonomy/category/frontend has one h1
+ok - /taxonomy/category/frontend has one main landmark
+ok - /taxonomy/category/frontend turns focus visible on its own links
+ok - /taxonomy/category/frontend gives every image an alt
+ok - /taxonomy/category/frontend serves images without the optimizer
+ok - /taxonomy/category/frontend lists or explains
+ok - /taxonomy/tag/performance returns 200
+ok - /taxonomy/tag/performance renders 标签：Performance
+ok - /taxonomy/tag/performance has one h1
+ok - /taxonomy/tag/performance has one main landmark
+ok - /taxonomy/tag/performance turns focus visible on its own links
+ok - /taxonomy/tag/performance gives every image an alt
+ok - /taxonomy/tag/performance serves images without the optimizer
+ok - /taxonomy/tag/performance lists or explains
+ok - /taxonomy/category/安全 returns 200
+ok - /taxonomy/category/安全 renders
+ok - /albums/acg-example returns 200
+ok - /albums/acg-example renders 一些可爱的图片
+ok - /albums/acg-example has one h1
+ok - /albums/acg-example has one main landmark
+ok - /albums/acg-example turns focus visible on its own links
+ok - /albums/acg-example gives every image an alt
+ok - /albums/acg-example serves images without the optimizer
+ok - /albums/acg-example renders photos
+ok - /albums/acg-example loads photos from the media host
+ok - /taxonomy/nope/anything is a 404
+ok - /taxonomy/category/does-not-exist is a 404
+ok - /taxonomy/tag/does-not-exist is a 404
+ok - /albums/does-not-exist is a 404
+ok - /archive reports the fixture total
+ok - /archive keeps the undated bucket
+ok - /archive lists the undated fixture
+ok - /archive hides the draft fixture
+ok - /archive hides the unpublished fixture
+ok - /archive lists every fixture post across pages
+ok - /archive renders 2023
+ok - /archive renders a month heading
+ok - /taxonomy reports fixture counts
+ok - /taxonomy links the empty category
+ok - /taxonomy/category/h10-pager-category paginates
+ok - /taxonomy/category/h10-pager-category shows 20 rows
+ok - /taxonomy/category/h10-pager-category?page=2 shows 20 rows
+ok - /taxonomy/category/h10-pager-category?page=6 shows the last row
+ok - /taxonomy/category/h10-pager-category?page=7 explains the empty page
+ok - /taxonomy/category/h10-pager-category?page=7 drops the pager
+ok - /taxonomy/category/h10-empty-category returns 200
+ok - /taxonomy/category/h10-empty-category invites a post
+ok - /taxonomy/tag/h10-empty-tag invites a post
+ok - /albums reports the fixture total
+ok - /albums paginate
+ok - /albums shows twelve cards on page one
+ok - /albums?page=2 shows the remaining two cards
+ok - /albums?page=3 explains the empty page
+ok - /albums/h10-fixture-album-01 invites photos
+
+PASS http://127.0.0.1:3320
