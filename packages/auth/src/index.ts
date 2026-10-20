@@ -1,8 +1,9 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { captcha, twoFactor } from "better-auth/plugins";
+import { z } from "zod";
 
 import type { Database } from "@hataraku/db";
 import * as schema from "@hataraku/db/schema/auth";
@@ -22,6 +23,15 @@ const SIGN_IN_MAX_ATTEMPTS = 5;
  */
 const SIGN_UP_WINDOW_SECONDS = 60 * 60;
 const SIGN_UP_MAX_ATTEMPTS = 20;
+
+/**
+ * One message for every rejected credential, so a response never reveals whether an account
+ * exists or whether it merely fell outside the allowlist.
+ */
+const INVALID_CREDENTIALS_MESSAGE = "Invalid email or password";
+
+/** The only part of a sign-in body this hook reads; Better Auth validates the rest. */
+const signInBodySchema = z.object({ email: z.string() });
 
 interface AuthOptions {
   db: Database;
@@ -66,16 +76,29 @@ export const createAuth = ({
               });
             }
 
-            // The hook signature is Promise-returning and the check above is synchronous, so the
-            // await is what keeps the function honestly async instead of a wrapper around a value.
-            await Promise.resolve();
-
             return { data: user };
           },
         },
       },
     },
     emailAndPassword: { enabled: true },
+    hooks: {
+      before: createAuthMiddleware(async (ctx) => {
+        if (isAllowedEmail === undefined || ctx.path !== "/sign-in/email") {
+          return;
+        }
+
+        // `safeParseAsync` keeps the hook honestly async and narrows the untyped request body
+        // without an assertion; a body the endpoint will reject on its own is simply ignored here.
+        const parsed = await signInBodySchema.safeParseAsync(ctx.body);
+
+        if (parsed.success && !isAllowedEmail(parsed.data.email)) {
+          throw new APIError("UNAUTHORIZED", {
+            message: INVALID_CREDENTIALS_MESSAGE,
+          });
+        }
+      }),
+    },
     plugins: [
       // The mobile app sends its scheme as the origin; the plugin also trusts exp:// when NODE_ENV is development.
       expo(),

@@ -668,6 +668,9 @@ importers:
       better-auth:
         specifier: 'catalog:'
         version: 1.7.11(drizzle-kit@1.0.0-rc.4)(drizzle-orm@1.0.0-rc.4(postgres@3.4.9)(zod@4.6.7))(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@types/node@24.19.2)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(solid-js@1.9.17)(vitest@5.0.5)
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@hataraku/config':
         specifier: workspace:*

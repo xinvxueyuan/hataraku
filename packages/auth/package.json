@@ -13,7 +13,8 @@
     "@better-auth/drizzle-adapter": "catalog:",
     "@better-auth/expo": "catalog:",
     "@hataraku/db": "workspace:*",
-    "better-auth": "catalog:"
+    "better-auth": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@hataraku/config": "workspace:*",
