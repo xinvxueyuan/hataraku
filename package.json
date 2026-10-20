@@ -1,0 +1,40 @@
+{
+  "name": "hataraku",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp run -r --parallel dev",
+    "build": "vp run -r build",
+    "ready": "vp run typegen && vp check && vp run knip && vp test && vp run test:e2e && vp run -r build",
+    "prepare": "vp config",
+    "typegen": "vp run --filter @hataraku/web typegen",
+    "db:generate": "vp run --filter @hataraku/db db:generate",
+    "db:migrate": "vp run --filter @hataraku/server db:migrate",
+    "db:studio": "vp run --filter @hataraku/db db:studio",
+    "dev:mobile": "vp run --filter @hataraku/mobile start",
+    "test:e2e": "vp run --filter @hataraku/web test:e2e",
+    "knip": "knip"
+  },
+  "devDependencies": {
+    "@hataraku/config": "workspace:*",
+    "@shadcn/lint": "catalog:",
+    "@types/node": "catalog:",
+    "knip": "catalog:",
+    "typescript": "catalog:",
+    "ultracite": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.14.0",
+      "onFail": "warn"
+    }
+  },
+  "engines": {
+    "node": "24.22.0",
+    "pnpm": "12.14.0"
+  }
+}

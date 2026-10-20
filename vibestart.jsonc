@@ -1,0 +1,25 @@
+{
+  "$schema": "https://vibestart.net/schema.json",
+
+  "name": "hataraku",
+  "version": "0.1.0",
+
+  "stack": {
+    "toolchain": "vite-plus",
+    "frontend": "react",
+    "framework": "next",
+    "backend": "hono",
+    "api": "orpc",
+    "database": "postgres",
+    "orm": "drizzle",
+    "auth": "better-auth",
+    "ui": "shadcn",
+    "mobile": "expo",
+    "runtime": "node",
+    "testing": "e2e",
+  },
+
+  "addons": ["knip", "ultracite"],
+
+  "channel": "recommended",
+}
