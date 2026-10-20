@@ -10,6 +10,9 @@ import type { Context } from "#src/index.ts";
 // Each test file has a database of its own, so files run in parallel and share no rows.
 const { db, remove } = await createTestDatabase();
 
+/** Shared with the fixture seeder, so a test file seeds the same database its client reads. */
+export { db };
+
 afterAll(remove);
 
 const auth = createAuth({
