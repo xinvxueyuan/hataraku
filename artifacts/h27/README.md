@@ -78,13 +78,14 @@ put rule2: methods=PUT origins=http://127.0.0.1:3000/http://127.0.0.1:3300/http:
 
 ## 门禁
 
-- `vp check scripts README.md`：通过。
-- `vp test`：19 个文件 / 177 个测试通过（含并发中的 H24/H25 测试）。
-- `pnpm run ready`：写报告时**未通过**，两处均为他人未提交改动，不在本任务写范围：
-  - `vp check`：`apps/web/src/app/settings/admin/posts/[id]/page.tsx`（工作区 M）格式未整理；
-  - `knip`：`packages/api/src/schemas.ts` 的 `publishedDateSchema` 未被使用（工作区 M）；
+- `vp check scripts README.md artifacts/h27/README.md`：通过（格式 / lint / 类型检查）。
+- `vp test`：19 个文件 / 177 个测试通过。
+- `knip`：没有把 `scripts/configure-r2-cors.ts` 列为 unused file，说明 root 的 `scripts/**/*.ts` entry 识别到了它。
+- `pnpm run ready`：**未通过**，但红点全部是**他人未提交改动**，在本任务写范围（`scripts/**`、`README.md`、`artifacts/h27/**`）之外，且随并发任务推进而变化：
+  - 第 1–2 次：`vp check` 报 `apps/web/src/app/settings/admin/posts/[id]/page.tsx`（工作区 M）格式未整理；`knip` 报 `packages/api/src/schemas.ts` 的 `publishedDateSchema` 未被使用（工作区 M）。
+  - 第 3–5 次：格式已由对方修好（232 个文件全绿），新的红点是 `packages/api/tests/integration/admin-posts.test.ts:306` 的 `vitest(prefer-strict-equal)`（对方未提交的测试改动）。
   - `vp run build` 曾因另一个 `next build` 并发占用而失败（Another next build process is already running）。
-  本任务文件（`scripts/configure-r2-cors.ts`、`README.md`、`artifacts/h27/**`）本身通过格式 / lint / 类型检查；待 H24/H25/H26 落地后重跑 `pnpm run ready` 即可。
+  每次尝试的原始输出在 `gate-ready*.txt` / `gate-build.txt` / `gate-test.txt`。待 H24/H25/H26 落地后重跑 `pnpm run ready` 即可；本任务自身文件不构成任何红点。
 
 ## 文件
 
