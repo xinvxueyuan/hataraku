@@ -9,6 +9,7 @@ import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
 import { paginate } from "#src/pagination.ts";
 import { publicProcedure } from "#src/procedures.ts";
+import { adminPostsRouter } from "#src/routers/admin-posts.ts";
 import {
   adjacentPostsSchema,
   listPostsInput,
@@ -65,6 +66,8 @@ const mapSummary = (row: SummaryRow) => ({ ...row, tags: row.tags ?? [] });
 const visible = sql`${posts.published} = true and ${posts.draft} = false`;
 
 export const postsRouter = {
+  ...adminPostsRouter,
+
   /** Adjacent posts by publish date, for the article footer. */
   adjacent: publicProcedure
     .input(slugInput)

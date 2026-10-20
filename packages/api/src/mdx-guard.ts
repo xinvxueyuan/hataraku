@@ -1,8 +1,9 @@
 /**
- * Policy for MDX coming out of the database.
+ * Policy for MDX coming from the editor.
  *
- * Kept separate from the renderer so the decision can be tested without starting the compiler, and
- * so a write path can apply the same rule before a body is ever stored.
+ * The rule lives here, in the package that owns the write path, so a body is checked before it is
+ * stored and the renderer applies the same rule to what it reads back. Keeping one definition is
+ * the point: two copies drift, and the weaker copy becomes the real boundary.
  */
 
 /** Syntax that has no place in an article body. */
@@ -42,7 +43,8 @@ export class UnsafeMdxError extends Error {
  *
  * This is a deny-list, so it narrows the surface rather than proving safety. The guarantee lives in
  * the renderer: MDX resolves a capitalised tag against the components in scope, and that map holds
- * nothing that evaluates a string.
+ * nothing that evaluates a string. The write path runs this before storing, so a body that could
+ * never render is refused at the point the author can still fix it.
  */
 export const assertSafeMdx = (source: string): void => {
   for (const { pattern, reason } of FORBIDDEN) {

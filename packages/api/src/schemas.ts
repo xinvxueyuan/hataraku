@@ -121,6 +121,62 @@ export const adjacentPostsSchema = z.object({
 });
 
 /* -------------------------------------------------------------------------- */
+/* posts: the write path                                                       */
+/* -------------------------------------------------------------------------- */
+
+/** The only two states an editor writes. The read path shows `published` and hides `draft`. */
+const postStatusSchema = z.enum(["draft", "published"]);
+
+export const adminPostSummarySchema = z.object({
+  id: z.string(),
+  publishedAt: z.date().nullable(),
+  slug: z.string(),
+  status: postStatusSchema,
+  title: z.string(),
+  updatedAt: z.date().nullable(),
+});
+
+export const adminPostDetailSchema = adminPostSummarySchema.extend({
+  bodyMd: z.string(),
+  description: z.string().nullable(),
+});
+
+export const postIdInput = z.object({ id: z.uuid() });
+
+/** Kebab-case, so a URL stays predictable and two titles cannot collide on case alone. */
+const postSlug = z
+  .string()
+  .trim()
+  .min(1)
+  .max(200)
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/u,
+    "Use lowercase letters, digits and single dashes"
+  );
+
+/** The editable fields, without defaults: a default on an omitted field would overwrite it. */
+const postFields = {
+  bodyMd: z.string(),
+  description: z.string().max(999).nullable(),
+  slug: postSlug,
+  status: postStatusSchema,
+  title: z.string().trim().min(1).max(200),
+};
+
+export const createPostInput = z.object({
+  ...postFields,
+  bodyMd: postFields.bodyMd.default(""),
+  description: postFields.description.default(null),
+  status: postFields.status.default("draft"),
+});
+
+/** Every field but the id is optional, and an omitted field is left as stored. */
+export const updatePostInput = z
+  .object(postFields)
+  .partial()
+  .extend(postIdInput.shape);
+
+/* -------------------------------------------------------------------------- */
 /* taxonomy                                                                    */
 /* -------------------------------------------------------------------------- */
 

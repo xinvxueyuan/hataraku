@@ -6,8 +6,9 @@ import { rehypePrettyCode } from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 
+import { assertSafeMdx } from "@hataraku/api/mdx-guard";
+
 import { Sheet } from "#src/components/sheet.tsx";
-import { assertSafeMdx } from "#src/server/mdx-guard.ts";
 
 /**
  * Renders an article body stored in Postgres as MDX.

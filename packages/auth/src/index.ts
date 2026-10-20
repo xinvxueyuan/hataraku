@@ -136,3 +136,6 @@ export const createAuth = ({
 export type Auth = ReturnType<typeof createAuth>;
 
 export type Session = Auth["$Infer"]["Session"];
+
+/** The allowlist itself, so the API can decide who may write without re-parsing `ADMIN_EMAILS`. */
+export { createEmailAllowlist } from "./allowlist.ts";

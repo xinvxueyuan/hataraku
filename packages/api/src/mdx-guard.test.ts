@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { assertSafeMdx, UnsafeMdxError } from "#src/server/mdx-guard.ts";
+import { assertSafeMdx, UnsafeMdxError } from "#src/mdx-guard.ts";
 
 /**
  * The guard is the write-side half of the MDX boundary: a body that carries module syntax or a
- * dynamic-evaluation escape is refused before the compiler sees it. Each case below is a body an
- * attacker with an admin session could otherwise store.
+ * dynamic-evaluation escape is refused before it is stored, and again before the compiler sees it.
+ * Each case below is a body an editor user could otherwise save.
  */
 describe(assertSafeMdx, () => {
   it.each([

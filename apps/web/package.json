@@ -15,7 +15,9 @@
     "content": "velite"
   },
   "dependencies": {
+    "@hataraku/api": "workspace:*",
     "@hataraku/ui": "workspace:*",
+    "@mdxeditor/editor": "catalog:",
     "@orpc/client": "catalog:",
     "@orpc/tanstack-query": "catalog:",
     "@t3-oss/env-core": "catalog:",
@@ -43,7 +45,6 @@
   },
   "devDependencies": {
     "@e2e-dev/web": "catalog:",
-    "@hataraku/api": "workspace:*",
     "@hataraku/config": "workspace:*",
     "@hataraku/db": "workspace:*",
     "@tailwindcss/postcss": "catalog:",

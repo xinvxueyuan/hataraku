@@ -9,6 +9,7 @@ import { appRouter } from "@hataraku/api";
 import type { Context } from "@hataraku/api";
 
 import { auth, db } from "#src/context.ts";
+import { env } from "#src/env.ts";
 
 const logServerError = (cause: unknown) => {
   if (!(cause instanceof ORPCError) || cause.status >= 500) {
@@ -25,7 +26,8 @@ const mount =
     const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
     const { matched, response } = await handler.handle(c.req.raw, {
-      context: { db, session },
+      // The API owns the rule that reads the allowlist; the server only hands it over.
+      context: { adminEmails: env.ADMIN_EMAILS, db, session },
       prefix,
     });
 

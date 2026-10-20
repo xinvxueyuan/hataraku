@@ -21,15 +21,28 @@ const auth = createAuth({
   secret: "test-secret-that-is-at-least-32-characters",
 });
 
-/** Calls the procedures in this process, through their middleware and validation, as the session's user. */
-export const createClient = (session: Context["session"] = null) =>
-  createRouterClient(appRouter, { context: { db, session } });
+/**
+ * Calls the procedures in this process, through their middleware and validation, as the session's
+ * user. `adminEmails` is what the deployment would have in `ADMIN_EMAILS`: unset means any
+ * signed-in account may write, a list means only those addresses may.
+ */
+export const createClient = (
+  session: Context["session"] = null,
+  adminEmails?: string
+) => createRouterClient(appRouter, { context: { adminEmails, db, session } });
 
-/** Signs a new user up through Better Auth and returns a client that calls as them. */
-export const signUp = async () => {
+/**
+ * Signs a new user up through Better Auth and returns a client that calls as them.
+ *
+ * A test that exercises the admin allowlist passes the same address in `email` and `adminEmails`,
+ * or a different address in `adminEmails` to be refused.
+ */
+export const signUp = async (
+  options: { adminEmails?: string; email?: string } = {}
+) => {
   const { headers } = await auth.api.signUpEmail({
     body: {
-      email: `${crypto.randomUUID()}@example.com`,
+      email: options.email ?? `${crypto.randomUUID()}@example.com`,
       name: "Test User",
       password: "correct-horse-battery",
     },
@@ -42,6 +55,7 @@ export const signUp = async () => {
     .join("; ");
 
   return createClient(
-    await auth.api.getSession({ headers: new Headers({ cookie }) })
+    await auth.api.getSession({ headers: new Headers({ cookie }) }),
+    options.adminEmails
   );
 };
