@@ -100,6 +100,26 @@ Other gates on the final tree:
 | `turbo run build`   | green without DB/auth env                                           |
 | `pnpm run ready`    | currently red only on peers' in-flight files (see the task report)  |
 
+## Production build probe
+
+The e2e stack runs `next dev`; the deployment runs the built output. `next start` on port 3500
+against the local database, with `DATABASE_URL`, `BETTER_AUTH_SECRET` and
+`BETTER_AUTH_URL=http://localhost:3500` from `apps/server/.env`:
+
+| Request                        | Answer                                  |
+| ------------------------------ | --------------------------------------- |
+| `GET /`                        | 200, 44 kB of HTML                      |
+| `GET /article`                 | 200                                     |
+| `GET /login`                   | 200                                     |
+| `GET /api`                     | 200 (OpenAPI document/reference)        |
+| `GET /api/health`              | 200 `{"status":"ok"}` — queries PostgreSQL in process |
+| `GET /api/auth/get-session`    | 200 (anonymous session is `null`)       |
+| `GET /settings/two-factor`     | 307 to `/login` (session guard runs)    |
+| `POST /rpc/todos/list`         | 401 with the oRPC error body (anonymous) |
+
+That is the same code path Vercel runs, including the OpenAPI and Better Auth handlers inside the
+function.
+
 ## Why the production deploy will answer 200
 
 There is no code path left that fetches `SERVER_URL`: the two route handlers dispatch to the
