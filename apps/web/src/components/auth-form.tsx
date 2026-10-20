@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SubmitEvent } from "react";
 
 import { Button } from "@hataraku/ui/components/button";
@@ -66,6 +66,9 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
   const [step, setStep] = useState<Step>("credentials");
   const [captchaToken, setCaptchaToken] = useState("");
   const [useBackupCode, setUseBackupCode] = useState(false);
+  // Set by the plugin callback while a second factor is pending; the credential mutation must not
+  // navigate away from /login in that case, because the visitor has no session yet.
+  const secondFactorRequested = useRef(false);
   const text = copy[mode];
 
   const finish = () => {
@@ -105,7 +108,13 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
         throw new Error(error.message ?? error.statusText);
       }
     },
-    onSuccess: finish,
+    onSuccess: () => {
+      if (secondFactorRequested.current) {
+        return;
+      }
+
+      finish();
+    },
   });
 
   const verify = useMutation({
@@ -120,7 +129,10 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
         throw new Error(error.message ?? error.statusText);
       }
     },
-    onSuccess: finish,
+    onSuccess: () => {
+      secondFactorRequested.current = false;
+      finish();
+    },
   });
 
   const signOut = useMutation({
@@ -133,6 +145,7 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
       }
     },
     onSuccess: () => {
+      secondFactorRequested.current = false;
       setStep("credentials");
       setMode("sign-in");
     },
@@ -151,6 +164,7 @@ export const AuthForm = ({ redirectTo }: { redirectTo: Route }) => {
   // The second factor is reported through the plugin callback, not the sign-in response.
   useEffect(() => {
     setTwoFactorRequiredHandler(() => {
+      secondFactorRequested.current = true;
       setStep("two-factor");
     });
 

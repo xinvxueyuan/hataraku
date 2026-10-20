@@ -1,0 +1,139 @@
+{
+  "base": "http://localhost:3310",
+  "checkedAt": "2026-10-20T13:12:38.297Z",
+  "checks": [
+    {
+      "name": "the page is protected",
+      "passed": true,
+      "detail": "http://localhost:3310/login?redirect=%2Fsettings%2Ftwo-factor"
+    },
+    {
+      "name": "sign up returns to the requested page",
+      "passed": true,
+      "detail": "http://localhost:3310/settings/two-factor"
+    },
+    {
+      "name": "the signed-in page offers enrolment",
+      "passed": true,
+      "detail": "http://localhost:3310/settings/two-factor"
+    },
+    {
+      "name": "enable answers 200 with a totp URI",
+      "passed": true,
+      "detail": "200 otpauth://totp/hataraku:prob…"
+    },
+    {
+      "name": "enable returns ten backup codes",
+      "passed": true,
+      "detail": "10 codes"
+    },
+    {
+      "name": "the QR SVG has a rendered box",
+      "passed": true,
+      "detail": "192x192 css px"
+    },
+    {
+      "name": "the QR SVG carries both paths",
+      "passed": true,
+      "detail": "2 paths, 1216 dark modules, 1185 light modules"
+    },
+    {
+      "name": "the QR module grid matches the issued otpauth URI",
+      "passed": true,
+      "detail": "viewBox 0 0 49 49, expected 49 modules"
+    },
+    {
+      "name": "the manual key is the base32 key from the URI",
+      "passed": true,
+      "detail": "length 52, matches URI: true"
+    },
+    {
+      "name": "ten backup codes are shown and they are the issued ones",
+      "passed": true,
+      "detail": "10 shown"
+    },
+    {
+      "name": "the page says each backup code works once",
+      "passed": true,
+      "detail": "one-time-use note present"
+    },
+    {
+      "name": "verification waits for the backup codes to be acknowledged",
+      "passed": true,
+      "detail": "button disabled"
+    },
+    {
+      "name": "acknowledging the backup codes unlocks verification",
+      "passed": true,
+      "detail": "button enabled"
+    },
+    {
+      "name": "a wrong code reports the reason",
+      "passed": true,
+      "detail": "Invalid code"
+    },
+    {
+      "name": "the right code turns two-factor on",
+      "passed": true,
+      "detail": "status shown"
+    },
+    {
+      "name": "the session reports twoFactorEnabled",
+      "passed": true,
+      "detail": "twoFactorEnabled=true"
+    },
+    {
+      "name": "the enrolled state survives a reload",
+      "passed": true,
+      "detail": "http://localhost:3310/settings/two-factor"
+    },
+    {
+      "name": "signing in asks for the second factor",
+      "passed": true,
+      "detail": "challenge shown"
+    },
+    {
+      "name": "the second factor completes sign-in",
+      "passed": true,
+      "detail": "http://localhost:3310/todos"
+    },
+    {
+      "name": "disabling asks for a second confirmation",
+      "passed": true,
+      "detail": "confirmation panel shown"
+    },
+    {
+      "name": "disabling turns two-factor off",
+      "passed": true,
+      "detail": "status shown"
+    },
+    {
+      "name": "the session reports twoFactorEnabled false",
+      "passed": true,
+      "detail": "twoFactorEnabled=false"
+    },
+    {
+      "name": "signing in no longer asks for the second factor",
+      "passed": true,
+      "detail": "http://localhost:3310/todos"
+    }
+  ],
+  "qr": {
+    "height": 192,
+    "pathCount": 2,
+    "subpaths": 1216,
+    "width": 192,
+    "viewBox": "0 0 49 49"
+  },
+  "screenshots": [
+    "01-enrollment-qr.png",
+    "02-invalid-code.png",
+    "03-enabled.png",
+    "04-enabled-after-reload.png",
+    "05-signin-challenge.png",
+    "06-signed-in-with-2fa.png",
+    "07-disable-confirmation.png",
+    "08-disabled.png",
+    "09-signed-in-without-2fa.png"
+  ]
+}

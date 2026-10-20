@@ -60,6 +60,9 @@ export const UserMenu = ({ user }: UserMenuProps) => {
           <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link href="/settings/two-factor" />}>
+          Two-factor authentication
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
             signOut.mutate();

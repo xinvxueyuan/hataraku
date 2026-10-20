@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { AuthForm } from "#src/components/auth-form.tsx";
 import { getSession } from "#src/server/session.ts";
 
-const redirectTargets: Route[] = ["/", "/todos"];
+const redirectTargets: Route[] = ["/", "/todos", "/settings/two-factor"];
 
 const safeRedirect = (value: string | string[] | undefined) =>
   redirectTargets.find((target) => target === value) ?? "/todos";
