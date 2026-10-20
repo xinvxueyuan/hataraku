@@ -6,6 +6,7 @@ import {
 } from "#src/components/site-content.ts";
 import {
   absoluteUrl,
+  siteOrigin,
   escapeXml,
   rfc3339,
   SITE_LANGUAGE,
@@ -23,6 +24,8 @@ export const dynamic = "force-dynamic";
 const FEED_PATH = "/atom.xml";
 
 const GET = async (): Promise<Response> => {
+  const origin = await siteOrigin();
+
   const [posts, profile] = await Promise.all([
     loadDatedPosts(),
     loadSiteProfile(),
@@ -40,12 +43,12 @@ const GET = async (): Promise<Response> => {
     `  <title>${escapeXml(site.title)}</title>`,
     `  <subtitle>${escapeXml(site.description)}</subtitle>`,
     `  <link href="${escapeXml(
-      absoluteUrl(FEED_PATH)
+      absoluteUrl(origin, FEED_PATH)
     )}" rel="self" type="application/atom+xml" />`,
     `  <link href="${escapeXml(
-      absoluteUrl("/")
+      absoluteUrl(origin, "/")
     )}" rel="alternate" type="text/html" />`,
-    `  <id>${escapeXml(absoluteUrl("/"))}</id>`,
+    `  <id>${escapeXml(absoluteUrl(origin, "/"))}</id>`,
   ];
 
   if (newest !== null) {
@@ -60,7 +63,7 @@ const GET = async (): Promise<Response> => {
   );
 
   for (const post of posts) {
-    const link = absoluteUrl(`/posts/${post.slug}`);
+    const link = absoluteUrl(origin, `/posts/${post.slug}`);
     const updated = post.updatedAt ?? post.publishedAt;
 
     lines.push(

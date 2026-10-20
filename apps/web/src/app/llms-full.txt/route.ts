@@ -6,6 +6,7 @@ import {
 } from "#src/components/site-content.ts";
 import {
   absoluteUrl,
+  siteOrigin,
   dateOnly,
   excerptOf,
   SITE_LANGUAGE,
@@ -24,6 +25,8 @@ export const dynamic = "force-dynamic";
 const EXCERPT_LENGTH = 800;
 
 const GET = async (): Promise<Response> => {
+  const origin = await siteOrigin();
+
   const [profile, posts] = await Promise.all([
     loadSiteProfile(),
     loadAllPosts(),
@@ -46,7 +49,7 @@ const GET = async (): Promise<Response> => {
     "",
     site.description,
     "",
-    `站点: ${absoluteUrl("/")}`,
+    `站点: ${absoluteUrl(origin, "/")}`,
     `语言: ${SITE_LANGUAGE}`,
     `作者: ${site.author}`,
     `文章数: ${posts.length} 篇`,
@@ -60,7 +63,7 @@ const GET = async (): Promise<Response> => {
   }
 
   for (const post of posts) {
-    const url = absoluteUrl(`/posts/${post.slug}`);
+    const url = absoluteUrl(origin, `/posts/${post.slug}`);
 
     lines.push(`## ${post.title}`, "", `- URL: ${url}`);
 

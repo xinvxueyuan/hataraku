@@ -6,6 +6,7 @@ import {
 } from "#src/components/site-content.ts";
 import {
   absoluteUrl,
+  siteOrigin,
   dateOnly,
   excerptOf,
   SITE_LANGUAGE,
@@ -54,6 +55,8 @@ const PAGES = [
 ] as const;
 
 const GET = async (): Promise<Response> => {
+  const origin = await siteOrigin();
+
   const [profile, posts, taxonomy, albums] = await Promise.all([
     loadSiteProfile(),
     loadAllPosts(),
@@ -72,7 +75,7 @@ const GET = async (): Promise<Response> => {
     "",
     "## 站点信息",
     "",
-    `- URL: ${absoluteUrl("/")}`,
+    `- URL: ${absoluteUrl(origin, "/")}`,
     `- 语言: ${SITE_LANGUAGE}`,
     `- 作者: ${site.author}`,
     `- 联系: ${site.email}`,
@@ -83,11 +86,11 @@ const GET = async (): Promise<Response> => {
     "",
     "## 机器可读端点",
     "",
-    `- RSS 2.0: ${absoluteUrl("/rss.xml")}`,
-    `- Atom 1.0: ${absoluteUrl("/atom.xml")}`,
-    `- Sitemap: ${absoluteUrl("/sitemap.xml")}`,
-    `- robots.txt: ${absoluteUrl("/robots.txt")}`,
-    `- LLMs 全量: ${absoluteUrl("/llms-full.txt")}`,
+    `- RSS 2.0: ${absoluteUrl(origin, "/rss.xml")}`,
+    `- Atom 1.0: ${absoluteUrl(origin, "/atom.xml")}`,
+    `- Sitemap: ${absoluteUrl(origin, "/sitemap.xml")}`,
+    `- robots.txt: ${absoluteUrl(origin, "/robots.txt")}`,
+    `- LLMs 全量: ${absoluteUrl(origin, "/llms-full.txt")}`,
     "",
     "## 主要页面",
     "",
@@ -95,7 +98,7 @@ const GET = async (): Promise<Response> => {
 
   for (const page of PAGES) {
     lines.push(
-      `- [${page.title}](${absoluteUrl(page.path)}): ${page.description}`
+      `- [${page.title}](${absoluteUrl(origin, page.path)}): ${page.description}`
     );
   }
 
@@ -107,6 +110,7 @@ const GET = async (): Promise<Response> => {
     for (const category of taxonomy.categories) {
       lines.push(
         `- [${category.name}](${absoluteUrl(
+          origin,
           `/taxonomy/category/${category.slug}`
         )}): ${category.postCount} 篇`
       );
@@ -120,7 +124,7 @@ const GET = async (): Promise<Response> => {
 
     for (const tag of taxonomy.tags) {
       lines.push(
-        `- [${tag.name}](${absoluteUrl(`/taxonomy/tag/${tag.slug}`)}): ${
+        `- [${tag.name}](${absoluteUrl(origin, `/taxonomy/tag/${tag.slug}`)}): ${
           tag.postCount
         } 篇`
       );
@@ -139,7 +143,7 @@ const GET = async (): Promise<Response> => {
       ].filter((part) => part !== null);
 
       lines.push(
-        `- [${album.title}](${absoluteUrl(`/albums/${album.slug}`)})${
+        `- [${album.title}](${absoluteUrl(origin, `/albums/${album.slug}`)})${
           meta.length === 0 ? "" : `: ${meta.join(" — ")}`
         }`
       );
@@ -158,7 +162,7 @@ const GET = async (): Promise<Response> => {
       ].filter((part) => part !== null);
 
       lines.push(
-        `- [${post.title}](${absoluteUrl(`/posts/${post.slug}`)})${
+        `- [${post.title}](${absoluteUrl(origin, `/posts/${post.slug}`)})${
           meta.length === 0 ? "" : `: ${meta.join(" — ")}`
         }`
       );

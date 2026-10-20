@@ -6,6 +6,7 @@ import {
 } from "#src/components/site-content.ts";
 import {
   absoluteUrl,
+  siteOrigin,
   escapeXml,
   rfc822,
   SITE_LANGUAGE,
@@ -24,6 +25,8 @@ export const dynamic = "force-dynamic";
 const FEED_PATH = "/rss.xml";
 
 const GET = async (): Promise<Response> => {
+  const origin = await siteOrigin();
+
   const [posts, profile] = await Promise.all([
     loadDatedPosts(),
     loadSiteProfile(),
@@ -38,7 +41,7 @@ const GET = async (): Promise<Response> => {
     '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
     "  <channel>",
     `    <title>${escapeXml(site.title)}</title>`,
-    `    <link>${escapeXml(absoluteUrl("/"))}</link>`,
+    `    <link>${escapeXml(absoluteUrl(origin, "/"))}</link>`,
     `    <description>${escapeXml(site.description)}</description>`,
     `    <language>${escapeXml(SITE_LANGUAGE)}</language>`,
     "    <generator>hataraku</generator>",
@@ -53,7 +56,7 @@ const GET = async (): Promise<Response> => {
 
   lines.push(
     `    <atom:link href="${escapeXml(
-      absoluteUrl(FEED_PATH)
+      absoluteUrl(origin, FEED_PATH)
     )}" rel="self" type="application/rss+xml" />`,
     `    <managingEditor>${escapeXml(
       `${site.email} (${site.author})`
@@ -62,7 +65,7 @@ const GET = async (): Promise<Response> => {
   );
 
   for (const post of posts) {
-    const link = absoluteUrl(`/posts/${post.slug}`);
+    const link = absoluteUrl(origin, `/posts/${post.slug}`);
     const summary = post.description ?? "";
 
     lines.push(

@@ -12,7 +12,7 @@ import {
   SITE_NAME,
   SITE_OG_LOCALE,
   SITE_TITLE,
-  SITE_URL,
+  siteOrigin,
 } from "#src/components/site.ts";
 
 /**
@@ -22,33 +22,37 @@ import {
  * turns a page's own title ("归档") into "归档 · 夜行栈" without each page repeating the suffix.
  * `url: "./"` is resolved against the current path, so every page reports its own address.
  */
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "./",
-    types: {
-      "application/atom+xml": "/atom.xml",
-      "application/rss+xml": "/rss.xml",
+export const generateMetadata = async (): Promise<Metadata> => {
+  const origin = await siteOrigin();
+
+  return {
+    alternates: {
+      canonical: "./",
+      types: {
+        "application/atom+xml": "/atom.xml",
+        "application/rss+xml": "/rss.xml",
+      },
     },
-  },
-  applicationName: SITE_TITLE,
-  authors: [{ name: SITE_AUTHOR }],
-  description: SITE_DESCRIPTION,
-  metadataBase: new URL(SITE_URL),
-  openGraph: {
+    applicationName: SITE_TITLE,
+    authors: [{ name: SITE_AUTHOR }],
     description: SITE_DESCRIPTION,
-    locale: SITE_OG_LOCALE,
-    siteName: SITE_TITLE,
-    title: SITE_TITLE,
-    type: "website",
-    url: "./",
-  },
-  robots: { follow: true, index: true },
-  title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
-  twitter: {
-    card: "summary",
-    description: SITE_DESCRIPTION,
-    title: SITE_TITLE,
-  },
+    metadataBase: new URL(origin),
+    openGraph: {
+      description: SITE_DESCRIPTION,
+      locale: SITE_OG_LOCALE,
+      siteName: SITE_TITLE,
+      title: SITE_TITLE,
+      type: "website",
+      url: "./",
+    },
+    robots: { follow: true, index: true },
+    title: { default: SITE_TITLE, template: `%s · ${SITE_NAME}` },
+    twitter: {
+      card: "summary",
+      description: SITE_DESCRIPTION,
+      title: SITE_TITLE,
+    },
+  };
 };
 
 const skipLinkClass =

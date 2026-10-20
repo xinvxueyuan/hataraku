@@ -5,7 +5,7 @@ import {
   loadAllPosts,
   loadSiteProfile,
 } from "#src/components/site-content.ts";
-import { absoluteUrl } from "#src/components/site.ts";
+import { absoluteUrl, siteOrigin } from "#src/components/site.ts";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -39,6 +39,8 @@ const STATIC_PAGES: StaticPage[] = [
 ];
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
+  const origin = await siteOrigin();
+
   const [posts, taxonomy, albums, profile] = await Promise.all([
     loadAllPosts(),
     serverCall.taxonomy.overview(),
@@ -52,7 +54,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
     changeFrequency: page.changeFrequency,
     lastModified: siteUpdated,
     priority: page.priority,
-    url: absoluteUrl(page.path),
+    url: absoluteUrl(origin, page.path),
   }));
 
   for (const post of posts) {
@@ -60,7 +62,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "monthly",
       lastModified: post.updatedAt ?? post.publishedAt ?? siteUpdated,
       priority: 0.8,
-      url: absoluteUrl(`/posts/${post.slug}`),
+      url: absoluteUrl(origin, `/posts/${post.slug}`),
     });
   }
 
@@ -69,7 +71,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "weekly",
       lastModified: siteUpdated,
       priority: 0.5,
-      url: absoluteUrl(`/taxonomy/category/${category.slug}`),
+      url: absoluteUrl(origin, `/taxonomy/category/${category.slug}`),
     });
   }
 
@@ -78,7 +80,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "weekly",
       lastModified: siteUpdated,
       priority: 0.4,
-      url: absoluteUrl(`/taxonomy/tag/${tag.slug}`),
+      url: absoluteUrl(origin, `/taxonomy/tag/${tag.slug}`),
     });
   }
 
@@ -93,7 +95,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       images: album.cover?.src === undefined ? undefined : [album.cover.src],
       lastModified,
       priority: 0.5,
-      url: absoluteUrl(`/albums/${album.slug}`),
+      url: absoluteUrl(origin, `/albums/${album.slug}`),
     });
   }
 
