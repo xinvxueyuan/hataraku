@@ -4,7 +4,8 @@ import { ChevronDown, Menu } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { KeyboardEvent, MouseEvent, SyntheticEvent } from "react";
+
+import { useDisclosure } from "#src/components/use-disclosure.ts";
 
 /**
  * The site's main navigation.
@@ -13,6 +14,9 @@ import type { KeyboardEvent, MouseEvent, SyntheticEvent } from "react";
  * `aria-current="page"` cannot disagree. Desktop keeps seven top-level items and folds the
  * browsing directories (归档 / 分类 / 相册 / 工具箱) into a "更多" disclosure; the mobile panel lists
  * every destination flat, because a disclosure inside a disclosure is worse than a longer list.
+ *
+ * Both disclosures are controlled by `useDisclosure`, so outside-click, route change, Escape and a
+ * link activation all close through the same state instead of separate patches per panel.
  */
 
 interface NavItem {
@@ -98,52 +102,23 @@ const linkClass = (active: boolean, isBar: boolean): string =>
 const activeItem = (links: NavItem[], pathname: string): NavItem | undefined =>
   links.find((link) => link.isActive(pathname));
 
-/**
- * A `<details>` disclosure that behaves like a popup for keyboards: opening moves focus into the
- * panel, Escape closes it and returns focus to the summary. Native details gives click, Enter and
- * Space for free; focus management is the part it does not.
- */
-/** A click on a destination closes the panel that held it; the header survives client navigation. */
-const closePanel = (event: MouseEvent<HTMLAnchorElement>) => {
-  const details = event.currentTarget.closest("details");
-
-  if (details !== null) {
-    details.open = false;
-  }
-};
-
-const disclosureHandlers = {
-  onKeyDown: (event: KeyboardEvent<HTMLDetailsElement>) => {
-    if (event.key !== "Escape" || !event.currentTarget.open) {
-      return;
-    }
-
-    event.preventDefault();
-    event.currentTarget.open = false;
-    event.currentTarget.querySelector<HTMLElement>("summary")?.focus();
-  },
-  onToggle: (event: SyntheticEvent<HTMLDetailsElement>) => {
-    if (event.currentTarget.open) {
-      event.currentTarget.querySelector<HTMLElement>("a[href]")?.focus();
-    }
-  },
-};
-
 const NavLink = ({
   active,
   isBar,
   item,
+  onNavigate,
 }: {
   active: boolean;
   isBar: boolean;
   item: NavItem;
+  onNavigate?: () => void;
 }) => (
   <li>
     <Link
       aria-current={active ? "page" : undefined}
       className={linkClass(active, isBar)}
       href={item.href}
-      onClick={closePanel}
+      onClick={onNavigate}
     >
       {item.label}
     </Link>
@@ -151,10 +126,16 @@ const NavLink = ({
 );
 
 const MoreMenu = ({ currentPath }: { currentPath: string }) => {
+  const { close, detailsRef, onToggle, open } = useDisclosure();
   const groupIsActive = activeItem(BROWSE, currentPath) !== undefined;
 
   return (
-    <details className="relative" {...disclosureHandlers}>
+    <details
+      className="relative"
+      onToggle={onToggle}
+      open={open}
+      ref={detailsRef}
+    >
       <summary
         className={[
           focusRing,
@@ -175,7 +156,7 @@ const MoreMenu = ({ currentPath }: { currentPath: string }) => {
                 aria-current={link.isActive(currentPath) ? "page" : undefined}
                 className={linkClass(link.isActive(currentPath), false)}
                 href={link.href}
-                onClick={closePanel}
+                onClick={close}
               >
                 {link.label}
               </Link>
@@ -189,9 +170,11 @@ const MoreMenu = ({ currentPath }: { currentPath: string }) => {
 
 export const NavLinks = ({
   label = "主导航",
+  onNavigate,
   variant = "bar",
 }: {
   label?: string;
+  onNavigate?: () => void;
   variant?: "bar" | "menu";
 }) => {
   const pathname = usePathname();
@@ -215,11 +198,12 @@ export const NavLinks = ({
             isBar={isBar}
             item={link}
             key={link.href}
+            onNavigate={onNavigate}
           />
         ))}
         {isBar ? (
           <li>
-            <MoreMenu currentPath={pathname} />
+            <MoreMenu currentPath={pathname} key={pathname} />
           </li>
         ) : null}
         {after.map((link) => (
@@ -228,6 +212,7 @@ export const NavLinks = ({
             isBar={isBar}
             item={link}
             key={link.href}
+            onNavigate={onNavigate}
           />
         ))}
       </ul>
@@ -235,17 +220,32 @@ export const NavLinks = ({
   );
 };
 
-/** The narrow-screen disclosure that holds the full menu. */
-export const MobileNav = () => (
-  <details className="relative md:hidden" {...disclosureHandlers}>
-    <summary
-      className={`${focusRing} border-border flex cursor-pointer list-none items-center gap-1 rounded-md border px-2.5 py-1.5 text-sm [&::-webkit-details-marker]:hidden`}
+const MobileDisclosure = () => {
+  const { close, detailsRef, onToggle, open } = useDisclosure();
+
+  return (
+    <details
+      className="relative md:hidden"
+      onToggle={onToggle}
+      open={open}
+      ref={detailsRef}
     >
-      <Menu aria-hidden="true" className="size-4" />
-      菜单
-    </summary>
-    <div className="bg-popover absolute top-full right-0 z-30 mt-2 w-44 rounded-lg border p-2 shadow-lg">
-      <NavLinks label="主导航（移动）" variant="menu" />
-    </div>
-  </details>
-);
+      <summary
+        className={`${focusRing} border-border flex cursor-pointer list-none items-center gap-1 rounded-md border px-2.5 py-1.5 text-sm [&::-webkit-details-marker]:hidden`}
+      >
+        <Menu aria-hidden="true" className="size-4" />
+        菜单
+      </summary>
+      <div className="bg-popover absolute top-full right-0 z-30 mt-2 w-44 rounded-lg border p-2 shadow-lg">
+        <NavLinks label="主导航（移动）" onNavigate={close} variant="menu" />
+      </div>
+    </details>
+  );
+};
+
+/** The narrow-screen disclosure that holds the full menu; a new route starts it closed. */
+export const MobileNav = () => {
+  const pathname = usePathname();
+
+  return <MobileDisclosure key={pathname} />;
+};

@@ -1,0 +1,30 @@
+H39 — 头部 disclosure 关闭行为（真点击证据）
+时间: 2026-10-21 (Asia/Shanghai)　实例: http://localhost:3000
+
+== 390px 移动「菜单」 ==
+打开后 open=true/attr=true
+① 点击空白 (20,500) → open=false
+② 点击「文章」→ URL http://localhost:3000/article，open=false
+③ Escape → open=false，document.activeElement 文本 = 「菜单」
+④ 点击面板内「归档」→ URL http://localhost:3000/archive，open=false
+
+== 1440px 桌面「更多」 ==
+① 点击空白 (20,600) → open=false
+② 点击「相册」→ URL http://localhost:3000/albums，open=false
+③ Escape → open=false，activeElement 文本 = 「更多」
+④ 面板内链接点击同样收起（与②同一路径，由 close() 即时执行）
+
+== 监听泄漏（390，连续 3 次开/关）==
+方法：在页面内包裹 document.addEventListener / removeEventListener，只统计 pointerdown / keydown；
+     每轮「点 summary 开 → 点空白关」各触发一次挂载/清理。
+结果：add=6, remove=6, net=0；三轮均 opened=true/closed=false；最终 open=false。
+
+== 可访问性 ==
+- 打开时焦点自动进入面板首个链接（onToggle 保留）；Escape 关闭后焦点回 summary（实测 activeElement 文本）。
+- 受控 <details open> 保留原生展开语义（attr 随状态同步），未改 summary/label 文案。
+
+== e2e / 门禁 ==
+- pnpm exec e2e run → 7/7 passed（evidence-e2e.txt）。
+- pnpm run ready → EXIT=0（evidence-ready.txt）；vp check（含 fmt）2 文件 0 error。
+
+截图：h39-mobile-menu-open.png、h39-desktop-more-open.png。
