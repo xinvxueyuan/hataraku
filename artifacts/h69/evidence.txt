@@ -1,0 +1,43 @@
+H69 — 门户首页实测证据
+时间: 2026-10-22 (Asia/Shanghai)
+
+== 模块计数（现场 DB / Velite） ==
+写作 38（/blog 页「共 38 篇」一致）
+文档 6（现场 .velite/docs.json 实际 6 篇；任务书写 5，多出 content/docs/deploying.md「发布与部署」）
+项目 2；相册 1；微言 0；更新日志 0；工具箱 0
+瓦片区只渲染 4 个：写作 / 文档 / 项目 / 相册；微言/更新日志/工具箱只在「其余入口」文字链接出现。
+
+== 页面 DOM ==
+h1 = 夜行栈（1 个）；海报区 count=38、角标「写作 · 2026年10月17日」；
+两个主 CTA：最新写作 → /blog/39；最新文档 → /docs/deploying；
+瓦片顺序（portal 模型固定）：写作 38 篇 → /blog、文档 6 篇 → /docs、项目 2 个 → /projects、相册 1 本 → /albums；
+其余入口：微言 / 更新日志 / 工具箱 / 归档 / 分类。
+
+== 移动端 ==
+390 视口：documentElement clientWidth=scrollWidth=373；瓦片单列（每块 293px 内容宽）；海报与身份上下堆叠；无横向滚动。
+
+== TTFB（本地 dev，6 次热请求中位数） ==
+改前：362ms（303/323/334/362/372/580）
+改后：227ms（560/251/215/227/226/206；首请求冷启动除外）
+
+== 查询次数 ==
+改前：3 个 server procedure（posts.list、taxonomy.overview、site.profile）
+改后：7 个（portal 的 posts.list、projects.list、albums.list、micro.list、changelog.list、tools.list 并行 + site.profile；docs 走 Velite 本地，不发 API 请求）
+
+== 单测 ==
+apps/web/src/server/portal.test.ts：3 tests passed（顺序固定、0 隐藏、latest=null 保留）。
+全量 unit：10 files / 94 tests passed。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（typegen + vp check + knip + 289 tests + e2e 7/7 + build；artifacts/h69/evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0（177 source files）
+pnpm exec e2e run → 7/7
+web build → EXIT=0
+
+== 截图 ==
+before-home-1440.png / before-home-390.png（旧博客首页）
+after-home-1440.png / after-home-390.png（门户）
+
+== 备注 ==
+为让 1440 下海报 520px 不被 root layout 的 max-w-2xl 夹住，layout main 增加 has-[[data-slot=portal]]:max-w-6xl，仅对门户生效；页面不横向溢出。

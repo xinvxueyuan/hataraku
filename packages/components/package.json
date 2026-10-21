@@ -9,6 +9,7 @@
     "./code-block": "./src/code-block.tsx",
     "./focus-ring": "./src/focus-ring.ts",
     "./highlight": "./src/highlight.tsx",
+    "./module-tile": "./src/module-tile.tsx",
     "./pager": "./src/pager.tsx",
     "./table-of-contents": "./src/table-of-contents.tsx",
     "./use-disclosure": "./src/use-disclosure.ts"
