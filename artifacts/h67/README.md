@@ -32,7 +32,7 @@ Residual 500s are **not** code-fence guard hits:
 
 Details: `residual-errors.txt`.
 
-**Production post-deploy check still required**: H67 commit is local (not pushed/deployed), so the 38-row production table can only be rerun after captain deploys; the local table is the equivalent page-level verification.
+**Production post-deploy check** (ff840b0 / `dpl_9d9or1c...` READY): **35 × 200, draft id 1 × 404, 3 × 500 (ids 2, 7, 30)** — identical to the local prediction. Full 38-row table: `production-after.txt`. The 3 residual pages are the H68 content fixes; the guard stays unchanged.
 
 ## Gates
 
@@ -44,4 +44,4 @@ Details: `residual-errors.txt`.
 
 - packages/api/src/mdx-guard.ts
 - packages/api/src/mdx-guard.test.ts
-- artifacts/h67/{README.md,unit.txt,ready.txt,production-before.txt,local-after.txt,residual-errors.txt,inspect.mjs,inspect-30.mjs}
+- artifacts/h67/{README.md,unit.txt,ready.txt,production-before.txt,production-after.txt,local-after.txt,residual-errors.txt,inspect.mjs,inspect-30.mjs}
