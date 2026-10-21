@@ -1,0 +1,46 @@
+{
+  "task": "H59",
+  "reviewClaim": {
+    "element": "更多 dropdown links",
+    "light": 2.68,
+    "dark": 7.2
+  },
+  "liveSteadyLight": {
+    "moreLinks": 6.02,
+    "descriptions": 5.86,
+    "dates": 5.86,
+    "footer": 5.86,
+    "badges": 13.83,
+    "headings": 17.3,
+    "placeholder": 17.76,
+    "mutedOnMuted": 5.38,
+    "mutedOnAccent": 5.26,
+    "bodyText": 17.24
+  },
+  "liveDark": {
+    "moreLinks": 6.62,
+    "secondary": 7.2,
+    "headlines": 17.2,
+    "badges": 13.84,
+    "placeholder": 16.14
+  },
+  "reproductionOfClaim": {
+    "darkTokenOnWhite": 2.67,
+    "measuredTransient": 2.68,
+    "condition": "text read while the dark class is active and the panel still painted with the light background — only during a programmatic theme toggle"
+  },
+  "decision": "no token change: light --muted-foreground already meets AA (5.26-6.02) on every surface it is used",
+  "optionalMargin": {
+    "value": "oklch(0.46 0.02 268)",
+    "onWhite": 7.13,
+    "onMuted": 6.39,
+    "applied": false
+  },
+  "checks": {
+    "checkDesign": "EXIT=0",
+    "build": "EXIT=0",
+    "vpCheck": "blocked by other members' lint errors (7, none in task scope)",
+    "knip": "blocked by other members' unused exports (renderMdx, search baseline)",
+    "fingerprint": "not run: no file changed"
+  }
+}

@@ -1,0 +1,1293 @@
+{
+  "archive": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 14.32,
+          "cssBackground": "31,33,41",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "38 篇文章，按发布月份排列（Asia/Shanghai"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "17 日"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "7 日"
+        }
+      ],
+      "badges": [
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "ai"
+        },
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "安全"
+        },
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "technology"
+        }
+      ],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "分类与标签"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "相册"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "归档"
+        }
+      ],
+      "disabledButtons": []
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 15.88,
+          "cssBackground": "241,242,247",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "38 篇文章，按发布月份排列（Asia/Shanghai"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "17 日"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "7 日"
+        }
+      ],
+      "badges": [
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "ai"
+        },
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "安全"
+        },
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "technology"
+        }
+      ],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "分类与标签"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "相册"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.3,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "归档"
+        }
+      ],
+      "disabledButtons": []
+    }
+  },
+  "article": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "共 38 篇"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "从规划功能、生成 Kotlin 应用、模拟器测试，到 U"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "综合 Black Duck OSSRA、Cloudfla"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年10月17日"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年7月7日"
+        }
+      ],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "文章"
+        }
+      ],
+      "disabledButtons": []
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "共 38 篇"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "从规划功能、生成 Kotlin 应用、模拟器测试，到 U"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "综合 Black Duck OSSRA、Cloudfla"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年10月17日"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年7月7日"
+        }
+      ],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.3,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "文章"
+        }
+      ],
+      "disabledButtons": []
+    }
+  },
+  "home": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "18px",
+          "fontWeight": "400",
+          "text": "昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "把代码、学习与生活编排成一片可阅读的个人星图"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年10月17日"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年7月7日"
+        }
+      ],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "48px",
+          "fontWeight": "600",
+          "text": "夜行栈"
+        }
+      ],
+      "disabledButtons": []
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "18px",
+          "fontWeight": "400",
+          "text": "昼 · 清醒记录构建 / 夜 · 沉浸漫游沉思"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "把代码、学习与生活编排成一片可阅读的个人星图"
+        }
+      ],
+      "dates": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年10月17日"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "text": "2026年7月7日"
+        }
+      ],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.3,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "48px",
+          "fontWeight": "600",
+          "text": "夜行栈"
+        }
+      ],
+      "disabledButtons": []
+    }
+  },
+  "label": "before",
+  "login": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [],
+      "dates": [],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [],
+      "disabledButtons": [],
+      "placeholder": {
+        "contrast": 16.14,
+        "cssColor": "lab(95.3331 0.0268221 -1.89819)"
+      }
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [],
+      "dates": [],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [],
+      "disabledButtons": [],
+      "placeholder": {
+        "contrast": 17.76,
+        "cssColor": "lab(8.19372 0.649162 -8.77231)"
+      }
+    }
+  },
+  "taxonomy": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 14.32,
+          "cssBackground": "31,33,41",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "38 篇文章，分在 7 个分类、96 个标签里。"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "按文章数量排序，数字是这个标签下的文章数。"
+        }
+      ],
+      "dates": [],
+      "badges": [
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "4"
+        },
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "3"
+        },
+        {
+          "contrast": 13.84,
+          "cssBackground": "33,36,44",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "3"
+        }
+      ],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "归档"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章列表"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(95.3331 0.0268221 -1.89819)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "分类与标签"
+        }
+      ],
+      "disabledButtons": []
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 15.88,
+          "cssBackground": "241,242,247",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "text": "38 篇文章，分在 7 个分类、96 个标签里。"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "按文章数量排序，数字是这个标签下的文章数。"
+        }
+      ],
+      "dates": [],
+      "badges": [
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "4"
+        },
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "3"
+        },
+        {
+          "contrast": 13.83,
+          "cssBackground": "240,242,247",
+          "cssColor": "lab(13.9515 0.822037 -10.9624)",
+          "fontSize": "12px",
+          "fontWeight": "500",
+          "text": "3"
+        }
+      ],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "归档"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章列表"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        }
+      ],
+      "body": [],
+      "heading": [
+        {
+          "contrast": 17.3,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(8.19372 0.649162 -8.77231)",
+          "fontSize": "30px",
+          "fontWeight": "600",
+          "text": "分类与标签"
+        }
+      ],
+      "disabledButtons": []
+    }
+  },
+  "todos": {
+    "dark": {
+      "docClass": "light dark",
+      "theme": "dark",
+      "tokenMuted": "lab(65.1089% .167996 -6.0275)",
+      "more": [
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.62,
+          "cssBackground": "21,24,32",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [],
+      "dates": [],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 7.2,
+          "cssBackground": "12,14,20",
+          "cssColor": "lab(65.1089 0.167996 -6.0275)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [],
+      "disabledButtons": [],
+      "placeholder": {
+        "contrast": 16.14,
+        "cssColor": "lab(95.3331 0.0268221 -1.89819)"
+      }
+    },
+    "light": {
+      "docClass": "light",
+      "theme": "light",
+      "tokenMuted": "lab(41.889% .0782609 -7.48051)",
+      "more": [
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "归档"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "分类"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "相册"
+        },
+        {
+          "contrast": 6.02,
+          "cssBackground": "255,255,255",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "text": "工具箱"
+        }
+      ],
+      "description": [],
+      "dates": [],
+      "badges": [],
+      "footer": [
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "首页"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "文章"
+        },
+        {
+          "contrast": 5.86,
+          "cssBackground": "251,252,254",
+          "cssColor": "lab(41.889 0.0782609 -7.48051)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "text": "微文"
+        }
+      ],
+      "body": [],
+      "heading": [],
+      "disabledButtons": [],
+      "placeholder": {
+        "contrast": 17.76,
+        "cssColor": "lab(8.19372 0.649162 -8.77231)"
+      }
+    }
+  }
+}
