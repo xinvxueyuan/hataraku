@@ -8,6 +8,14 @@ type ProfileInput = Parameters<
 
 /** A complete profile, so a case only has to override the field it is about. */
 const fullProfile: ProfileInput = {
+  // Switched on and fully configured, so the round trip proves the whole block travels.
+  analytics: {
+    enabled: true,
+    provider: "umami",
+    respectDnt: false,
+    scriptSrc: "",
+    siteId: "nightstack.example",
+  },
   author: "xinvStar",
   avatarUrl: "",
   description: "夜行栈：把代码、学习与生活编排成一片可阅读的个人星图。",
@@ -27,6 +35,14 @@ const fullProfile: ProfileInput = {
 };
 
 const clearedProfile: ProfileInput = {
+  // Switched off with nothing filled in: the other end of the same field.
+  analytics: {
+    enabled: false,
+    provider: "none",
+    respectDnt: true,
+    scriptSrc: "",
+    siteId: "",
+  },
   author: "",
   avatarUrl: "",
   description: "",
@@ -75,6 +91,7 @@ describe("site.updateProfile", () => {
     const profile = await createClient().site.profile();
 
     expect(profile).toMatchObject({
+      analytics: fullProfile.analytics,
       author: fullProfile.author,
       description: fullProfile.description,
       email: fullProfile.email,
@@ -99,6 +116,7 @@ describe("site.updateProfile", () => {
     const profile = await createClient().site.profile();
 
     expect(profile).toMatchObject({
+      analytics: clearedProfile.analytics,
       author: null,
       avatarUrl: null,
       description: null,
