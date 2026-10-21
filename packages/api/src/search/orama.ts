@@ -322,12 +322,12 @@ interface SearchHit {
   title: string;
 }
 
-export interface SearchSnippetMatch {
+interface SearchSnippetMatch {
   length: number;
   start: number;
 }
 
-export interface SearchSnippet {
+interface SearchSnippet {
   matches: SearchSnippetMatch[];
   text: string;
 }

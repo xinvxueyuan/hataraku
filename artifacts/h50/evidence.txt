@@ -1,0 +1,37 @@
+H50 — knip 收尾 + 登出刷新登录态 实测证据
+时间: 2026-10-21 (Asia/Shanghai)
+
+== 1. knip ==
+packages/api/src/search/orama.ts: SearchSnippetMatch / SearchSnippet 改为模块内 interface（去掉 export）。
+pnpm exec knip → EXIT=0。
+
+== 2. 旧实现的复现与诊断 ==
+环境：dev http://localhost:3000 与 production build http://localhost:3010（均实测）。
+旧 onSuccess: queryClient.clear(); router.push('/'); router.refresh();
+- /todos 登录后点 Sign out：
+  POST /api/auth/sign-out → 200；Set-Cookie 清空 better-auth.session_token / session_data（Max-Age=0）。
+  GET /api/auth/get-session（带剩余 cookie）→ 200 null。
+  页头在 0.5–1s 内从「H50 Prod」变为「Sign in」（dev 550ms、prod 550ms 左右），URL 随后到 /。
+- 三种路径（直接 /todos、hover 预取首页、先软访问首页再返回 /todos）复测，均未观察到用户描述的「一直停留在已登录」。
+结论：请求失败与 cookie 未清都不是原因；页头来自根布局的服务端 getSession()，旧实现依赖软导航 + router.refresh 重新渲染根布局 —— 根布局在 App Router 客户端缓存里，refresh 与 push 同时发起，顺序/缓存命中不稳定时就会显示登出前的 RSC（用户症状与该机制一致）。
+
+== 3. 失败路径（旧实现静默） ==
+Playwright route abort /api/auth/sign-out → 点击 Sign out 后页头仍是用户，且没有任何反馈。
+
+== 4. 修复后（production build :3010） ==
+onSuccess: queryClient.clear(); window.location.assign('/')（硬导航，丢弃客户端路由缓存，服务端重新读 cookie）。
+点击 Sign out 后：
+- document 导航到 http://localhost:3010/（无手动刷新）；
+- 页头 = 「… Sign in」，Sign in 按钮 1 个；
+- cookies：better-auth.session_token 已消失（仅剩本机 http 测试遗留的 __Secure- 变体）；
+- GET /api/auth/get-session → 200 null；
+- 直接访问 /todos → http://localhost:3010/login?redirect=%2Ftodos。
+
+== 5. 失败路径（修复后） ==
+route abort /api/auth/sign-out → 点击 Sign out 后 sonner toast「退出失败，请重试」（页面仍为已登录，符合请求失败事实）。
+
+== 6. 受保护页 ==
+未登录 GET /todos → 307，Location: /login?redirect=%2Ftodos。
+
+== 7. 验证 ==
+vp check user-menu.tsx / orama.ts：fmt/lint/type 绿；knip EXIT=0；pnpm exec e2e run → 7/7；pnpm --filter @hataraku/web build → EXIT=0。

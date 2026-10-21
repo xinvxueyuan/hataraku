@@ -1,0 +1,19 @@
+
+ RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
+      run 01a15e5e-91bd-7249-a443-4fa2d9dd1318 · targets: web
+
+ ✓ target "web" command ready 9.61s
+ ✓ |web| tests/e2e/app.e2e.ts (7 tests) 16.87s
+   ✓ the home page reports the API as connected 1.70s
+   ✓ visitors are sent to sign in before seeing todos 1.19s
+   ✓ a new user signs up and manages todos that persist across reloads 4.82s
+   ✓ an existing user signs in and returns to the page they asked for 2.09s
+   ✓ a wrong password is rejected 1.56s
+   ✓ signing out ends the session 3.32s
+   ✓ the dark theme survives a reload 2.20s
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  20:10:20
+   Duration  28.28s (startup 9.61s)
+

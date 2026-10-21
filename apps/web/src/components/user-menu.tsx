@@ -3,7 +3,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserRound } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@hataraku/ui/components/button";
 import {
@@ -25,7 +26,6 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ isAdmin, user }: UserMenuProps) => {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const pathname = usePathname();
 
@@ -33,10 +33,18 @@ export const UserMenu = ({ isAdmin, user }: UserMenuProps) => {
     mutationFn: async () => {
       await authClient.signOut();
     },
+    onError: () => {
+      toast.error("退出失败，请重试");
+    },
     onSuccess: () => {
       queryClient.clear();
-      router.push("/");
-      router.refresh();
+
+      // A soft navigation keeps the App Router's client cache: the root layout was rendered with
+      // the signed-in session and its RSC payload may already be cached by a prefetch, while
+      // `router.refresh()` races with the push and can refresh the page being left. The header can
+      // therefore keep showing the old user even though the cookie is gone. A document navigation
+      // discards that cache; every server component re-reads the session, which is already cleared.
+      window.location.assign("/");
     },
   });
 
@@ -91,6 +99,7 @@ export const UserMenu = ({ isAdmin, user }: UserMenuProps) => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          disabled={signOut.isPending}
           onClick={() => {
             signOut.mutate();
           }}
