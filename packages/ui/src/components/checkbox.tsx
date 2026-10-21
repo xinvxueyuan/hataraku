@@ -11,7 +11,7 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        `peer border-input group-has-[:focus-visible]/field-label:not-data-checked:border-input ${focusRing} ${invalidState} aria-invalid:aria-checked:border-primary dark:bg-input/30 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground group-has-[:focus-visible]/field-label:data-checked:border-primary dark:data-checked:bg-primary relative flex size-4 shrink-0 items-center justify-center rounded-control border transition-colors group-has-disabled/field:opacity-50 group-has-[:focus-visible]/field-label:ring-0 after:absolute after:-inset-x-3 after:-inset-y-2 ${disabledState} disabled:cursor-not-allowed`,
+        `peer border-input group-has-[:focus-visible]/field-label:not-data-checked:border-input ${focusRing} ${invalidState} aria-invalid:aria-checked:border-primary dark:bg-input/30 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground group-has-[:focus-visible]/field-label:data-checked:border-primary dark:data-checked:bg-primary rounded-control relative flex size-4 shrink-0 items-center justify-center border transition-colors group-has-disabled/field:opacity-50 group-has-[:focus-visible]/field-label:ring-0 after:absolute after:-inset-x-3 after:-inset-y-2 ${disabledState} disabled:cursor-not-allowed`,
         className
       )}
       {...props}
