@@ -14,6 +14,8 @@ const docsSchema = s.object({
   body: s.raw(),
   description: s.string().max(999).optional(),
   order: s.number().default(0),
+  /** Sidebar group; docs that omit it land in the default "入门" group. */
+  section: s.string().max(40).optional(),
   /** Derived from the file path, so a doc's URL follows its location. */
   slug: s.path(),
   title: s.string().max(99),
@@ -29,7 +31,9 @@ export type Doc = z.infer<typeof docsSchema>;
 
 const docs = defineCollection({
   name: "Doc",
-  pattern: "**/*.md",
+  // README.md documents the authoring conventions; it is not a page, so it stays out of the
+  // collection while living beside the pages it explains.
+  pattern: ["**/*.md", "!README.md"],
   schema: docsSchema,
 });
 

@@ -2,6 +2,7 @@
 title: 嵌入表格
 description: 正文里可以放一张只读的电子表格，数据就写成 Markdown 表格。
 order: 3
+section: 架构
 updatedAt: 2026-10-20
 ---
 

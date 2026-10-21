@@ -2,6 +2,7 @@
 title: 内容模型
 description: 文章存在数据库里，文档存在于版本控制里，两者为什么不同。
 order: 2
+section: 架构
 updatedAt: 2026-10-20
 ---
 

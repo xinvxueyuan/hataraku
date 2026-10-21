@@ -2,6 +2,7 @@
 title: 上手
 description: 这个站点由什么组成，以及本地怎么把它跑起来。
 order: 1
+section: 入门
 updatedAt: 2026-10-20
 ---
 

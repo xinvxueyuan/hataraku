@@ -1,0 +1,41 @@
+H43 — 文档站版式实测证据
+时间: 2026-10-21 (Asia/Shanghai)　实例: http://localhost:3000
+
+== 内容收集 ==
+Velite 收集 5 篇（README.md 被 pattern 排除，无 /docs/README 路由）：
+authoring(写作/10), content-model(架构/2), deploying(运维/20), embedded-sheet(架构/3), getting-started(入门/1)
+
+== 侧栏与 TOC 同源自证（每篇逐一）==
+getting-started  侧栏 5 项，TOC 2 项：链接 = ids = [#技术栈, #本地运行]  match=true
+content-model    侧栏 5 项，TOC 2 项：[#文章在-postgres, #文档在文件里]  match=true
+embedded-sheet   侧栏 5 项，TOC 3 项：[#数据写成表格不是-props, #只读没有回写路径, #它为什么能进白名单] match=true
+authoring        侧栏 5 项，TOC 4 项：[#从一个标题开始, #三级标题也在目录里, #代码块, #表格与任务列表] match=true
+deploying        侧栏 5 项，TOC 4 项：[#发布前, #构建, #环境变量, #发布后] match=true
+（脚本逐篇比较 nav[aria-label=本页目录] 的 href 与 doc-body 内 h2/h3[id]）
+
+== 容器提示（/docs/authoring）==
+渲染 4 个：note(读前提示)、tip(提示)、warning(小心)、danger(不要这样做)，均有正文。
+对比度（标题与正文，canvas 合成背景）：
+dark:  note 11.8/11.8, tip 12.25/12.25, warning 12.41/12.41, danger 11.66/11.66
+light: note 9.59/9.59, tip 9.39/9.39, warning 9.35/9.35, danger 8.6/8.6
+全部 ≥ 4.5。
+
+== 代码块复制 ==
+点击后按钮 aria-label: 复制代码 → 已复制代码；output 文本 = 代码已复制（aria-live）。
+
+== 旧文档不回归 ==
+getting-started：正文文本相等 true，标题 id 相等 true；HTML 仅新增代码块复制包装（pre 外层 div/按钮）。
+content-model：正文文本相等 true，标题 id 相等 true，去除复制 UI 后 HTML 完全相等 true。
+
+== 移动端抽屉（390，真点击）==
+打开 open=true；点空白 (20,650) → false；Escape → false 且 activeElement=「文档目录」；
+点「上手」→ URL /docs/getting-started 且 open=false；aria-current 正确落在该链接。
+
+== 截图 ==
+docs-authoring-1440.png / docs-index-1440.png / docs-authoring-390.png / docs-index-390.png / docs-drawer-390.png
+
+== 横向溢出检查 ==
+1440: innerWidth=1440, scrollWidth=1431；390: 390/382 —— 无横向滚动。
+
+== e2e / 门禁 ==
+见 evidence-e2e.txt / evidence-ready.txt。

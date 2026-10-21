@@ -8,7 +8,12 @@ import remarkGfm from "remark-gfm";
 
 import { assertSafeMdx } from "@hataraku/api/mdx-guard";
 
+import { Admonition } from "#src/components/docs-admonition.tsx";
+import { CodeBlock } from "#src/components/docs-code-block.tsx";
 import { Sheet } from "#src/components/sheet.tsx";
+import { expandAdmonitions } from "#src/lib/markdown/admonitions.ts";
+import { collectHeadings } from "#src/lib/markdown/headings.ts";
+import type { TocHeading } from "#src/lib/markdown/headings.ts";
 
 /**
  * Renders an article body stored in Postgres as MDX.
@@ -33,14 +38,17 @@ import { Sheet } from "#src/components/sheet.tsx";
  * React belong here. A component added later must render props only and never evaluate a string, or
  * it reopens the boundary this map exists to hold.
  *
- * `Sheet` is the first entry: it reads the markdown table in its body into a read-only Univer
- * canvas, so a body can show a table without gaining a call into anything. Note that the compiler
- * runs with expressions blocked, which strips `rows={[…]}` attribute values without a warning, so a
- * component here takes its data from children or string attributes, never from an expression. The
- * editor itself arrives through `next/dynamic` with `ssr: false`, which keeps the engine out of
- * the server render and out of the first bundle.
+ * `Sheet` reads the markdown table in its body into a read-only Univer canvas. `Admonition` is the
+ * target of the `:::note` family and renders only its type, title, and children. `pre` wraps a
+ * highlighted code block so it can offer copy-to-clipboard; it renders the element it is given and
+ * never interprets its text.
+ *
+ * Note that the compiler runs with expressions blocked, which strips `rows={[…]}` attribute values
+ * without a warning, so a component here takes its data from children or string attributes, never
+ * from an expression. The editor itself arrives through `next/dynamic` with `ssr: false`, which keeps
+ * the engine out of the server render and out of the first bundle.
  */
-const ALLOWED_COMPONENTS = { Sheet };
+const ALLOWED_COMPONENTS = { Admonition, Sheet, pre: CodeBlock };
 
 /** Shiki themes that follow the light and dark token sets in the UI package. */
 const SHIKI_THEMES = {
@@ -49,23 +57,35 @@ const SHIKI_THEMES = {
 };
 
 const CACHE_LIMIT = 64;
-const cache = new Map<string, ReactElement>();
+
+interface RenderedBody {
+  content: ReactElement;
+  headings: TocHeading[];
+}
+
+const cache = new Map<string, RenderedBody>();
 
 /**
- * Compiles a body to React elements, caching by source text.
+ * Compiles a body to React elements plus the headings it rendered, caching by source text.
  *
  * Compilation is pure for a given source, so the key is the source alone. It is a plain Map rather
  * than `unstable_cache` because the body still travels over the API on every request; this only
  * avoids recompiling the same article within one server process.
  */
-export const renderMdx = async (source: string): Promise<ReactElement> => {
+export const renderMdxWithToc = async (
+  source: string
+): Promise<RenderedBody> => {
   const cached = cache.get(source);
 
   if (cached !== undefined) {
     return cached;
   }
 
-  assertSafeMdx(source);
+  // The directive syntax is expanded first so a body without one reaches the compiler unchanged.
+  const expanded = expandAdmonitions(source);
+  assertSafeMdx(expanded);
+
+  const headings: TocHeading[] = [];
 
   const { content } = await compileMDX({
     components: ALLOWED_COMPONENTS,
@@ -78,12 +98,16 @@ export const renderMdx = async (source: string): Promise<ReactElement> => {
           ],
           rehypeSlug,
           [rehypeAutolinkHeadings, { behavior: "wrap" }],
+          // After the slug plugin, so the collected ids are exactly the rendered ones.
+          collectHeadings(headings),
         ],
         remarkPlugins: [remarkGfm],
       },
     },
-    source,
+    source: expanded,
   });
+
+  const rendered = { content, headings };
 
   if (cache.size >= CACHE_LIMIT) {
     const oldest = cache.keys().next();
@@ -93,7 +117,14 @@ export const renderMdx = async (source: string): Promise<ReactElement> => {
     }
   }
 
-  cache.set(source, content);
+  cache.set(source, rendered);
+
+  return rendered;
+};
+
+/** A body without its table of contents; the article pages consume this form. */
+export const renderMdx = async (source: string): Promise<ReactElement> => {
+  const { content } = await renderMdxWithToc(source);
 
   return content;
 };
