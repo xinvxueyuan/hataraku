@@ -1,0 +1,37 @@
+{
+  "checks": {
+    "defaultInjectsNothing": true,
+    "enabledInjectsOne": true,
+    "enabledTagCarriesId": true,
+    "disabledWithConfigInjectsNothing": true,
+    "javascriptUrlRefused": true,
+    "readableError": true,
+    "productionInjectsWhenOn": true,
+    "developmentInjectsNothing": true
+  },
+  "original": {
+    "enabled": false,
+    "provider": "none",
+    "respectDnt": true,
+    "scriptSrc": "",
+    "siteId": ""
+  },
+  "states": {
+    "defaultScripts": [],
+    "enabledWrite": true,
+    "enabledScripts": [
+      "<script async=\"\" data-website-id=\"h46-1792583068371\" src=\"https://cloud.umami.is/script.js\">"
+    ],
+    "enabledScriptCarriesId": true,
+    "disabledScripts": [],
+    "javascriptRefused": true,
+    "javascriptMessage": "Input validation failed",
+    "javascriptIssues": [
+      "Use an https URL"
+    ],
+    "productionScriptsWithTagOn": [
+      "<script async=\"\" data-website-id=\"h46-1792583068371\" src=\"https://cloud.umami.is/script.js\">"
+    ],
+    "developmentScriptsWithTagOn": []
+  }
+}

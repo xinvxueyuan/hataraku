@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { Header } from "#src/components/header.tsx";
 import { Providers } from "#src/components/providers.tsx";
+import { SiteAnalyticsMount } from "#src/components/site-analytics-mount.tsx";
 import { loadSiteIdentity } from "#src/components/site-content.ts";
 import { SiteFooter } from "#src/components/site-footer.tsx";
 import {
@@ -89,6 +90,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
           <SiteFooter />
         </div>
       </Providers>
+      <SiteAnalyticsMount />
     </body>
   </html>
 );

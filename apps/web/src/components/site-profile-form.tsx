@@ -13,7 +13,17 @@ import {
   FormFailure,
   firstFailure,
 } from "#src/components/admin-form-parts.tsx";
+import type { AnalyticsSettings } from "#src/components/site-analytics-settings.ts";
 import { api } from "#src/lib/api.ts";
+
+/** The providers the form offers, with the label each one gets. */
+const ANALYTICS_PROVIDERS = [
+  { label: "关闭（不统计）", value: "none" },
+  { label: "Umami", value: "umami" },
+  { label: "Plausible", value: "plausible" },
+  { label: "Google Analytics", value: "google" },
+  { label: "自建脚本", value: "custom" },
+] as const;
 
 /** The social entries the about page knows how to label; an unknown key would render as itself. */
 const SOCIAL_KEYS = [
@@ -39,6 +49,7 @@ type SocialKey = (typeof SOCIAL_KEYS)[number];
  * so the client bundle never pulls in `server-only`.
  */
 export interface EditableSiteProfile {
+  analytics: AnalyticsSettings;
   author: string | null;
   avatarUrl: string | null;
   description: string | null;
@@ -58,6 +69,7 @@ export interface EditableSiteProfile {
 }
 
 interface ProfileForm {
+  analytics: AnalyticsSettings;
   author: string;
   avatarUrl: string;
   description: string;
@@ -87,9 +99,19 @@ const emptySocial = (): Record<SocialKey, string> => ({
 /** An absent column and an empty box are the same thing to a form. */
 const orEmpty = (value: string | null | undefined): string => value ?? "";
 
+/** Off by default, and the DNT switch starts on: the reader's preference is the safer default. */
+const initialAnalytics = (): AnalyticsSettings => ({
+  enabled: false,
+  provider: "none",
+  respectDnt: true,
+  scriptSrc: "",
+  siteId: "",
+});
+
 const initialForm = (profile: EditableSiteProfile | null): ProfileForm => {
   if (profile === null) {
     return {
+      analytics: initialAnalytics(),
       author: "",
       avatarUrl: "",
       description: "",
@@ -119,6 +141,7 @@ const initialForm = (profile: EditableSiteProfile | null): ProfileForm => {
   }
 
   return {
+    analytics: profile.analytics,
     author: orEmpty(profile.author),
     avatarUrl: orEmpty(profile.avatarUrl),
     description: orEmpty(profile.description),
@@ -159,6 +182,14 @@ export const SiteProfileForm = ({
   const patch = (changes: Partial<Omit<ProfileForm, "hero" | "social">>) => {
     setSaved(false);
     setForm((previous) => ({ ...previous, ...changes }));
+  };
+
+  const patchAnalytics = (changes: Partial<AnalyticsSettings>) => {
+    setSaved(false);
+    setForm((previous) => ({
+      ...previous,
+      analytics: { ...previous.analytics, ...changes },
+    }));
   };
 
   const patchHero = (changes: Partial<ProfileForm["hero"]>) => {
@@ -361,6 +392,107 @@ export const SiteProfileForm = ({
             />
           </div>
         </div>
+      </fieldset>
+
+      <fieldset className="grid gap-4 rounded-lg border p-4">
+        <legend className="px-1 text-sm font-medium">站点统计</legend>
+
+        <p className="text-muted-foreground text-sm">
+          默认关闭。启用后，被选中的第三方统计服务会收到访问数据（页面地址、来源、
+          设备与时区等），本站既不代理也不过滤这些数据；停用后不再加载脚本。
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className={FIELD}>
+            <Label htmlFor="analytics-provider">服务</Label>
+            <select
+              className="border-input bg-background h-9 rounded-md border px-3 text-sm"
+              id="analytics-provider"
+              onChange={(event) => {
+                const provider = ANALYTICS_PROVIDERS.find(
+                  (option) => option.value === event.target.value
+                );
+
+                if (provider !== undefined) {
+                  patchAnalytics({ provider: provider.value });
+                }
+              }}
+              value={form.analytics.provider}
+            >
+              {ANALYTICS_PROVIDERS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={FIELD}>
+            <Label htmlFor="analytics-site-id">站点 ID</Label>
+            <Input
+              id="analytics-site-id"
+              onChange={(event) => {
+                patchAnalytics({ siteId: event.target.value });
+              }}
+              placeholder="服务商给的那串标识"
+              value={form.analytics.siteId}
+            />
+          </div>
+
+          <div className={`${FIELD} sm:col-span-2`}>
+            <Label htmlFor="analytics-script-src">脚本地址（可选）</Label>
+            <Input
+              id="analytics-script-src"
+              onChange={(event) => {
+                patchAnalytics({ scriptSrc: event.target.value });
+              }}
+              placeholder="https://…（自建服务时填，留空用官方地址）"
+              value={form.analytics.scriptSrc}
+            />
+            <p className="text-muted-foreground text-xs">
+              只接受 https；「自建脚本」必须填这一项。
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-6">
+          <label
+            className="flex items-center gap-2 text-sm"
+            htmlFor="analytics-enabled"
+          >
+            <input
+              checked={form.analytics.enabled}
+              className="size-4"
+              id="analytics-enabled"
+              onChange={(event) => {
+                patchAnalytics({ enabled: event.target.checked });
+              }}
+              type="checkbox"
+            />
+            启用统计
+          </label>
+
+          <label
+            className="flex items-center gap-2 text-sm"
+            htmlFor="analytics-dnt"
+          >
+            <input
+              checked={form.analytics.respectDnt}
+              className="size-4"
+              id="analytics-dnt"
+              onChange={(event) => {
+                patchAnalytics({ respectDnt: event.target.checked });
+              }}
+              type="checkbox"
+            />
+            尊重 Do Not Track
+          </label>
+        </div>
+
+        <p className="text-muted-foreground text-xs">
+          勾选「尊重 Do Not Track」时，浏览器声明了 DNT 的访客不会加载脚本；
+          统计只在正式构建里注入，开发与测试环境不会向第三方发送任何数据。
+        </p>
       </fieldset>
 
       <FormFailure message={firstFailure([update.error])} />

@@ -70,7 +70,7 @@ const compactSocial = (
  *
  * `avatarKey` is deliberately absent — it is the object key the uploader stores, not something a
  * form types — and so is `nav`, which has no reader yet. Leaving them out of the `set` means an
- * update never erases them.
+ * update never erases them. `analytics` is written, because the owner is the one who turns it on.
  */
 export const siteRouter = {
   profile: publicProcedure
@@ -97,6 +97,7 @@ export const siteRouter = {
     .output(siteProfileSchema)
     .handler(async ({ context, input }) => {
       const values = {
+        analytics: input.analytics,
         author: orNull(input.author),
         avatarUrl: orNull(input.avatarUrl),
         description: orNull(input.description),

@@ -27,6 +27,7 @@ const queryBoolean = z.preprocess((value) => {
 
   return value;
 }, z.boolean());
+
 /** Shared page/pageSize fields. `pageSize` is capped so no caller can pull a whole table. */
 const paginationFields = {
   page: z.coerce.number().int().min(1).default(1),
@@ -324,7 +325,73 @@ const profileLink = z.union([
   z.literal(""),
 ]);
 
+/**
+ * Third-party analytics, configured by the owner and off by default.
+ *
+ * The write side is strict about what a provider needs; the read side is deliberately lenient (plain
+ * strings), because a value hand-edited in the database must not break the profile read — the
+ * injector re-checks the URL before it renders a script.
+ */
+const analyticsProviderSchema = z.enum([
+  "custom",
+  "google",
+  "none",
+  "plausible",
+  "umami",
+]);
+
+/** A provider-issued site id: letters, digits and the separators ids actually contain. */
+const analyticsSiteId = z
+  .string()
+  .trim()
+  .max(80)
+  .regex(
+    /^[A-Za-z0-9._:-]*$/u,
+    "Use letters, digits, dots, dashes, colons or underscores"
+  );
+
+/**
+ * An https URL or an empty box. `javascript:` and `data:` fail the protocol check, and so does a
+ * site-relative path: the browser must not fetch a script from anywhere but the named https host.
+ */
+const analyticsScriptSrc = z.union([
+  z.literal(""),
+  z.url({ message: "Use an https URL", protocol: /^https$/u }),
+]);
+
+const analyticsFields = z.object({
+  enabled: z.boolean(),
+  provider: analyticsProviderSchema,
+  respectDnt: z.boolean(),
+  scriptSrc: analyticsScriptSrc,
+  siteId: analyticsSiteId,
+});
+
+/** The checks one field cannot make: which fields the chosen provider actually needs. */
+export const analyticsInputSchema = analyticsFields
+  .refine((value) => value.provider !== "custom" || value.scriptSrc !== "", {
+    message: "The custom provider needs an https script URL",
+    path: ["scriptSrc"],
+  })
+  .refine(
+    (value) =>
+      value.provider === "custom" ||
+      value.provider === "none" ||
+      value.siteId !== "",
+    { message: "This provider needs the site id it issued", path: ["siteId"] }
+  );
+
+/** What a stored row reads back as. Lenient on purpose; see the comment above. */
+export const analyticsConfigSchema = z.object({
+  enabled: z.boolean(),
+  provider: analyticsProviderSchema,
+  respectDnt: z.boolean(),
+  scriptSrc: z.string(),
+  siteId: z.string(),
+});
+
 export const updateSiteProfileInput = z.object({
+  analytics: analyticsInputSchema,
   author: z.string().trim().max(80),
   avatarUrl: profileUrl,
   description: z.string().trim().max(400),
@@ -339,11 +406,14 @@ export const updateSiteProfileInput = z.object({
   }),
   name: z.string().trim().min(1, "The site name is required").max(80),
   nameEn: z.string().trim().max(80),
-  social: z.record(z.string().trim().min(1).max(40), profileUrl),
+  // A social entry may be a site path (the migrated row carries `rss: /rss.xml`), so the form can
+  // save a profile it just read instead of refusing the row it was handed.
+  social: z.record(z.string().trim().min(1).max(40), profileLink),
   tagline: z.string().trim().max(200),
 });
 
 export const siteProfileSchema = z.object({
+  analytics: analyticsConfigSchema,
   author: z.string().nullable(),
   avatarKey: z.string().nullable(),
   avatarUrl: z.string().nullable(),

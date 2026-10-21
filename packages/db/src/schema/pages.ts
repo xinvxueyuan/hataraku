@@ -13,7 +13,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import type { HeroMeta, NavMeta } from "#src/schema/json.ts";
+import type { AnalyticsConfig, HeroMeta, NavMeta } from "#src/schema/json.ts";
 
 const textArray = () =>
   text()
@@ -79,6 +79,17 @@ export const timelineEntries = snakeCase.table(
 export const siteProfile = snakeCase.table(
   "site_profile",
   {
+    /**
+     * Third-party analytics, off unless the owner turns it on. Stored with a full default object so
+     * a row that predates the column reads as "disabled" rather than as an absent value.
+     */
+    analytics: jsonb().$type<AnalyticsConfig>().notNull().default({
+      enabled: false,
+      provider: "none",
+      respectDnt: true,
+      scriptSrc: "",
+      siteId: "",
+    }),
     author: text(),
     avatarKey: text(),
     avatarUrl: text(),

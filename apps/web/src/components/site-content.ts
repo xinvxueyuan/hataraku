@@ -2,6 +2,7 @@ import "server-only";
 import { ORPCError } from "@orpc/client";
 import { cache } from "react";
 
+import type { AnalyticsSettings } from "#src/components/site-analytics-settings.ts";
 import {
   SITE_AUTHOR,
   SITE_DESCRIPTION,
@@ -153,8 +154,13 @@ export const loadAlbums = async (): Promise<SiteAlbum[]> => {
   return [...byId.values()];
 };
 
-/** A missing profile is a state the site can be in; a broken API is not. */
-export const loadSiteProfile = async (): Promise<SiteProfile | null> => {
+/**
+ * A missing profile is a state the site can be in; a broken API is not.
+ *
+ * Cached for the request: the shell reads it for the identity, the metadata and the analytics tag,
+ * and all three must agree on one row.
+ */
+export const loadSiteProfile = cache(async (): Promise<SiteProfile | null> => {
   try {
     return await serverCall.site.profile();
   } catch (error) {
@@ -164,7 +170,26 @@ export const loadSiteProfile = async (): Promise<SiteProfile | null> => {
 
     throw error;
   }
-};
+});
+
+/**
+ * The analytics settings, or `null` when there is nothing to inject.
+ *
+ * The read is tolerant on purpose: a production build prerenders pages that never carry this tag
+ * (`/_not-found` among them) without a database in the environment, and a build must not fail over
+ * a setting that only matters at request time. A page whose data cannot be read fails loudly
+ * elsewhere — the tag is not where that gets reported.
+ */
+export const loadAnalyticsSettings =
+  async (): Promise<AnalyticsSettings | null> => {
+    try {
+      const profile = await loadSiteProfile();
+
+      return profile === null ? null : profile.analytics;
+    } catch {
+      return null;
+    }
+  };
 
 /**
  * The identity the shell renders, cached for the request so the header and the footer share one
