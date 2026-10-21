@@ -22,3 +22,6 @@ next-env.d.ts
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Throwaway design-direction explorations; they live outside the repo's lifecycle.
+/explore/
