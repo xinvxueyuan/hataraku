@@ -1,0 +1,33 @@
+H34 — 用户菜单里的后台/设置入口（真机证据）
+时间: 2026-10-21 (Asia/Shanghai)
+实例: http://localhost:3010（dev，BETTER_AUTH_URL 指向自身；3000 被其他任务的 preview server 占用，未杀）
+
+账号（本地测试库）:
+- owner@test.local / Owner
+- guest2@test.local / Guest Two（ADMIN_EMAILS 置空前创建，用于验证非站长会话）
+
+== 1) 未配置 ADMIN_EMAILS（单用户部署语义）==
+登录 Owner → 打开用户菜单，menuitem 依次为:
+["后台管理", "修改密码", "安全设置", "两步验证", "Sign out"]
+点击「后台管理」→ /settings/admin，data-slot="admin-index" 条目数 = 8，无「没有权限」。
+触发按钮可访问名 = "Owner"；"Sign out" 仍是 menuitem 且文案不变。
+点击 Sign out → 回到 /，会话结束。
+
+== 2) ADMIN_EMAILS=owner@test.local（白名单）==
+Guest Two 的会话在置空白名单时建立、重启后仍有效（会话不重新过 allowlist，符合预期）：
+- Guest Two 菜单 menuitem = ["修改密码", "安全设置", "两步验证", "Sign out"]，**没有「后台管理」**。
+- 直接访问 /settings/admin → 403 页面「没有写作权限」，页面正文说明该账号不在 ADMIN_EMAILS 白名单；
+  证明隐藏入口只是 UX，API/页面边界仍在。
+- Owner 仍可登录并看到「后台管理」（白名单内）。
+
+== 3) 移动端 390px ==
+- Guest Two：菜单可打开，5 项（系统菜单为 4 项 + 菜单容器），menu box x=111 width=128，viewport=390，
+  未溢出屏幕；点击「两步验证」→ /settings/two-factor（h1 = Two-factor authentication）。
+- Owner：菜单 5 项（含「后台管理」），menu box height=247，仍在视口内。
+
+== 4) 冻结 e2e ==
+E2E_TEST_PORT=3210 pnpm exec e2e run → 7/7 passed（3200 被另一个 e2e 栈占用，未杀；用备用端口跑）。
+完整输出见 evidence-e2e.txt。
+
+截图: h34-menu-admin-desktop.png / h34-menu-guest-desktop.png / h34-menu-admin-mobile.png /
+      h34-menu-guest-mobile.png / h34-admin-index.png

@@ -1,6 +1,9 @@
 import "server-only";
 import { redirect } from "next/navigation";
 
+import { createEmailAllowlist } from "@hataraku/auth";
+
+import { readEnv } from "#src/server/env.ts";
 import { getSession } from "#src/server/session.ts";
 
 /** The refusal the API answers with when a call is not allowed. */
@@ -44,4 +47,18 @@ export const requireSession = async (path: string) => {
   }
 
   return session;
+};
+
+/**
+ * Whether an account belongs to the site owner, mirroring `adminProcedure`.
+ *
+ * `ADMIN_EMAILS` is the allowlist; unset (or empty) means this is a single-user deployment — the
+ * same reading sign-up and the write procedures use — so every signed-in account is the owner.
+ * The menu uses this only to decide whether to offer the writing desk: the API still authorizes
+ * every call, so hiding the entry is UX and not the security boundary.
+ */
+export const isSiteOwner = (email: string): boolean => {
+  const allowlist = createEmailAllowlist(readEnv().ADMIN_EMAILS);
+
+  return allowlist === undefined || allowlist(email);
 };

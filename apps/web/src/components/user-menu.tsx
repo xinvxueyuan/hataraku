@@ -18,10 +18,12 @@ import {
 import { authClient } from "#src/lib/auth-client.ts";
 
 interface UserMenuProps {
+  /** Computed on the server from the write allowlist; the browser never sees the list itself. */
+  isAdmin: boolean;
   user: { name: string; email: string } | null;
 }
 
-export const UserMenu = ({ user }: UserMenuProps) => {
+export const UserMenu = ({ isAdmin, user }: UserMenuProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const pathname = usePathname();
@@ -60,9 +62,30 @@ export const UserMenu = ({ user }: UserMenuProps) => {
           <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem render={<Link href="/settings/two-factor" />}>
-          Two-factor authentication
-        </DropdownMenuItem>
+        {isAdmin ? (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>写作后台</DropdownMenuLabel>
+              <DropdownMenuItem render={<Link href="/settings/admin" />}>
+                后台管理
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>账号设置</DropdownMenuLabel>
+          <DropdownMenuItem render={<Link href="/settings/password" />}>
+            修改密码
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link href="/settings/security" />}>
+            安全设置
+          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link href="/settings/two-factor" />}>
+            两步验证
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
             signOut.mutate();

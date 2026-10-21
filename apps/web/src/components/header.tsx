@@ -4,6 +4,7 @@ import { ModeToggle } from "#src/components/mode-toggle.tsx";
 import { MobileNav, NavLinks } from "#src/components/nav-links.tsx";
 import { loadSiteIdentity } from "#src/components/site-content.ts";
 import { UserMenu } from "#src/components/user-menu.tsx";
+import { isSiteOwner } from "#src/server/admin.ts";
 import { getSession } from "#src/server/session.ts";
 
 const focusRing =
@@ -19,6 +20,7 @@ const focusRing =
 export const Header = async () => {
   const session = await getSession();
   const site = await loadSiteIdentity();
+  const isAdmin = session === null ? false : isSiteOwner(session.user.email);
 
   return (
     <header className="bg-background/80 sticky top-0 z-20 border-b backdrop-blur-md">
@@ -36,7 +38,7 @@ export const Header = async () => {
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <UserMenu user={session?.user ?? null} />
+          <UserMenu isAdmin={isAdmin} user={session?.user ?? null} />
           <ModeToggle />
           <MobileNav />
         </div>
