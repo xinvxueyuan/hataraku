@@ -12,6 +12,11 @@
  *      apps through the package export.
  *
  * Dependency-free on purpose: CI runs it after vp check and before tests.
+ *
+ * This script does not measure contrast, but the same discipline applies when something does: read
+ * computed colours only after the theme has settled. Toggling the class and reading synchronously
+ * returns the other theme's token — `.dark` redefines the same names after `:root` — which
+ * reports false failures. docs/design-system.md §6 has the procedure and the real case.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 // oxlint-disable-next-line unicorn/import-style -- named imports are the bound node:path functions

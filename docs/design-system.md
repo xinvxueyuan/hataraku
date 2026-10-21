@@ -79,7 +79,19 @@ node scripts/check-design.mjs（CI 里是 pnpm run check:design）检查三类�
 2. 不改 packages/ui/src/components、packages/components、apps/web 的任何类名。
 3. 跑 pnpm run check:design 与 pnpm run ready；CI 的 verify 会在 vp check 之后运行设计护栏。
 
-## 6. 本地命令
+## 6. 测对比度：先确认主题，再读颜色
+
+WCAG 的对比度判定用**计算色**（computed color），不是像素均值，也不是样式表里某条声明的字面值。测令牌相关的颜色时按这个顺序：
+
+1. 走真实 UI 切主题（点主题按钮），或至少等渲染稳定（下一帧之后再读）；
+2. **先确认状态**：`document.documentElement.className`、`matchMedia("(prefers-color-scheme: dark)")`，以及目标令牌本身，例如 `getComputedStyle(document.documentElement).getPropertyValue("--muted-foreground")`；
+3. 再读 `getComputedStyle(el).color` 与最近**不透明**祖先的 `backgroundColor`，用 canvas 之类把 `lab()`/`oklab()` 解析成 sRGB，再套 WCAG 公式。
+
+**不要**在 `classList.remove("dark")` / `add("dark")` 之后同步读 computed color：样式可能还没重算，而 `.dark` 在 `:root` 之后重定义了同名令牌，此时读到的是**另一主题**的值。真实案例：深色 `--muted-foreground` `oklch(0.70 …)` 放在白底算出 2.67:1，被误报为浅色主题缺陷；等主题稳定后同一处是 **6.02:1**。两个主题的令牌值恰好都"像一个合理的灰"，所以这种误报看起来很像真的 —— 先读令牌值自证主题，是成本最低的防线。
+
+同理，评审工具若从样式表里取"最后一条同名声明"再配一个假定背景，也会得到同样的假阳性；取色必须取**当前主题的 computed color + 实际背景**。
+
+## 7. 本地命令
 
     pnpm run check:design   # 三类规则；失败给文件:行号
     vp check                # 格式 + lint + 类型
