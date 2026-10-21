@@ -1,0 +1,22 @@
+[
+  {
+    "file": "page.png",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": [
+      {
+        "rule": "contrastLow",
+        "label": "文字对比度不达标（正文低于 4.5:1，大字低于 3:1）",
+        "count": 4,
+        "examples": [
+          "a.focus-visible:ring-2.focus-visible:ring-ring「归档」（2.68:1）",
+          "a.focus-visible:ring-2.focus-visible:ring-ring「分类」（2.68:1）",
+          "a.focus-visible:ring-2.focus-visible:ring-ring「相册」（2.68:1）"
+        ]
+      }
+    ]
+  }
+]

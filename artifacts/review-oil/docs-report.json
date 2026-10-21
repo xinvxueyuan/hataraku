@@ -1,0 +1,22 @@
+[
+  {
+    "file": "page.png",
+    "state": null,
+    "size": "1440x900",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [],
+    "lint": [
+      {
+        "rule": "sideStripe",
+        "label": "彩色单侧边线",
+        "count": 3,
+        "examples": [
+          "aside.my-6.flex「提示 这是一个 tip：可以更短的命令、更顺手的」（4px）",
+          "aside.my-6.flex「小心 这是一个 warning。删除数据之前先确」（4px）",
+          "aside.my-6.flex「不要这样做 这是一个 danger。它会明确告诉」（4px）"
+        ]
+      }
+    ]
+  }
+]
