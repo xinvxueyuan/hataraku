@@ -13,8 +13,6 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import type { CoverMeta } from "#src/schema/json.ts";
-
 const textArray = () =>
   text()
     .array()
@@ -24,7 +22,6 @@ const textArray = () =>
 export const albums = snakeCase.table(
   "albums",
   {
-    cover: jsonb().$type<CoverMeta>(),
     coverKey: text(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     date: date(),

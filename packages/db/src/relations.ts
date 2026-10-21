@@ -17,7 +17,6 @@ import {
   timelineEntries,
 } from "#src/schema/pages.ts";
 import { posts } from "#src/schema/posts.ts";
-import { searchIndex } from "#src/schema/search.ts";
 import { categories, postTags, tags } from "#src/schema/taxonomy.ts";
 import { todos } from "#src/schema/todos.ts";
 
@@ -36,7 +35,6 @@ export const relations = defineRelations(
     postTags,
     posts,
     projects,
-    searchIndex,
     session,
     siteProfile,
     skills,
@@ -70,13 +68,6 @@ export const relations = defineRelations(
         to: r.categories.id,
       }),
       postTags: r.many.postTags(),
-      searchIndex: r.one.searchIndex({
-        from: r.posts.id,
-        to: r.searchIndex.postId,
-      }),
-    },
-    searchIndex: {
-      post: r.one.posts({ from: r.searchIndex.postId, to: r.posts.id }),
     },
     session: {
       user: r.one.user({ from: r.session.userId, to: r.user.id }),

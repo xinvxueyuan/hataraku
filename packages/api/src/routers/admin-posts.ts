@@ -177,9 +177,8 @@ const normalizeTagSlugs = (slugs: string[]): string[] =>
 /**
  * Applies only the difference between the stored links and the requested ones.
  *
- * Rebuilding the whole set would delete and re-insert every row on each save, which churns the
- * `post_tags` trigger that keeps `search_index` current. The diff keeps the write proportional to
- * what actually changed, and the returned slugs are what the post now carries.
+ * Rebuilding the whole set would delete and re-insert every row on each save. The diff keeps the
+ * write proportional to what actually changed, and the returned slugs are what the post now carries.
  */
 const syncPostTags = async (
   db: Writer,
@@ -318,9 +317,6 @@ export const adminPostsRouter = {
       const { row, slugs } = await context.db.transaction(async (tx) => {
         const values: NewPost = {
           bodyMd: input.bodyMd,
-          // A legacy `cover` object would win over `coverKey` on the article page, so a new cover
-          // clears it rather than leaving two answers to the same question.
-          cover: null,
           coverKey: input.coverKey,
           description: input.description,
           featured: input.featured,
@@ -466,7 +462,6 @@ export const adminPostsRouter = {
 
         if (coverKey !== undefined) {
           stored.coverKey = coverKey;
-          stored.cover = null;
         }
 
         if (status !== undefined) {

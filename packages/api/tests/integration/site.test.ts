@@ -9,7 +9,7 @@ const client = createClient();
 await seedBlog(db);
 
 describe("site.profile", () => {
-  it("returns the single profile row with its navigation and social links", async () => {
+  it("returns the single profile row with its social links", async () => {
     const profile = await client.site.profile();
 
     expect(profile).toMatchObject({
@@ -17,7 +17,6 @@ describe("site.profile", () => {
       id: 1,
       name: "夜行栈",
       nameEn: "NightStack",
-      nav: { cta: { href: "/article", label: "进入栈内" } },
       social: { github: "https://github.com/xinvxueyuan", rss: "/rss.xml" },
       tagline: "昼构建夜沉思",
     });

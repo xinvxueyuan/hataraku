@@ -2,15 +2,12 @@ import {
   boolean,
   index,
   integer,
-  jsonb,
   snakeCase,
   text,
   timestamp,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-
-import type { CoverMeta } from "#src/schema/json.ts";
 
 export const posts = snakeCase.table(
   "posts",
@@ -19,7 +16,6 @@ export const posts = snakeCase.table(
     categoryId: uuid(),
     categorySlug: text(),
     comment: boolean().notNull().default(true),
-    cover: jsonb().$type<CoverMeta>(),
     coverKey: text(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     description: text(),

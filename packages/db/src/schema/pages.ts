@@ -13,7 +13,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import type { AnalyticsConfig, HeroMeta, NavMeta } from "#src/schema/json.ts";
+import type { AnalyticsConfig, HeroMeta } from "#src/schema/json.ts";
 
 const textArray = () =>
   text()
@@ -99,7 +99,6 @@ export const siteProfile = snakeCase.table(
     id: integer().primaryKey().default(1),
     name: text().notNull(),
     nameEn: text(),
-    nav: jsonb().$type<NavMeta>(),
     social: jsonb().$type<Record<string, string>>(),
     tagline: text(),
     updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),

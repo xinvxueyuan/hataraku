@@ -1,0 +1,36 @@
+{
+  "content": {
+    "published_posts": 38,
+    "categories": 7,
+    "tags": 96,
+    "post_tags": 122
+  },
+  "guardTables": 3,
+  "navColumns": 0,
+  "rows": {
+    "account": 1,
+    "album_photos": 22,
+    "albums": 1,
+    "categories": 7,
+    "changelog_entries": 0,
+    "devices": 2,
+    "diary_entries": 0,
+    "friends": 0,
+    "login_attempts": 2,
+    "micro_posts": 0,
+    "post_tags": 122,
+    "posts": 39,
+    "projects": 2,
+    "session": 2,
+    "site_profile": 1,
+    "skills": 5,
+    "tags": 96,
+    "timeline_entries": 0,
+    "todos": 0,
+    "tools": 0,
+    "two_factor": 1,
+    "user": 1,
+    "verification": 0
+  },
+  "searchIndex": null
+}

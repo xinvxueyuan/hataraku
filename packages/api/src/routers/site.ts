@@ -69,8 +69,8 @@ const compactSocial = (
  * Writes the profile row: the site's name, tagline, social links and hero belong to the owner.
  *
  * `avatarKey` is deliberately absent — it is the object key the uploader stores, not something a
- * form types — and so is `nav`, which has no reader yet. Leaving them out of the `set` means an
- * update never erases them. `analytics` is written, because the owner is the one who turns it on.
+ * form types; leaving it out of the `set` means an update never erases it. `analytics` is written,
+ * because the owner is the one who turns it on.
  */
 export const siteRouter = {
   profile: publicProcedure

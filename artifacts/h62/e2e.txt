@@ -1,0 +1,32 @@
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/components, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running test:e2e in 9 packages
+   • Remote caching disabled
+
+@hataraku/web:test:e2e: cache bypass, force executing 1bfcaa187faeb8ae
+@hataraku/web:test:e2e: $ e2e run
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
+@hataraku/web:test:e2e:       run 01a15f5c-e443-70b7-a37d-9a19f8cefc18 · targets: web
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  ✓ target "web" command ready 22.19s
+@hataraku/web:test:e2e:  ✓ |web| tests/e2e/app.e2e.ts (7 tests) 29.02s
+@hataraku/web:test:e2e:    ✓ the home page reports the API as connected 2.56s
+@hataraku/web:test:e2e:    ✓ visitors are sent to sign in before seeing todos 1.73s
+@hataraku/web:test:e2e:    ✓ a new user signs up and manages todos that persist across reloads 7.88s
+@hataraku/web:test:e2e:    ✓ an existing user signs in and returns to the page they asked for 4.17s
+@hataraku/web:test:e2e:    ✓ a wrong password is rejected 2.76s
+@hataraku/web:test:e2e:    ✓ signing out ends the session 6.39s
+@hataraku/web:test:e2e:    ✓ the dark theme survives a reload 3.52s
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  Test Files  1 passed (1)
+@hataraku/web:test:e2e:       Tests  7 passed (7)
+@hataraku/web:test:e2e:    Start at  00:48:07
+@hataraku/web:test:e2e:    Duration  53.74s (startup 22.19s)
+@hataraku/web:test:e2e: 
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    58.824s 
+

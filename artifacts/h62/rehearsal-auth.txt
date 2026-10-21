@@ -1,0 +1,9 @@
+Rehearsal auth evidence (scratch target hataraku_h62_dst)
+- target password hash md5 equals source hash md5: true
+- target two_factor secret md5 equals source secret md5: true
+- target two_factor backup_codes md5 equals source backup_codes md5: true
+- verifyPassword(original password): true
+- verifyPassword(wrong password): false
+- Better Auth signInEmail result: {"twoFactorRedirect":true,"twoFactorMethods":[]}
+- two_factor row count: 1
+- session row count: 2

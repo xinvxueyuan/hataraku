@@ -71,14 +71,7 @@ const ALLOWED_PATHS = [
  * entry that no longer matches anything fails the check, so the exception cannot outlive the code
  * it was written for.
  */
-const SOURCE_ALLOWLIST = [
-  {
-    file: "packages/api/src/routers/admin-posts.ts",
-    match: "A legacy `cover` object",
-    reason:
-      "H62 removes the legacy posts.cover column; this clearing write and its comment leave with it",
-  },
-];
+const SOURCE_ALLOWLIST = [];
 
 const violations = [];
 const notes = [];

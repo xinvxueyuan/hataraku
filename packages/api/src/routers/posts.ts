@@ -3,7 +3,6 @@ import { and, asc, desc, eq, gt, inArray, lt, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { z } from "zod";
 
-import type { CoverMeta } from "@hataraku/db/schema/json";
 import { posts } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
@@ -27,7 +26,6 @@ import {
  */
 const summarySelect = {
   categorySlug: posts.categorySlug,
-  cover: posts.cover,
   coverKey: posts.coverKey,
   description: posts.description,
   featured: posts.featured,
@@ -47,7 +45,6 @@ const summarySelect = {
 
 interface SummaryRow {
   categorySlug: string | null;
-  cover: CoverMeta | null;
   coverKey: string | null;
   description: string | null;
   featured: boolean;

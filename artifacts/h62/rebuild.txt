@@ -1,0 +1,245 @@
+host=localhost;db=hataraku;user=postgres
+ pg_terminate_backend 
+----------------------
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+(7 rows)
+
+DROP DATABASE
+CREATE DATABASE
+$ turbo run db:migrate
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/components, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running db:migrate in 9 packages
+   • Remote caching disabled
+
+@hataraku/server:db:migrate: cache bypass, force executing 4966ca7db922db55
+@hataraku/server:db:migrate: $ node --env-file-if-exists=.env src/migrate.ts
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    2.663s 
+
+SET
+SET
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COPY 49
+COPY 49
+COPY 1
+COPY 22
+COPY 7
+COPY 0
+COPY 2
+COPY 0
+COPY 0
+COPY 33
+COPY 0
+COPY 122
+COPY 39
+COPY 2
+COPY 45
+COPY 5
+COPY 96
+COPY 0
+COPY 6
+COPY 0
+COPY 1
+COPY 0
+ setval 
+--------
+      6
+(1 row)
+
+ setval 
+--------
+      6
+(1 row)
+
+SET
+COPY 1
+NULL
+0
+3
+rebuild2 host=localhost;db=hataraku;user=postgres
+ pg_terminate_backend 
+----------------------
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+ t
+(11 rows)
+
+DROP DATABASE
+CREATE DATABASE
+$ turbo run db:migrate
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/components, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running db:migrate in 9 packages
+   • Remote caching disabled
+
+@hataraku/server:db:migrate: cache bypass, force executing 4966ca7db922db55
+@hataraku/server:db:migrate: $ node --env-file-if-exists=.env src/migrate.ts
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1.705s 
+
+SET
+SET
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COPY 49
+COPY 49
+COPY 1
+COPY 22
+COPY 7
+COPY 0
+COPY 2
+COPY 0
+COPY 0
+COPY 33
+COPY 0
+COPY 122
+COPY 39
+COPY 2
+COPY 45
+COPY 1
+COPY 5
+COPY 96
+COPY 0
+COPY 6
+COPY 0
+COPY 1
+COPY 0
+ setval 
+--------
+      6
+(1 row)
+
+ setval 
+--------
+      6
+(1 row)
+
+SET
+NULL
+0
+0
+3
+rebuild3 host=localhost;db=hataraku;user=postgres
+ pg_terminate_backend 
+----------------------
+ t
+ t
+(2 rows)
+
+DROP DATABASE
+CREATE DATABASE
+$ turbo run db:migrate
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/components, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running db:migrate in 9 packages
+   • Remote caching disabled
+
+@hataraku/server:db:migrate: cache bypass, force executing 4966ca7db922db55
+@hataraku/server:db:migrate: $ node --env-file-if-exists=.env src/migrate.ts
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1.692s 
+
+SET
+SET
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COPY 49
+COPY 49
+COPY 1
+COPY 22
+COPY 7
+COPY 0
+COPY 2
+COPY 0
+COPY 0
+COPY 33
+COPY 0
+COPY 122
+COPY 39
+COPY 2
+COPY 45
+COPY 1
+COPY 5
+COPY 96
+COPY 0
+COPY 6
+COPY 0
+COPY 1
+COPY 0
+ setval 
+--------
+      6
+(1 row)
+
+ setval 
+--------
+      6
+(1 row)
+
+SET
+NULL
+0
+0
+0
+3

@@ -27,13 +27,6 @@
  * other column stays native, because the driver mangles some of them the other way round: a
  * JavaScript string bound to ::boolean lands as false whatever it says.
  *
- * ## search_index is not copied
- *
- * It is a projection maintained by triggers on posts and post_tags. Copying it would import a
- * snapshot that could already be stale; letting the triggers build it proves the projection works
- * on the new database. The verification compares the rebuilt vectors against the source, then runs
- * the same two-pass query the search procedure runs, so a Chinese term is proven to find its post
- * through the projection rather than through a sequential scan.
  */
 
 import { mkdir, writeFile } from "node:fs/promises";
@@ -112,46 +105,6 @@ interface UntouchedResult {
   table: string;
 }
 
-interface SearchOutcome {
-  fallback: boolean;
-  hits: string[];
-  termCount: number;
-}
-
-interface SearchCheck {
-  fallback: boolean;
-  found: boolean;
-  prefix: string;
-  sameAsSource: boolean;
-  targetHits: string[];
-}
-
-interface PrecisionResult {
-  hits: number;
-  sameAsSource: boolean;
-  term: string;
-}
-
-interface ProjectionRow {
-  metadata: string;
-  tsv: string;
-}
-
-interface ProjectionComparison {
-  metadataMismatches: string[];
-  missing: string[];
-  tsvMismatches: string[];
-}
-
-interface ProjectionResult {
-  metadataMismatches: string[];
-  missing: string[];
-  orphansRemoved: number;
-  sourceRows: number;
-  targetRows: number;
-  tsvMismatches: string[];
-}
-
 interface Endpoint {
   database: string;
   host: string;
@@ -167,10 +120,6 @@ interface Report {
   dryRun: boolean;
   failures: string[];
   generatedAt: string;
-  precision: PrecisionResult;
-  projection: ProjectionResult;
-  references: ReferenceResult[];
-  searchChecks: SearchCheck[];
   source: Endpoint;
   tables: ReconcileResult[];
   target: Endpoint;
@@ -202,12 +151,6 @@ const MAX_CONNECTIONS = 1;
 
 const BATCH_SIZE = 200;
 
-const MAX_FALLBACK_TERMS = 3;
-
-const CJK_PROBES = 8;
-
-const PRECISION_TERM = "不存在的词xyz";
-
 /** Tables whose rows this script must never write. Counted before and after as evidence. */
 const UNTOUCHED_TABLES = ["login_attempts", "todos"] as const;
 
@@ -217,7 +160,6 @@ const UNTOUCHED_TABLES = ["login_attempts", "todos"] as const;
  * post_tags carries none either; the order below keeps those logical references satisfiable anyway.
  *
  * login_attempts is deliberately absent: it is short-lived audit data, not content.
- * search_index is absent because triggers own it.
  */
 const TABLES = [
   "categories",
@@ -267,8 +209,6 @@ const TEXT_TRANSPORT_TYPES = new Set([
   "timestamp with time zone",
   "timestamp without time zone",
 ]);
-
-const CJK_RUN = /[\u4E00-\u9FFF\u3400-\u4DBF]{2,}/u;
 
 const readUrl = (name: string): string => {
   const value = process.env[name];
@@ -647,204 +587,6 @@ const collectReferences = async (
     }))
   );
 
-const rebuildProjection = async (target: SqlClient): Promise<number> => {
-  await target.unsafe("select refresh_search_index(id) from posts");
-
-  const removed = await target.unsafe(
-    "delete from search_index si where not exists (select 1 from posts p where p.id = si.post_id) returning si.post_id"
-  );
-
-  return removed.length;
-};
-
-const projectionRows = async (
-  sql: SqlClient
-): Promise<Map<string, ProjectionRow>> => {
-  const rows = await sql.unsafe(
-    `select post_id::text as id,
-            md5(coalesce(tsv::text, '')) as tsv,
-            md5(
-              jsonb_build_object(
-                'post_id', post_id,
-                'title', title,
-                'description', description,
-                'body', body,
-                'tags', tags,
-                'published_at', published_at
-              )::text
-            ) as metadata
-       from search_index`
-  );
-
-  const entries: [string, ProjectionRow][] = rows.map(
-    (row): [string, ProjectionRow] => [
-      textOf(row, "id"),
-      { metadata: textOf(row, "metadata"), tsv: textOf(row, "tsv") },
-    ]
-  );
-
-  return new Map(entries);
-};
-
-const compareProjection = (
-  source: Map<string, ProjectionRow>,
-  target: Map<string, ProjectionRow>
-): ProjectionComparison => {
-  const metadataMismatches: string[] = [];
-  const missing: string[] = [];
-  const tsvMismatches: string[] = [];
-
-  for (const [id, row] of source) {
-    const other = target.get(id);
-
-    if (other === undefined) {
-      missing.push(id);
-      continue;
-    }
-
-    if (other.tsv !== row.tsv) {
-      tsvMismatches.push(id);
-    }
-
-    if (other.metadata !== row.metadata) {
-      metadataMismatches.push(id);
-    }
-  }
-
-  return { metadataMismatches, missing, tsvMismatches };
-};
-
-const collectProjection = async (
-  source: SqlClient,
-  target: SqlClient,
-  orphansRemoved: number
-): Promise<ProjectionResult> => {
-  const fromSource = await projectionRows(source);
-  const fromTarget = await projectionRows(target);
-  const comparison = compareProjection(fromSource, fromTarget);
-
-  return {
-    metadataMismatches: comparison.metadataMismatches,
-    missing: comparison.missing,
-    orphansRemoved,
-    sourceRows: fromSource.size,
-    targetRows: fromTarget.size,
-    tsvMismatches: comparison.tsvMismatches,
-  };
-};
-
-const searchTerm = async (
-  sql: SqlClient,
-  term: string,
-  mode: "and" | "or"
-): Promise<string[]> => {
-  const rewrite =
-    mode === "and" ? "ns_tsquery_text($1)" : "ns_tsquery_text_or($1)";
-
-  const rows = await sql.unsafe(
-    `select p.slug as slug
-       from search_index si
-       join posts p on p.id = si.post_id
-      where si.tsv @@ websearch_to_tsquery('simple', ${rewrite})
-        and p.published = true
-        and p.draft = false
-      order by p.slug`,
-    [term]
-  );
-
-  return rows.map((row) => textOf(row, "slug"));
-};
-
-const countTerms = async (sql: SqlClient, term: string): Promise<number> => {
-  const value = firstRow(
-    await sql.unsafe("select cardinality(ns_tsquery_terms($1)) as n", [term])
-  ).n;
-
-  if (!isCount(value)) {
-    throw new Error("ns_tsquery_terms returned no count");
-  }
-
-  return value;
-};
-
-/** The two-pass query the search procedure runs: AND first, OR only when that finds nothing. */
-const search = async (sql: SqlClient, term: string): Promise<SearchOutcome> => {
-  const primary = await searchTerm(sql, term, "and");
-  const termCount = await countTerms(sql, term);
-
-  if (primary.length > 0) {
-    return { fallback: false, hits: primary, termCount };
-  }
-
-  if (termCount === 0 || termCount > MAX_FALLBACK_TERMS) {
-    return { fallback: false, hits: [], termCount };
-  }
-
-  return {
-    fallback: true,
-    hits: await searchTerm(sql, term, "or"),
-    termCount,
-  };
-};
-
-const firstCjkPrefix = (text: string): string | undefined => {
-  const match = CJK_RUN.exec(text);
-
-  return match === null ? undefined : match[0].slice(0, 2);
-};
-
-const collectSearchChecks = async (
-  source: SqlClient,
-  target: SqlClient
-): Promise<SearchCheck[]> => {
-  const rows = await target.unsafe(
-    `select slug, title
-       from posts
-      where published = true and draft = false and published_at is not null
-      order by published_at desc
-      limit 40`
-  );
-
-  const probes: { prefix: string; slug: string }[] = [];
-
-  for (const row of rows) {
-    const prefix = firstCjkPrefix(textOf(row, "title"));
-
-    if (prefix !== undefined) {
-      probes.push({ prefix, slug: textOf(row, "slug") });
-    }
-  }
-
-  return await Promise.all(
-    probes.slice(0, CJK_PROBES).map(async (probe): Promise<SearchCheck> => {
-      const fromSource = await search(source, probe.prefix);
-      const fromTarget = await search(target, probe.prefix);
-
-      return {
-        fallback: fromTarget.fallback,
-        found: fromTarget.hits.includes(probe.slug),
-        prefix: probe.prefix,
-        sameAsSource: fromSource.hits.join(",") === fromTarget.hits.join(","),
-        targetHits: fromTarget.hits,
-      };
-    })
-  );
-};
-
-const collectPrecision = async (
-  source: SqlClient,
-  target: SqlClient
-): Promise<PrecisionResult> => {
-  const fromSource = await search(source, PRECISION_TERM);
-  const fromTarget = await search(target, PRECISION_TERM);
-
-  return {
-    hits: fromTarget.hits.length,
-    sameAsSource: fromSource.hits.length === fromTarget.hits.length,
-    term: PRECISION_TERM,
-  };
-};
-
 const untouchedResults = (
   before: Map<string, number>,
   after: Map<string, number>
@@ -944,77 +686,6 @@ const printReferences = (
   }
 };
 
-const printProjection = (
-  result: ProjectionResult,
-  failures: string[]
-): void => {
-  console.log(
-    `vectors: source=${result.sourceRows} target=${result.targetRows} tsv_mismatched=${result.tsvMismatches.length} metadata_mismatched=${result.metadataMismatches.length} missing=${result.missing.length}`
-  );
-
-  if (result.tsvMismatches.length > 0) {
-    failures.push(
-      `search_index: ${result.tsvMismatches.length} vectors differ from the source`
-    );
-    printRowSamples("differs", result.tsvMismatches);
-  }
-
-  if (result.metadataMismatches.length > 0) {
-    failures.push(
-      `search_index: ${result.metadataMismatches.length} rows carry different text`
-    );
-    printRowSamples("differs", result.metadataMismatches);
-  }
-
-  if (result.missing.length > 0) {
-    failures.push(
-      `search_index: ${result.missing.length} source posts have no vector`
-    );
-    printRowSamples("missing", result.missing);
-  }
-};
-
-const printSearch = (
-  checks: SearchCheck[],
-  precision: PrecisionResult,
-  failures: string[]
-): void => {
-  for (const check of checks) {
-    const hits = check.targetHits.slice(0, 3).join(", ");
-
-    const more =
-      check.targetHits.length > 3 ? ` (+${check.targetHits.length - 3})` : "";
-
-    console.log(
-      `${check.found ? "OK  " : "MISS"} 「${check.prefix}」 -> ${hits}${more}${check.fallback ? " [fallback]" : ""}${
-        check.sameAsSource ? "" : " [differs from source]"
-      }`
-    );
-
-    if (!check.found) {
-      failures.push(
-        `search: 「${check.prefix}」 did not find ${check.targetHits.length === 0 ? "the post" : "its own post"}`
-      );
-    }
-  }
-
-  console.log(`checked ${checks.length} CJK prefix(es)`);
-
-  const precisionOk = precision.hits === 0 && precision.sameAsSource;
-
-  console.log(
-    `${statusText(precisionOk)} precision guard: 「${precision.term}」 -> ${precision.hits} hit(s)`
-  );
-
-  if (precision.hits > 0) {
-    failures.push("search: the precision guard returned hits");
-  }
-
-  if (!precision.sameAsSource) {
-    failures.push("search: the precision guard differs from the source");
-  }
-};
-
 const printUntouched = (
   results: UntouchedResult[],
   failures: string[]
@@ -1069,10 +740,6 @@ try {
     printCopies(copies);
     const untouchedAfter = await countTables(target, UNTOUCHED_TABLES);
 
-    console.log("\n--- rebuild search_index from the triggers ---");
-    const orphansRemoved = await rebuildProjection(target);
-    console.log(`removed ${orphansRemoved} orphaned vector row(s)`);
-
     console.log("\n--- reconcile ---");
     const tables = await reconcileAll(source, target, plans, failures);
     printReconcile(tables);
@@ -1080,15 +747,6 @@ try {
     console.log("\n--- referential integrity ---");
     const references = await collectReferences(source, target);
     printReferences(references, failures);
-
-    console.log("\n--- search_index projection ---");
-    const projection = await collectProjection(source, target, orphansRemoved);
-    printProjection(projection, failures);
-
-    console.log("\n--- Chinese retrieval on the target ---");
-    const searchChecks = await collectSearchChecks(source, target);
-    const precision = await collectPrecision(source, target);
-    printSearch(searchChecks, precision, failures);
 
     const untouched = untouchedResults(untouchedBefore, untouchedAfter);
     printUntouched(untouched, failures);
@@ -1098,10 +756,6 @@ try {
       dryRun: false,
       failures,
       generatedAt: new Date().toISOString(),
-      precision,
-      projection,
-      references,
-      searchChecks,
       source: sourceEndpoint,
       tables,
       target: targetEndpoint,
@@ -1122,5 +776,5 @@ if (failures.length > 0) {
 
   process.exitCode = 1;
 } else if (!options.dryRun) {
-  console.log("\nRESULT: every table reconciled and the projection verified");
+  console.log("\nRESULT: every table reconciled");
 }

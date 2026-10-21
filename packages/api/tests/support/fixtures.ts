@@ -88,7 +88,6 @@ export const seedBlog = async (db: Database) => {
         bodyMd: RSC_BODY,
         categoryId: frontend.id,
         categorySlug: frontend.slug,
-        cover: { alt: "封面", height: 630, src: "/rsc.webp", width: 1200 },
         description: "RSC 不是银弹",
         featured: true,
         published: true,
@@ -368,7 +367,6 @@ export const seedBlog = async (db: Database) => {
     id: 1,
     name: "夜行栈",
     nameEn: "NightStack",
-    nav: { cta: { href: "/article", label: "进入栈内" } },
     social: { github: "https://github.com/xinvxueyuan", rss: "/rss.xml" },
     tagline: "昼构建夜沉思",
   });

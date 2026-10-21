@@ -12,18 +12,6 @@ import { markdownToPlainText } from "#src/search/plain-text.ts";
 /**
  * Search runs on an in-process Orama index; Postgres stays the source of truth.
  *
- * The old search_index table, its triggers and the ns_tsquery_* functions still exist and still
- * maintain themselves on every write, but nothing reads them any more. That is a transitional
- * state with a defined end — removed after this path has served a full release cycle without a
- * search regression — and the removal is a migration, not a rewrite here:
- *   1. confirm nothing references search_index or ns_tsquery_ in the repository or the query logs;
- *   2. write a new migration that drops the two triggers (posts_search_index_sync,
- *      post_tags_search_index_sync), then refresh_search_index, search_index_sync_from_posts,
- *      search_index_sync_from_post_tags, ns_tsquery_terms, ns_tsquery_text, ns_tsquery_text_or,
- *      ns_cjk_ngrams and ns_tsvector_text, then the table itself;
- *   3. delete db/schema/search.ts and its relations entry, and the tests that name the old path.
- * Until that lands the derived table is dead weight, not a second read path.
- *
  * The index is rebuilt from posts when a cheap fingerprint changes: the number of published posts
  * and their newest updated_at. Every write in this repository sets updated_at, including tag
  * edits, so one aggregate covers content, publish state and taxonomy changes.

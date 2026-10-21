@@ -1,13 +1,5 @@
 /** JSONB payload shapes shared by more than one table. */
 
-/** Cover image metadata, as the old site's frontmatter carried it. */
-export interface CoverMeta {
-  alt?: string;
-  height?: number;
-  src: string;
-  width?: number;
-}
-
 /** The home hero block on the site profile. */
 export interface HeroMeta {
   badge?: string;
@@ -40,11 +32,6 @@ export interface AnalyticsConfig {
   scriptSrc: string;
   /** The site id the provider issued; empty when not configured. */
   siteId: string;
-}
-
-/** The navigation call to action on the site profile. */
-export interface NavMeta {
-  cta?: { href: string; label: string };
 }
 
 /** A music entry on a micro post. */

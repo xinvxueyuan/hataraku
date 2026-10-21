@@ -1,0 +1,19 @@
+note: You are running `vp test` as a Vite+ built-in command. If you meant to run the test npm script, use `vpr test` instead.
+
+ RUN  v5.0.5 C:/dev/dsh/projects/hataraku
+
+ ✓ |unit| packages/api/src/openapi-public.test.ts (27 tests) 20ms
+ ✓ |unit| packages/api/src/search/plain-text.test.ts (5 tests) 15ms
+ ✓ |unit| packages/api/src/slug.test.ts (9 tests) 14ms
+ ✓ |unit| apps/web/src/components/site-analytics-settings.test.ts (7 tests) 10ms
+ ✓ |unit| apps/web/src/components/sheet-table.test.ts (5 tests) 14ms
+ ✓ |unit| packages/api/src/mdx-guard.test.ts (10 tests) 9ms
+ ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 5ms
+ ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 8ms
+ ✓ |unit| packages/api/src/r2.test.ts (10 tests) 11ms
+
+ Test Files  9 passed (9)
+      Tests  82 passed (82)
+   Start at  00:48:03
+   Duration  715ms (import 64%, transform 16%, tests 10%, worker 10%, environment 1%)
+

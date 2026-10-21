@@ -12,7 +12,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import type { CoverMeta, MusicMeta } from "#src/schema/json.ts";
+import type { MusicMeta } from "#src/schema/json.ts";
 
 const textArray = () =>
   text()
@@ -49,7 +49,6 @@ export const projects = snakeCase.table(
   "projects",
   {
     bodyMd: text(),
-    cover: jsonb().$type<CoverMeta>(),
     coverKey: text(),
     createdAt,
     description: text(),

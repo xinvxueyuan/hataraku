@@ -52,13 +52,6 @@ export const paginatedSchema = <T extends z.ZodType>(item: T) =>
 /* Shared payload shapes                                                       */
 /* -------------------------------------------------------------------------- */
 
-const coverMetaSchema = z.object({
-  alt: z.string().optional(),
-  height: z.number().optional(),
-  src: z.string(),
-  width: z.number().optional(),
-});
-
 const musicMetaSchema = z.object({
   album: z.string().optional(),
   artist: z.string().optional(),
@@ -74,10 +67,6 @@ const heroMetaSchema = z.object({
   description: z.string().optional(),
   meta: z.string().optional(),
   title: z.string().optional(),
-});
-
-const navMetaSchema = z.object({
-  cta: z.object({ href: z.string(), label: z.string() }).optional(),
 });
 
 /**
@@ -100,7 +89,6 @@ const taxonomySlugSchema = z
 
 export const postSummarySchema = z.object({
   categorySlug: z.string().nullable(),
-  cover: coverMetaSchema.nullable(),
   coverKey: z.string().nullable(),
   description: z.string().nullable(),
   featured: z.boolean(),
@@ -423,7 +411,6 @@ export const siteProfileSchema = z.object({
   id: z.int(),
   name: z.string(),
   nameEn: z.string().nullable(),
-  nav: navMetaSchema.nullable(),
   social: z.record(z.string(), z.string()).nullable(),
   tagline: z.string().nullable(),
   updatedAt: z.date(),
@@ -435,7 +422,6 @@ export const siteProfileSchema = z.object({
 
 export const projectSchema = z.object({
   bodyMd: z.string().nullable(),
-  cover: coverMetaSchema.nullable(),
   coverKey: z.string().nullable(),
   createdAt: z.date(),
   description: z.string().nullable(),
@@ -760,7 +746,6 @@ const albumPhotoSchema = z.object({
 });
 
 export const albumSchema = z.object({
-  cover: coverMetaSchema.nullable(),
   coverKey: z.string().nullable(),
   createdAt: z.date(),
   date: z.string().nullable(),

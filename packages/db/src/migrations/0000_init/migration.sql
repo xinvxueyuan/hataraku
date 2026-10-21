@@ -7,6 +7,65 @@ CREATE TABLE "login_attempts" (
 	"outcome" text NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "account" (
+	"access_token" text,
+	"access_token_expires_at" timestamp with time zone,
+	"account_id" text NOT NULL,
+	"id" text PRIMARY KEY,
+	"id_token" text,
+	"password" text,
+	"provider_id" text NOT NULL,
+	"refresh_token" text,
+	"refresh_token_expires_at" timestamp with time zone,
+	"scope" text,
+	"user_id" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "session" (
+	"expires_at" timestamp with time zone NOT NULL,
+	"id" text PRIMARY KEY,
+	"ip_address" text,
+	"token" text NOT NULL UNIQUE,
+	"user_agent" text,
+	"user_id" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "two_factor" (
+	"backup_codes" text NOT NULL,
+	"failed_verification_count" integer DEFAULT 0 NOT NULL,
+	"id" text PRIMARY KEY,
+	"locked_until" timestamp with time zone,
+	"secret" text NOT NULL,
+	"user_id" text NOT NULL,
+	"verified" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "user" (
+	"email" text NOT NULL UNIQUE,
+	"email_verified" boolean DEFAULT false NOT NULL,
+	"id" text PRIMARY KEY,
+	"image" text,
+	"name" text NOT NULL,
+	"two_factor_enabled" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "verification" (
+	"expires_at" timestamp with time zone NOT NULL,
+	"id" text PRIMARY KEY,
+	"identifier" text NOT NULL,
+	"value" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "changelog_entries" (
 	"body_md" text,
 	"changes" text[] DEFAULT '{}'::text[] NOT NULL,
@@ -55,7 +114,6 @@ CREATE TABLE "micro_posts" (
 --> statement-breakpoint
 CREATE TABLE "projects" (
 	"body_md" text,
-	"cover" jsonb,
 	"cover_key" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"description" text,
@@ -121,7 +179,6 @@ CREATE TABLE "album_photos" (
 );
 --> statement-breakpoint
 CREATE TABLE "albums" (
-	"cover" jsonb,
 	"cover_key" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"date" date,
@@ -176,6 +233,7 @@ CREATE TABLE "diary_entries" (
 );
 --> statement-breakpoint
 CREATE TABLE "site_profile" (
+	"analytics" jsonb DEFAULT '{"enabled":false,"provider":"none","respectDnt":true,"scriptSrc":"","siteId":""}' NOT NULL,
 	"author" text,
 	"avatar_key" text,
 	"avatar_url" text,
@@ -185,7 +243,6 @@ CREATE TABLE "site_profile" (
 	"id" integer PRIMARY KEY DEFAULT 1,
 	"name" text NOT NULL,
 	"name_en" text,
-	"nav" jsonb,
 	"social" jsonb,
 	"tagline" text,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -214,7 +271,6 @@ CREATE TABLE "posts" (
 	"category_id" uuid,
 	"category_slug" text,
 	"comment" boolean DEFAULT true NOT NULL,
-	"cover" jsonb,
 	"cover_key" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"description" text,
@@ -230,16 +286,6 @@ CREATE TABLE "posts" (
 	"title" text NOT NULL,
 	"updated_at" timestamp with time zone,
 	"views" integer DEFAULT 0 NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "search_index" (
-	"body" text,
-	"description" text,
-	"post_id" uuid PRIMARY KEY,
-	"published_at" timestamp with time zone,
-	"tags" text[] DEFAULT '{}'::text[] NOT NULL,
-	"title" text NOT NULL,
-	"tsv" tsvector
 );
 --> statement-breakpoint
 CREATE TABLE "categories" (
@@ -267,10 +313,24 @@ CREATE TABLE "tags" (
 	"slug" text NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "todos" (
+	"completed" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "todos_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"title" text NOT NULL,
+	"user_id" text NOT NULL,
+	CONSTRAINT "todos_title_length" CHECK (char_length(btrim("title")) between 1 and 200)
+);
+--> statement-breakpoint
 CREATE INDEX "login_attempts_created_idx" ON "login_attempts" ("created_at");--> statement-breakpoint
 CREATE INDEX "login_attempts_email_created_idx" ON "login_attempts" ("email_hash","created_at");--> statement-breakpoint
 CREATE INDEX "login_attempts_ip_created_idx" ON "login_attempts" ("ip_hash","created_at");--> statement-breakpoint
 CREATE INDEX "login_attempts_outcome_created_idx" ON "login_attempts" ("outcome","created_at");--> statement-breakpoint
+CREATE INDEX "account_user_id_idx" ON "account" ("user_id");--> statement-breakpoint
+CREATE INDEX "session_user_id_idx" ON "session" ("user_id");--> statement-breakpoint
+CREATE INDEX "two_factor_secret_idx" ON "two_factor" ("secret");--> statement-breakpoint
+CREATE INDEX "two_factor_user_id_idx" ON "two_factor" ("user_id");--> statement-breakpoint
+CREATE INDEX "verification_identifier_idx" ON "verification" ("identifier");--> statement-breakpoint
 CREATE INDEX "changelog_entries_released_at_idx" ON "changelog_entries" ("released_at");--> statement-breakpoint
 CREATE UNIQUE INDEX "changelog_entries_slug_key" ON "changelog_entries" ("slug");--> statement-breakpoint
 CREATE INDEX "friends_sort_order_idx" ON "friends" ("sort_order");--> statement-breakpoint
@@ -303,10 +363,13 @@ CREATE INDEX "posts_draft_published_idx" ON "posts" ("draft","published");--> st
 CREATE INDEX "posts_published_at_idx" ON "posts" ("published_at");--> statement-breakpoint
 CREATE INDEX "posts_views_idx" ON "posts" ("views");--> statement-breakpoint
 CREATE UNIQUE INDEX "posts_slug_key" ON "posts" ("slug");--> statement-breakpoint
-CREATE INDEX "search_index_published_at_idx" ON "search_index" ("published_at");--> statement-breakpoint
-CREATE INDEX "search_index_tsv_gin" ON "search_index" USING gin ("tsv");--> statement-breakpoint
 CREATE INDEX "categories_sort_order_idx" ON "categories" ("sort_order");--> statement-breakpoint
 CREATE UNIQUE INDEX "categories_slug_key" ON "categories" ("slug");--> statement-breakpoint
 CREATE INDEX "post_tags_tag_idx" ON "post_tags" ("tag_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "tags_slug_key" ON "tags" ("slug");--> statement-breakpoint
-ALTER TABLE "album_photos" ADD CONSTRAINT "album_photos_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "albums"("id") ON DELETE CASCADE;
+CREATE INDEX "todos_user_id_idx" ON "todos" ("user_id");--> statement-breakpoint
+ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "two_factor" ADD CONSTRAINT "two_factor_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "album_photos" ADD CONSTRAINT "album_photos_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "albums"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "todos" ADD CONSTRAINT "todos_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;

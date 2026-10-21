@@ -22,7 +22,7 @@ describe("posts.list", () => {
     expect(page.totalPages).toBe(1);
     expect(page.items[0]).toMatchObject({
       categorySlug: "frontend",
-      cover: { alt: "封面", src: "/rsc.webp" },
+      coverKey: null,
       featured: true,
       readingMinutes: 12,
       tags: ["react"],
