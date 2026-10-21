@@ -1,0 +1,7 @@
+
+failure run exit=1 started=2026-10-21T14:08:35.3267505+08:00 ended=2026-10-21T14:09:36.7448006+08:00
+  @hataraku/web:test:e2e:  ❯ |web| tests/e2e/app.e2e.ts (7 tests | 1 failed) 32.47s
+  @hataraku/web:test:e2e: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+  @hataraku/web:test:e2e:  FAIL  |web| tests/e2e/app.e2e.ts > an existing user signs in and returns to the page they asked for
+  ports free at 2026-10-21T14:09:37.9569135+08:00 (1212 ms after exit)
+  leftover watchdog processes: 0

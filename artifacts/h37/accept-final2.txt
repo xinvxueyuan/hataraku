@@ -1,0 +1,11 @@
+
+run 1 pre-check: ports free
+  exit=0 started=2026-10-21T14:06:31.4684310+08:00 ended=2026-10-21T14:07:07.1587635+08:00 | @hataraku/web:test:e2e:       Tests  7 passed (7)
+  ports free at 2026-10-21T14:07:08.4988808+08:00 (1340 ms after exit)
+  leftover watchdog processes: 0
+
+run 2 pre-check: ports free
+  exit=0 started=2026-10-21T14:07:09.8270023+08:00 ended=2026-10-21T14:08:00.9090868+08:00 | @hataraku/web:test:e2e:       Tests  7 passed (7)
+  ports free at 2026-10-21T14:08:04.0581858+08:00 (3149 ms after exit)
+  leftover watchdog processes: 0
+

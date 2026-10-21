@@ -1,0 +1,53 @@
+$ turbo run test:e2e
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running test:e2e in 8 packages
+   • Remote caching disabled
+
+@hataraku/web:test:e2e: cache bypass, force executing d7bf77b4b290adcb
+@hataraku/web:test:e2e: $ e2e run
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  RUN  e2e v0.21.2 C:\dev\dsh\projects\hataraku\apps\web
+@hataraku/web:test:e2e:       run 01a15d13-71a1-7e52-9efc-d92fca03ccb4 · targets: web
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  ✓ target "web" command ready 16.66s
+@hataraku/web:test:e2e:  ❯ |web| tests/e2e/app.e2e.ts (7 tests | 1 failed) 32.47s
+@hataraku/web:test:e2e:    ✓ the home page reports the API as connected 1.45s
+@hataraku/web:test:e2e:    ✓ visitors are sent to sign in before seeing todos 1.33s
+@hataraku/web:test:e2e:    ✓ a new user signs up and manages todos that persist across reloads 4.93s
+@hataraku/web:test:e2e:    × an existing user signs in and returns to the page they asked for 17.62s
+@hataraku/web:test:e2e:      → expect.toBeVisible failed
+@hataraku/web:test:e2e:    ✓ a wrong password is rejected 1.65s
+@hataraku/web:test:e2e:    ✓ signing out ends the session 3.28s
+@hataraku/web:test:e2e:    ✓ the dark theme survives a reload 2.21s
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  FAIL  |web| tests/e2e/app.e2e.ts > an existing user signs in and returns to the page they asked for
+@hataraku/web:test:e2e: ASSERTION_FAILED: expect.toBeVisible failed
+@hataraku/web:test:e2e: locator: getByText("Existing todo (temporary H37 failure probe)")
+@hataraku/web:test:e2e: expected: visible
+@hataraku/web:test:e2e: observed: no node (match count 0)
+@hataraku/web:test:e2e:  ❯ at http://localhost:3200/todos
+@hataraku/web:test:e2e:  ❯ trace .e2e/results/app-an-existing-user-signs-in-and-af17e2b1c9f15c2d/trace.md
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e:  Test Files  1 failed | 0 passed (1)
+@hataraku/web:test:e2e:       Tests  1 failed | 6 passed (7)
+@hataraku/web:test:e2e:    Start at  14:08:43
+@hataraku/web:test:e2e:    Duration  51.31s (startup 16.66s)
+@hataraku/web:test:e2e:      Traces  .e2e/results/ (1 page, trace.md in each test's directory)
+@hataraku/web:test:e2e: 
+@hataraku/web:test:e2e: [ELIFECYCLE] Command failed with exit code 1.
+@hataraku/web#test:e2e:  ERROR  command (C:\dev\dsh\projects\hataraku\apps\web) C:\Program Files\nodejs\pnpm.CMD run test:e2e exited (1)
+
+ Tasks:    0 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1m0.847s 
+Failed:    @hataraku/web#test:e2e
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Command failed with exit code 1.

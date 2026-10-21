@@ -1,0 +1,4 @@
+spawned pid=19436
+ready: 3230=200 3231=200
+killed with SIGTERM; exitCode=null signalCode=null
+4s after kill: 3230=free 3231=free
