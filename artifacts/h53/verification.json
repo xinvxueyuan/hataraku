@@ -1,0 +1,110 @@
+{
+  "task": "H53",
+  "package": "packages/ui",
+  "checkedAt": "2026-10-21T13:31:56.187Z",
+  "tokens": {
+    "count": 74,
+    "missing": 0,
+    "added": 0,
+    "valueChanges": 0,
+    "flaggedUnused": [
+      "chart-1..5",
+      "sidebar",
+      "sidebar-foreground",
+      "sidebar-primary",
+      "sidebar-primary-foreground",
+      "sidebar-accent",
+      "sidebar-accent-foreground",
+      "sidebar-border",
+      "sidebar-ring"
+    ],
+    "note": "radius-sm..4xl are unused by name but are the Tailwind radius scale"
+  },
+  "decoupling": {
+    "nextSlashMatches": 0,
+    "nextPackageImports": [
+      "next-themes (sonner, documented)"
+    ],
+    "colourLiteralsOutsideTokenFile": 0
+  },
+  "cssIsolation": {
+    "uiStylesheetImportsInApps": 1,
+    "importSite": "apps/web/src/app/layout.tsx",
+    "structuralSelectors": 0,
+    "componentLayer": "reserved and empty"
+  },
+  "icons": {
+    "module": "packages/ui/src/icons.ts",
+    "count": 19,
+    "exported": [
+      "Check",
+      "CircleCheck",
+      "Info",
+      "Lightbulb",
+      "Loader2",
+      "OctagonAlert",
+      "OctagonX",
+      "TriangleAlert",
+      "ChevronDown",
+      "ChevronRight",
+      "Menu",
+      "Copy",
+      "Moon",
+      "Sun",
+      "Trash2",
+      "FolderGit2",
+      "Images",
+      "Smartphone",
+      "UserRound"
+    ],
+    "types": [
+      "LucideIcon"
+    ],
+    "constants": [
+      "iconScale"
+    ]
+  },
+  "visualRegression": {
+    "baselineToFinal": {
+      "pages": 3,
+      "nodes": 599,
+      "rectDiffs": 0,
+      "styleDiffs": 0,
+      "verdict": "IDENTICAL"
+    },
+    "finalToReskin": {
+      "pages": 3,
+      "nodes": 599,
+      "nodeCountChanged": 0,
+      "rectDiffs": 0,
+      "styleDiffs": 144,
+      "examples": [
+        "radius 9.6px -> 16px",
+        "primary ink lab(40.25 29.9 -70.7) -> lab(49.84 -52 26.97)"
+      ]
+    },
+    "finalToRestored": {
+      "pages": 3,
+      "nodes": 599,
+      "rectDiffs": 0,
+      "styleDiffs": 0,
+      "verdict": "IDENTICAL"
+    },
+    "reskinTokenEdits": [
+      "--primary",
+      "--primary-foreground",
+      "--ring (light and dark)",
+      "--radius 0.75rem -> 1.25rem"
+    ],
+    "appFilesChangedDuringReskin": 0,
+    "restoredSha256": "6F6B0E81F65BEFB51E0FA4E20F23654DD1AD82FE627B65DB3F5BAC61BABFE9D0"
+  },
+  "gate": {
+    "scopedFormat": "packages/ui clean (16 files)",
+    "checkNoFmt": "EXIT=0 (220 files)",
+    "knip": "EXIT=0 after declaring packages/ui/src/icons.ts an entry (knip.json)",
+    "unitAndIntegration": "262/262 passed (24 files)",
+    "build": "EXIT=0 (2 tasks)",
+    "repoReady": "blocked by docs/design-system.md (another member's unformatted doc) — packages/ui formatted; CI is authoritative"
+  }
+}

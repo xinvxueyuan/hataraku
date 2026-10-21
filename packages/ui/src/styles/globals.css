@@ -9,26 +9,50 @@
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
+/*
+ * The design system's single stylesheet.
+ *
+ * Layer contract, outermost first:
+ *   base        element defaults for the document (this file, bottom); no class selectors.
+ *   components  reserved for primitive-level classes that must beat utilities. It is empty on
+ *               purpose: primitives are styled with utilities inside their components (cva), so an
+ *               application can always override a primitive with a utility without specificity
+ *               fights.
+ *   utilities   Tailwind's utilities, the only layer primitives and application code write in.
+ *
+ * Token contract: a component never names a raw colour. It uses a semantic token bridged into a
+ * Tailwind namespace below (`--color-*` → `bg-*`/`text-*`/`border-*`, `--radius-*` → `rounded-*`,
+ * `--font-*` → `font-*`). Re-skinning means editing the token values in this file, nothing else.
+ *
+ * Adding a token: add the value under `:root` and `.dark`, then add its bridge in `@theme inline`.
+ * A token without a bridge is invisible to Tailwind; a utility without a token hardcodes a colour.
+ */
+
+/* ------------------------------------------------------------------------------------------------
+ * 1. Theme bridge — every token the utilities can name. Values point at the semantic tokens below,
+ *    so a light/dark swap needs no second bridge.
+ * ---------------------------------------------------------------------------------------------- */
 @theme inline {
+  /* Typography */
   --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", sans-serif;
+
+  /* Shape — the radius scale is derived from the one `--radius` token, so a re-skin changes every
+     rounded corner in one place. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* State — the colours every surface is built from. */
   --color-success: var(--success);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --color-destructive: var(--destructive);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -43,43 +67,72 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-  --font-sans: "Geist Variable", sans-serif;
+
+  /* Data visualisation (reserved: no chart consumes these yet). */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Application chrome (reserved: the shadcn sidebar primitive is not installed). */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
 }
 
+/* ------------------------------------------------------------------------------------------------
+ * 2. Semantic tokens — light theme. Values are oklch; a theme is a value swap, never a component
+ *    change.
+ * ---------------------------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
+
+  /* Surfaces: the page, raised content, and things that float above it. */
   --background: oklch(0.99 0.003 264);
-  --foreground: oklch(0.21 0.024 268);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.024 268);
   --popover: oklch(1 0 0);
+
+  /* Text: the default ink, and the ink on each surface. */
+  --foreground: oklch(0.21 0.024 268);
+  --card-foreground: oklch(0.21 0.024 268);
   --popover-foreground: oklch(0.21 0.024 268);
+
+  /* Actions: the one brand colour, its quiet alternative, the hover wash, and the muted layer. */
   --primary: oklch(0.51 0.2 274);
   --primary-foreground: oklch(0.985 0.006 274);
   --secondary: oklch(0.962 0.007 268);
   --secondary-foreground: oklch(0.26 0.03 268);
-  --muted: oklch(0.962 0.006 268);
-  --muted-foreground: oklch(0.5 0.02 268);
   --accent: oklch(0.955 0.022 274);
   --accent-foreground: oklch(0.36 0.13 274);
+  --muted: oklch(0.962 0.006 268);
+  --muted-foreground: oklch(0.5 0.02 268);
+
+  /* Feedback. */
   --destructive: oklch(0.58 0.22 25);
   --success: oklch(0.62 0.15 158);
+
+  /* Lines and the focus ring. */
   --border: oklch(0.915 0.008 268);
   --input: oklch(0.885 0.011 268);
   --ring: oklch(0.51 0.2 274);
+
+  /* Shape: every radius in the system derives from this one value. */
+  --radius: 0.75rem;
+
+  /* Data visualisation (reserved: no chart consumes these yet). */
   --chart-1: oklch(0.8 0.09 274);
   --chart-2: oklch(0.66 0.15 274);
   --chart-3: oklch(0.51 0.2 274);
   --chart-4: oklch(0.42 0.17 274);
   --chart-5: oklch(0.33 0.12 274);
-  --radius: 0.75rem;
+
+  /* Application chrome (reserved: the shadcn sidebar primitive is not installed). */
   --sidebar: oklch(0.975 0.004 268);
   --sidebar-foreground: oklch(0.21 0.024 268);
   --sidebar-primary: oklch(0.51 0.2 274);
@@ -90,32 +143,50 @@
   --sidebar-ring: oklch(0.51 0.2 274);
 }
 
+/* ------------------------------------------------------------------------------------------------
+ * 3. Semantic tokens — dark theme. The same names, different values: nothing downstream knows
+ *    which theme it is rendering.
+ * ---------------------------------------------------------------------------------------------- */
 .dark {
   color-scheme: dark;
+
+  /* Surfaces */
   --background: oklch(0.165 0.013 270);
-  --foreground: oklch(0.96 0.005 270);
   --card: oklch(0.2 0.015 270);
-  --card-foreground: oklch(0.96 0.005 270);
   --popover: oklch(0.21 0.016 270);
+
+  /* Text */
+  --foreground: oklch(0.96 0.005 270);
+  --card-foreground: oklch(0.96 0.005 270);
   --popover-foreground: oklch(0.96 0.005 270);
+
+  /* Actions */
   --primary: oklch(0.72 0.15 276);
   --primary-foreground: oklch(0.18 0.04 276);
   --secondary: oklch(0.26 0.016 270);
   --secondary-foreground: oklch(0.96 0.005 270);
-  --muted: oklch(0.25 0.015 270);
-  --muted-foreground: oklch(0.7 0.016 270);
   --accent: oklch(0.28 0.045 276);
   --accent-foreground: oklch(0.92 0.04 276);
+  --muted: oklch(0.25 0.015 270);
+  --muted-foreground: oklch(0.7 0.016 270);
+
+  /* Feedback */
   --destructive: oklch(0.7 0.19 22);
   --success: oklch(0.75 0.15 158);
+
+  /* Lines and the focus ring */
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 14%);
   --ring: oklch(0.72 0.15 276);
+
+  /* Data visualisation (reserved) */
   --chart-1: oklch(0.85 0.07 276);
   --chart-2: oklch(0.72 0.15 276);
   --chart-3: oklch(0.6 0.18 276);
   --chart-4: oklch(0.5 0.17 276);
   --chart-5: oklch(0.4 0.13 276);
+
+  /* Application chrome (reserved) */
   --sidebar: oklch(0.19 0.014 270);
   --sidebar-foreground: oklch(0.96 0.005 270);
   --sidebar-primary: oklch(0.72 0.15 276);
@@ -126,6 +197,10 @@
   --sidebar-ring: oklch(0.72 0.15 276);
 }
 
+/* ------------------------------------------------------------------------------------------------
+ * 4. Base layer — element defaults only. No class selectors and no selectors that encode application
+ *    structure (`main > div`, `section + section`): those belong to the application.
+ * ---------------------------------------------------------------------------------------------- */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -136,4 +211,15 @@
   ::selection {
     @apply bg-primary/20;
   }
+}
+
+/* ------------------------------------------------------------------------------------------------
+ * 5. Component layer — reserved, empty on purpose.
+ *
+ *    A primitive is a component with a cva recipe, not a stylesheet rule, so the layer stays free:
+ *    when an application adds `className="rounded-none"` to a primitive, the utility wins because
+ *    there is no component-layer specificity to fight. Only add a rule here for a class that must
+ *    beat utilities, and name it with the `ui-` prefix so it is greppable.
+ * ---------------------------------------------------------------------------------------------- */
+@layer components {
 }

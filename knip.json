@@ -9,6 +9,9 @@
     "apps/mobile": {
       "ignoreDependencies": ["expo-updates"]
     },
+    "packages/ui": {
+      "entry": ["src/icons.ts"]
+    },
     "apps/web": {
       "entry": [
         "e2e.config.ts",
