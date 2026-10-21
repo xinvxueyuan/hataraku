@@ -235,7 +235,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
             <li key={post.id}>
               <article className="flex gap-4">
                 <PostCover
-                  className="w-28 shrink-0 sm:w-40"
+                  className="hidden w-28 shrink-0 sm:block sm:w-40"
                   coverKey={post.coverKey}
                   coverSrc={post.cover?.src ?? null}
                   sizes="(min-width: 640px) 160px, 112px"

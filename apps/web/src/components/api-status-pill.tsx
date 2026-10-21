@@ -1,12 +1,13 @@
 import { serverCall } from "#src/server/query.ts";
 
 /**
- * Data-availability pill for the home page.
+ * Data-availability readout, rendered in the footer rather than the reading flow.
  *
- * The web app now serves the API in process, so "Connected" no longer says anything about a separate
- * API process. What the probe does answer is whether a read through the router reaches the database:
- * the page renders either way, and an empty list is otherwise indistinguishable from a broken
- * connection. That is the question a visitor looking at an empty home page actually has.
+ * It used to sit under the home page's tagline and stretched to a full-width bar on mobile. The
+ * question it answers is still worth showing — an empty list and an unreachable database look the
+ * same — but it belongs beside the colophon, not between the tagline and the newest article. The
+ * frozen e2e suite asserts the "Connected" text is visible on the home page, so the pill keeps
+ * that label; the footer placement is the design fix.
  *
  * The probe is one cheap read. A failure is reported rather than thrown — the whole point is to say
  * something when the data layer is unreachable, and a page that 500s on that cannot say anything.
@@ -26,7 +27,7 @@ export const ApiStatusPill = async () => {
 
   return (
     <output
-      className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs"
+      className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm"
       data-slot="api-status"
     >
       <span

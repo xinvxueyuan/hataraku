@@ -1,0 +1,37 @@
+H38 — 设计审查修复：测量证据
+时间: 2026-10-21 (Asia/Shanghai)
+实例: http://localhost:3000（dev）
+
+== 移动端总高度（innerWidth=390）==
+页面      改前      改后      变化
+/         2587px    2035px    -552px (-21%)
+/article  3237px    2148px    -1089px (-34%)
+1440 对照：/ 1777→1753；/article 1894→1861（移除正文流胶囊、标签单行等微调）
+
+== 对比度（canvas 归一化 lab()，页面实测）==
+dark:  h1 17.2 / 正文 7.2 / muted 7.2
+light: h1 17.3 / 正文 5.86 / muted 5.86
+与审查基线完全一致，无回退，均 ≥ AA 4.5。
+
+== 占位字形 ==
+- DB 已发布文章 38 篇，逐条按 /\p{L}/u 取首个字母/汉字，38/38 通过（无数字/标点）。
+  例：2026年…→年；一步步用…→一；一封封号…→一；Next.js…→N；CI/CD…→C。
+- 文章列表 DOM 实测 10 个占位 span：["一","年","一","深","N","C","M","W","L","J"]，全部 /^\p{L}$/ 且 aria-hidden="true"。
+
+== 其他断言 ==
+- 首页正文不再含 API Connected；胶囊在 footer（data-slot=api-status），Connected 文案保留（冻结 e2e 依赖）。
+- 页脚含「把代码、学习与生活写成可读的记录」；不再出现 Postgres / 装备。
+- /article 第 1 页：上一页 aria-disabled=true、opacity 0.5。
+- /micro 空态容器高度 380px（45vh @844），不再留 500px 纯空白。
+- /settings/admin：8 张卡片、4 个数量 chip（文章/微言/项目/更新日志），账号类卡片不再显示类别词。
+- 390px：品牌宽 59px 正常；用户按钮可访问名仍为 Owner（sr-only 文本），图标在窄屏显示、桌面显示名字。
+- 标签行 flex-nowrap + 前 3 个 + 「+N」。
+- 后台副标题改为「写作、站点资料与账号设置，全部入口都在这里。」；微言描述不再出现 /micro。
+
+== 截图 ==
+before-home-1440/390、before-article-1440/390；after-home-1440/390、after-article-1440/390、
+after-header-390、after-micro-1440/390、after-admin-1440。
+
+== e2e ==
+E2E_TEST_PORT=3210 pnpm exec e2e run → 7/7 passed（3200 被其他 e2e 栈占用时使用；随后默认端口空出，
+pnpm run ready 的 e2e 也在默认 3200 通过）。

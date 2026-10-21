@@ -14,6 +14,10 @@ interface PagerProps {
 const linkClass =
   "rounded-sm hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none";
 
+/** A disabled neighbour reads as unavailable: dimmed, not a link, and announced as disabled. */
+const disabledClass =
+  "text-muted-foreground cursor-not-allowed opacity-50 select-none";
+
 export const Pager = ({
   currentPage,
   hrefFor,
@@ -31,7 +35,9 @@ export const Pager = ({
       className="flex items-center justify-between border-t pt-4 text-sm"
     >
       {currentPage <= 1 ? (
-        <span className="text-muted-foreground">上一页</span>
+        <span aria-disabled="true" className={disabledClass}>
+          上一页
+        </span>
       ) : (
         <a className={linkClass} href={hrefFor(currentPage - 1)}>
           上一页
@@ -41,7 +47,9 @@ export const Pager = ({
         第 {currentPage} / {totalPages} 页
       </span>
       {currentPage >= totalPages ? (
-        <span className="text-muted-foreground">下一页</span>
+        <span aria-disabled="true" className={disabledClass}>
+          下一页
+        </span>
       ) : (
         <a className={linkClass} href={hrefFor(currentPage + 1)}>
           下一页

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -54,8 +55,11 @@ export const UserMenu = ({ isAdmin, user }: UserMenuProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button size="sm" variant="outline" />}>
-        {user.name}
+      <DropdownMenuTrigger
+        render={<Button className="shrink-0" size="sm" variant="outline" />}
+      >
+        <UserRound aria-hidden="true" className="size-4 sm:hidden" />
+        <span className="sr-only sm:not-sr-only">{user.name}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>

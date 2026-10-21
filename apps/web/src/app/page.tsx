@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { ApiStatusPill } from "#src/components/api-status-pill.tsx";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -60,7 +59,6 @@ const HomePage = async () => {
         {description === null ? null : (
           <p className="text-muted-foreground max-w-2xl">{description}</p>
         )}
-        <ApiStatusPill />
       </header>
 
       <section aria-labelledby="latest-heading" className="flex flex-col gap-4">
@@ -89,7 +87,7 @@ const HomePage = async () => {
                   href={`/posts/${post.slug}`}
                 >
                   <PostCover
-                    className="w-28 shrink-0 sm:w-40"
+                    className="hidden w-28 shrink-0 sm:block sm:w-40"
                     coverKey={post.coverKey}
                     coverSrc={post.cover?.src ?? null}
                     sizes="(min-width: 640px) 160px, 112px"

@@ -26,7 +26,7 @@ export const Header = async () => {
     <header className="bg-background/80 sticky top-0 z-20 border-b backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-4">
         <Link
-          className={`${focusRing} flex items-center gap-2 rounded-md text-sm font-semibold tracking-tight`}
+          className={`${focusRing} flex shrink-0 items-center gap-2 rounded-md text-sm font-semibold tracking-tight`}
           href="/"
         >
           <span aria-hidden="true" className="bg-primary size-2.5 rounded-sm" />
@@ -37,7 +37,7 @@ export const Header = async () => {
           <NavLinks label="主导航" />
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
           <UserMenu isAdmin={isAdmin} user={session?.user ?? null} />
           <ModeToggle />
           <MobileNav />

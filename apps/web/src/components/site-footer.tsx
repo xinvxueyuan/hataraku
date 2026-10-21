@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ApiStatusPill } from "#src/components/api-status-pill.tsx";
 import { loadSiteIdentity } from "#src/components/site-content.ts";
 
 const focusRing =
@@ -73,8 +74,9 @@ export const SiteFooter = async () => {
         </nav>
       </div>
 
-      <div className="text-muted-foreground mx-auto max-w-5xl px-4 pb-6 text-xs">
-        © {site.name} · 内容与装备数据来自 Postgres
+      <div className="text-muted-foreground mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 pb-6 text-xs">
+        <span>© {site.name} · 把代码、学习与生活写成可读的记录</span>
+        <ApiStatusPill />
       </div>
     </footer>
   );

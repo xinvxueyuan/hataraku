@@ -65,7 +65,7 @@ const AdminIndexPage = async () => {
     },
     {
       count: `${counts.micro} 条`,
-      description: "短句与碎片，纯文本，前台在 /micro。",
+      description: "短句与碎片，纯文本，读者在「微文」里看到。",
       href: "/settings/admin/micro",
       label: "微言",
     },
@@ -82,25 +82,25 @@ const AdminIndexPage = async () => {
       label: "更新日志",
     },
     {
-      count: "站点资料",
+      count: null,
       description: "站点名称、简介与作者信息，影响页脚和元数据。",
       href: "/settings/admin/profile",
       label: "站点",
     },
     {
-      count: "账号",
+      count: null,
       description: "登录会话与两步验证状态。",
       href: "/settings/security",
       label: "安全",
     },
     {
-      count: "账号",
+      count: null,
       description: "修改登录密码。",
       href: "/settings/password",
       label: "密码",
     },
     {
-      count: "账号",
+      count: null,
       description: "两步验证的设置与恢复码。",
       href: "/settings/two-factor",
       label: "两步验证",
@@ -110,7 +110,7 @@ const AdminIndexPage = async () => {
   return (
     <AdminPageShell
       current={PATH}
-      description="写作与账号的全部入口；数量与你打开的那一页始终一致。"
+      description="写作、站点资料与账号设置，全部入口都在这里。"
       title="写作后台"
     >
       <ul className="grid gap-4 sm:grid-cols-2" data-slot="admin-index">
@@ -123,9 +123,11 @@ const AdminIndexPage = async () => {
               >
                 <span className="flex items-baseline justify-between gap-3">
                   <span className="text-lg font-medium">{space.label}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {space.count}
-                  </span>
+                  {space.count === null ? null : (
+                    <span className="text-muted-foreground text-xs">
+                      {space.count}
+                    </span>
+                  )}
                 </span>
                 <span className="text-muted-foreground text-sm">
                   {space.description}

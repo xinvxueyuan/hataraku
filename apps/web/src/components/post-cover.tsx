@@ -19,9 +19,15 @@ interface PostCoverProps {
   title: string;
 }
 
-/** First letter or digit in the title, skipping leading punctuation; a muted "夜" when it has none. */
+/**
+ * First letter or Han character in the title, skipping digits and punctuation.
+ *
+ * A placeholder is an intentional mark, not a fragment of the title: "2026年…" used to become "2"
+ * and an em-dash title became "—". Digits and punctuation are skipped so the mark always reads as
+ * a letter; a title with neither falls back to the site's own "夜".
+ */
 const initialOf = (title: string): string => {
-  const first = /[\p{L}\p{N}]/u.exec(title);
+  const first = /\p{L}/u.exec(title);
 
   return (first?.[0] ?? "夜").toUpperCase();
 };

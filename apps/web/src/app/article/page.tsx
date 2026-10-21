@@ -101,48 +101,66 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
         </p>
       ) : (
         <ul className="flex flex-col gap-4" data-slot="article-list">
-          {result.items.map((post) => (
-            <li key={post.id}>
-              <article className="flex gap-4">
-                <PostCover
-                  className="w-28 shrink-0 sm:w-40"
-                  coverKey={post.coverKey}
-                  coverSrc={post.cover?.src ?? null}
-                  sizes="(min-width: 640px) 160px, 112px"
-                  title={post.title}
-                />
-                <div className="flex min-w-0 flex-col gap-1">
-                  <Link
-                    className="text-lg font-medium hover:underline"
-                    href={`/posts/${post.slug}`}
-                  >
-                    {post.title}
-                  </Link>
-                  {post.description === null ? null : (
-                    <p className="text-muted-foreground text-sm">
-                      {post.description}
-                    </p>
-                  )}
-                  <div className="text-muted-foreground flex flex-wrap items-center gap-3 text-xs">
-                    {post.publishedAt === null ? null : (
-                      <time dateTime={post.publishedAt.toISOString()}>
-                        {dateFormatter.format(post.publishedAt)}
-                      </time>
+          {result.items.map((post, index) => {
+            // The newest post leads the list: one larger title and a wider cover give the eye a
+            // landing point in an otherwise uniform column.
+            const isLead = index === 0;
+
+            return (
+              <li key={post.id}>
+                <article className="flex gap-4">
+                  <PostCover
+                    className={`hidden shrink-0 sm:block ${isLead ? "sm:w-56" : "sm:w-40"}`}
+                    coverKey={post.coverKey}
+                    coverSrc={post.cover?.src ?? null}
+                    sizes={
+                      isLead
+                        ? "(min-width: 640px) 224px, 112px"
+                        : "(min-width: 640px) 160px, 112px"
+                    }
+                    title={post.title}
+                  />
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <Link
+                      className={`${isLead ? "text-2xl font-semibold tracking-tight" : "text-lg font-medium"} hover:underline`}
+                      href={`/posts/${post.slug}`}
+                    >
+                      {post.title}
+                    </Link>
+                    {post.description === null ? null : (
+                      <p className="text-muted-foreground text-sm">
+                        {post.description}
+                      </p>
                     )}
-                    {post.tags.map((slug) => (
-                      <a
-                        className="hover:underline"
-                        href={listHref({ tag: slug })}
-                        key={slug}
-                      >
-                        #{slug}
-                      </a>
-                    ))}
+                    <div className="text-muted-foreground flex flex-nowrap items-center gap-3 overflow-hidden text-xs">
+                      {post.publishedAt === null ? null : (
+                        <time
+                          className="shrink-0"
+                          dateTime={post.publishedAt.toISOString()}
+                        >
+                          {dateFormatter.format(post.publishedAt)}
+                        </time>
+                      )}
+                      {post.tags.slice(0, 3).map((slug) => (
+                        <a
+                          className="shrink-0 hover:underline"
+                          href={listHref({ tag: slug })}
+                          key={slug}
+                        >
+                          #{slug}
+                        </a>
+                      ))}
+                      {post.tags.length > 3 ? (
+                        <span className="shrink-0">
+                          +{post.tags.length - 3}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              </article>
-            </li>
-          ))}
+                </article>
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -152,7 +170,12 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
           className="flex items-center justify-between border-t pt-4 text-sm"
         >
           {page <= 1 ? (
-            <span className="text-muted-foreground">上一页</span>
+            <span
+              aria-disabled="true"
+              className="text-muted-foreground cursor-not-allowed opacity-50 select-none"
+            >
+              上一页
+            </span>
           ) : (
             <a
               className="hover:underline"
@@ -165,7 +188,12 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
             第 {result.page} / {result.totalPages} 页
           </span>
           {page >= result.totalPages ? (
-            <span className="text-muted-foreground">下一页</span>
+            <span
+              aria-disabled="true"
+              className="text-muted-foreground cursor-not-allowed opacity-50 select-none"
+            >
+              下一页
+            </span>
           ) : (
             <a
               className="hover:underline"

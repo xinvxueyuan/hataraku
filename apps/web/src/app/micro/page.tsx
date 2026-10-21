@@ -161,29 +161,31 @@ const MicroPage = async ({ searchParams }: PageProps) => {
       </header>
 
       {result.items.length === 0 ? (
-        <p className="text-muted-foreground rounded-lg border border-dashed p-6">
-          {result.total === 0 ? (
-            <>
-              还没有微动态。短句、代码与图片发出来后，会按时间排在这里——先去{" "}
-              <Link className={`${focusRing} underline`} href="/archive">
-                归档
-              </Link>{" "}
-              读篇文章，或者回到{" "}
-              <Link className={`${focusRing} underline`} href="/">
-                首页
-              </Link>
-              。
-            </>
-          ) : (
-            <>
-              这一页没有碎片了。{" "}
-              <Link className={`${focusRing} underline`} href="/micro">
-                回到第一页
-              </Link>
-              。
-            </>
-          )}
-        </p>
+        <div className="flex min-h-[45vh] items-center justify-center">
+          <p className="text-muted-foreground w-full rounded-lg border border-dashed p-6">
+            {result.total === 0 ? (
+              <>
+                还没有微动态。短句、代码与图片发出来后，会按时间排在这里——先去{" "}
+                <Link className={`${focusRing} underline`} href="/archive">
+                  归档
+                </Link>{" "}
+                读篇文章，或者回到{" "}
+                <Link className={`${focusRing} underline`} href="/">
+                  首页
+                </Link>
+                。
+              </>
+            ) : (
+              <>
+                这一页没有碎片了。{" "}
+                <Link className={`${focusRing} underline`} href="/micro">
+                  回到第一页
+                </Link>
+                。
+              </>
+            )}
+          </p>
+        </div>
       ) : (
         <ol className="flex flex-col gap-4" data-slot="micro-list">
           {result.items.map((entry) => (
