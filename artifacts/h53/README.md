@@ -19,12 +19,10 @@ documented:
 Verified mechanically: the old and new file declare the same **74** token names, with **zero**
 missing, added or value-changed entries.
 
-**Flagged for the captain** (defined but unused today, kept deliberately — not deleted):
-
-- `--chart-1` … `--chart-5` — no chart consumes them yet.
-- `--sidebar`, `--sidebar-foreground`, `--sidebar-primary`, `--sidebar-primary-foreground`,
-  `--sidebar-accent`, `--sidebar-accent-foreground`, `--sidebar-border`, `--sidebar-ring` — the
-  shadcn sidebar primitive is not installed.
+**Flagged for the captain** — since resolved: the captain ruled that the unused shadcn leftovers
+(`--chart-1` … `--chart-5` and the eight `--sidebar-*` tokens) are removed rather than kept as
+reserved slots. See `artifacts/h56` for the removal and its 599-node identical-render proof; the
+rule now lives in `packages/ui/README.md` ("No reserved slots").
 - `--radius-sm/lg/xl/2xl/3xl/4xl` are unused **by name** but load-bearing: they are the Tailwind
   radius scale that `rounded-sm`/`rounded-lg`/… resolve through. `--radius` itself is the one value
   a re-skin edits.

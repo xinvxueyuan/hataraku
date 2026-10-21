@@ -36,16 +36,14 @@ it goes there and is named `ui-*` so it is greppable.
 - _Lines_ — `--border`, `--input`, `--ring`.
 - _Shape_ — `--radius`; the reachable scale (`--radius-sm` … `--radius-4xl`) is derived from it in
   the theme bridge, so `rounded-lg` and friends follow a re-skin automatically.
-- _Data visualisation_ — `--chart-1` … `--chart-5`.
-- _Application chrome_ — `--sidebar`, `--sidebar-foreground`, `--sidebar-primary`,
-  `--sidebar-primary-foreground`, `--sidebar-accent`, `--sidebar-accent-foreground`,
-  `--sidebar-border`, `--sidebar-ring`.
 
-**Reserved / currently unused tokens** (measured across `apps/web/src`, `apps/mobile/src` and this
-package): `--chart-1` … `--chart-5` and the eight `--sidebar-*` tokens have no consumer yet. They are
-part of the shadcn contract and are kept for the surfaces they will serve; they are not dead by
-accident. The `--radius-*` entries are also unused _by name_, but they are the Tailwind radius scale
-that `rounded-sm`/`rounded-lg`/`rounded-xl` resolve through, so they are load-bearing.
+**No reserved slots.** A token exists because something renders with it today. A chart palette or a
+sidebar palette is introduced by the component that needs it, in the same change: the component
+brings its own tokens, their `:root`/`.dark` values and their `@theme inline` bridges. A
+ready-made "for later" palette is dead weight — it dilutes the contract, invites a component to use
+a colour nobody designed against, and its absence costs one small change when the component lands.
+The `--radius-*` entries are unused _by name_ but are not reserved slots: they are the Tailwind
+radius scale that `rounded-sm`/`rounded-lg`/`rounded-xl` resolve through.
 
 **Adding a token**: add the value under `:root` and `.dark`, then add its bridge in
 `@theme inline` (`--color-*` for colours, `--radius-*` for shape). A token without a bridge is

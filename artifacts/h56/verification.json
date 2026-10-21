@@ -1,0 +1,55 @@
+{
+  "task": "H56",
+  "removedTokens": [
+    "--chart-1",
+    "--chart-2",
+    "--chart-3",
+    "--chart-4",
+    "--chart-5",
+    "--sidebar",
+    "--sidebar-foreground",
+    "--sidebar-primary",
+    "--sidebar-primary-foreground",
+    "--sidebar-accent",
+    "--sidebar-accent-foreground",
+    "--sidebar-border",
+    "--sidebar-ring"
+  ],
+  "removedBridges": 13,
+  "removedDeclarationLines": 39,
+  "counts": {
+    "semanticColoursBefore": 32,
+    "semanticColoursAfter": 19,
+    "rootDeclarationsBefore": 33,
+    "rootDeclarationsAfter": 20,
+    "darkDeclarationsBefore": 32,
+    "darkDeclarationsAfter": 19,
+    "bridgesBefore": 32,
+    "bridgesAfter": 19,
+    "totalDeclarationsBefore": 106,
+    "totalDeclarationsAfter": 67,
+    "distinctNamesBefore": 74,
+    "distinctNamesAfter": 48
+  },
+  "renderProof": {
+    "pages": {
+      "home": 181,
+      "article": 232,
+      "admin": 186
+    },
+    "nodes": 599,
+    "rectDiffs": 0,
+    "styleDiffs": 0,
+    "verdict": "IDENTICAL"
+  },
+  "remainingReferences": {
+    "globalsCss": 0,
+    "repository": "0 outside the README sentence that documents the removal"
+  },
+  "checks": {
+    "checkDesign": "EXIT=0",
+    "vpCheck": "0 errors",
+    "knip": "EXIT=0",
+    "build": "EXIT=0"
+  }
+}
