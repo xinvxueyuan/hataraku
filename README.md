@@ -95,7 +95,7 @@ node scripts/configure-r2-cors.ts
 It reads `CLOUDFLARE_API_TOKEN`, `R2_ACCOUNT_ID`, `R2_BUCKET` and `R2_UPLOAD_ALLOWED_ORIGINS` from
 the environment (never printed), and takes the bucket name from `R2_BUCKET` with no default: a shared
 env file may point at another project's bucket, so set it for this deployment. `R2_UPLOAD_ALLOWED_ORIGINS`
-is a comma separated list such as `https://example.com,http://localhost:3300`; it is compared exactly,
+is a comma separated list such as `https://example.com,http://localhost:3000`; it is compared exactly,
 so an origin added to the bucket but not to the variable fails the check rather than passing quietly.
 
 ## Task orchestration
@@ -130,9 +130,8 @@ gh secret set TURBO_TOKEN --body "<token from turbo login>"
 gh secret set TURBO_TEAM  --body "<team slug>"
 ```
 
-`pnpm run dev` starts the web and API watchers through `turbo run dev`. On this machine ports 3000
-and 3001 are held by `wslrelay`, so pass `PORT=3301` and `SERVER_URL=http://localhost:3301` and run
-the web app with `npx next dev -p 3300` when those ports are unavailable.
+`pnpm run dev` starts the web and API watchers through `turbo run dev`: the app on :3000 and the
+API on :3001.
 
 ## Commands
 
