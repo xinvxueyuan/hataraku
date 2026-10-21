@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
+import { albums } from "@hataraku/db/schema/media";
+
 import { createClient, db } from "../support/api.ts";
 import { seedBlog } from "../support/fixtures.ts";
 
@@ -25,7 +27,7 @@ describe("media.albums", () => {
   });
 
   it("returns an album with its photos in order", async () => {
-    const album = await client.media.albums.bySlug({ slug: "japan" });
+    const album = await client.media.albums.byRef({ segment: "japan" });
 
     expect(album.photoCount).toBe(2);
     expect(album.photos.map((photo) => photo.imageKey)).toStrictEqual([
@@ -35,12 +37,42 @@ describe("media.albums", () => {
     expect(album.coverKey).toBe("albums/japan/cover.webp");
   });
 
+  it("resolves an album by numeric id", async () => {
+    const page = await client.media.albums.list({});
+    const id = page.items.find((album) => album.slug === "japan")?.id;
+
+    expect(id).toBeDefined();
+    await expect(
+      client.media.albums.byRef({ segment: String(id) })
+    ).resolves.toMatchObject({ id, slug: "japan" });
+  });
+
   it("answers NOT_FOUND for an unknown album", async () => {
     await expect(
-      client.media.albums.bySlug({ slug: "missing" })
+      client.media.albums.byRef({ segment: "missing" })
     ).rejects.toMatchObject({
       code: "NOT_FOUND",
     });
+  });
+
+  it("hides a slug-only album from its numeric id", async () => {
+    const [album] = await db
+      .insert(albums)
+      .values({
+        published: true,
+        slug: "slug-only-album",
+        slugOnly: true,
+        title: "Only",
+      })
+      .returning();
+
+    expect(album).toBeDefined();
+    await expect(
+      client.media.albums.byRef({ segment: String(album?.id) })
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(
+      client.media.albums.byRef({ segment: "slug-only-album" })
+    ).resolves.toMatchObject({ id: album?.id, slugOnly: true });
   });
 
   it("rejects a page size above the cap", async () => {

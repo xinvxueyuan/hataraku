@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   date,
   foreignKey,
   index,
@@ -26,10 +27,11 @@ export const albums = snakeCase.table(
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     date: date(),
     description: text(),
-    id: uuid().primaryKey().defaultRandom(),
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
     published: boolean().notNull().default(true),
     publishedAt: timestamp({ withTimezone: true }),
-    slug: text().notNull(),
+    slug: text(),
+    slugOnly: boolean().notNull().default(false),
     sortOrder: integer().notNull().default(0),
     sourceHash: text(),
     sourcePath: text(),
@@ -39,14 +41,20 @@ export const albums = snakeCase.table(
   (table) => [
     index("albums_date_idx").on(table.date),
     index("albums_sort_order_idx").on(table.sortOrder),
-    uniqueIndex("albums_slug_key").on(table.slug),
+    uniqueIndex("albums_slug_key")
+      .on(table.slug)
+      .where(sql`${table.slug} is not null`),
+    check(
+      "albums_slug_only_requires_slug",
+      sql`not (${table.slugOnly} and ${table.slug} is null)`
+    ),
   ]
 );
 
 export const albumPhotos = snakeCase.table(
   "album_photos",
   {
-    albumId: uuid().notNull(),
+    albumId: integer().notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     description: text(),
     height: integer(),

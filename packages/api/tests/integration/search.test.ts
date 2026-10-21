@@ -82,6 +82,8 @@ describe("search.query", () => {
     const result = await client.search.query({ pageSize: 1, q: "React" });
 
     expect(result.items[0]?.rank).toBeGreaterThan(0);
+    expect(result.items[0]?.id).toBeTypeOf("number");
+    expect(result.items[0]).toMatchObject({ slug: "rsc", slugOnly: false });
     expect(result).toMatchObject({ page: 1, pageSize: 1, totalPages: 1 });
   });
 

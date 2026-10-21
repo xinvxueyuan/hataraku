@@ -1,8 +1,9 @@
 import { ORPCError } from "@orpc/server";
-import { and, asc, desc, eq, gt, inArray, lt, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, lt, ne, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { z } from "zod";
 
+import type { Database } from "@hataraku/db";
 import { posts } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
@@ -15,8 +16,8 @@ import {
   listPostsInput,
   paginatedSchema,
   postDetailSchema,
-  slugInput,
   postSummarySchema,
+  refInput,
   relatedPostsInput,
 } from "#src/schemas.ts";
 
@@ -33,6 +34,7 @@ const summarySelect = {
   publishedAt: posts.publishedAt,
   readingMinutes: posts.readingMinutes,
   slug: posts.slug,
+  slugOnly: posts.slugOnly,
   tags: sql<string[] | null>`(
     select coalesce(array_agg(t.slug order by t.slug), '{}'::text[])
       from ${postTags} pt
@@ -48,10 +50,11 @@ interface SummaryRow {
   coverKey: string | null;
   description: string | null;
   featured: boolean;
-  id: string;
+  id: number;
   publishedAt: Date | null;
   readingMinutes: number | null;
-  slug: string;
+  slug: string | null;
+  slugOnly: boolean;
   tags: string[] | null;
   title: string;
   updatedAt: Date | null;
@@ -63,22 +66,56 @@ const mapSummary = (row: SummaryRow) => ({ ...row, tags: row.tags ?? [] });
 /** Published, non-draft only. Drafts are not part of the public read path. */
 const visible = sql`${posts.published} = true and ${posts.draft} = false`;
 
+const NUMERIC_SEGMENT = /^\d+$/u;
+const MAX_INTEGER_ID = 2_147_483_647;
+
+/**
+ * Resolves one public segment. A numeric segment is an id, never a slug; a slug-only post is
+ * invisible under its id so the caller cannot probe which ids exist.
+ */
+const resolveRef = async (db: Database, segment: string) => {
+  const numeric = NUMERIC_SEGMENT.test(segment);
+  const id = numeric ? Number(segment) : null;
+
+  if (
+    numeric &&
+    (id === null || !Number.isSafeInteger(id) || id > MAX_INTEGER_ID)
+  ) {
+    return null;
+  }
+
+  const [row] = await db
+    .select({
+      categorySlug: posts.categorySlug,
+      id: posts.id,
+      publishedAt: posts.publishedAt,
+      slugOnly: posts.slugOnly,
+    })
+    .from(posts)
+    .where(
+      and(visible, numeric ? eq(posts.id, id ?? 0) : eq(posts.slug, segment))
+    )
+    .limit(1);
+
+  if (row === undefined || (numeric && row.slugOnly)) {
+    return null;
+  }
+
+  return row;
+};
+
 export const postsRouter = {
   ...adminPostsRouter,
 
   /** Adjacent posts by publish date, for the article footer. */
   adjacent: publicProcedure
     .route(publicRoute("posts.adjacent"))
-    .input(slugInput)
+    .input(refInput)
     .output(adjacentPostsSchema)
     .handler(async ({ context, input }) => {
-      const [anchor] = await context.db
-        .select({ publishedAt: posts.publishedAt })
-        .from(posts)
-        .where(and(visible, eq(posts.slug, input.slug)))
-        .limit(1);
+      const anchor = await resolveRef(context.db, input.segment);
 
-      if (!anchor?.publishedAt) {
+      if (anchor?.publishedAt === null || anchor?.publishedAt === undefined) {
         return { next: null, previous: null };
       }
 
@@ -103,11 +140,23 @@ export const postsRouter = {
       };
     }),
 
-  bySlug: publicProcedure
-    .route(publicRoute("posts.bySlug"))
-    .input(slugInput)
+  byRef: publicProcedure
+    .route(publicRoute("posts.byRef"))
+    .input(refInput)
     .output(postDetailSchema)
     .handler(async ({ context, input }) => {
+      const numeric = NUMERIC_SEGMENT.test(input.segment);
+      const id = numeric ? Number(input.segment) : null;
+
+      const validId =
+        id !== null && Number.isSafeInteger(id) && id <= MAX_INTEGER_ID;
+
+      let refWhere = eq(posts.slug, input.segment);
+
+      if (numeric) {
+        refWhere = validId ? eq(posts.id, id) : sql`false`;
+      }
+
       const [row] = await context.db
         .select({
           ...summarySelect,
@@ -119,10 +168,10 @@ export const postsRouter = {
         })
         .from(posts)
         .leftJoin(categories, eq(categories.id, posts.categoryId))
-        .where(and(visible, eq(posts.slug, input.slug)))
+        .where(and(visible, refWhere))
         .limit(1);
 
-      if (!row) {
+      if (!row || (numeric && row.slugOnly)) {
         throw new ORPCError("NOT_FOUND", { message: "Post not found" });
       }
 
@@ -213,23 +262,28 @@ export const postsRouter = {
     .input(relatedPostsInput)
     .output(z.array(postSummarySchema))
     .handler(async ({ context, input }) => {
+      const anchor = await resolveRef(context.db, input.segment);
+
+      if (anchor === null) {
+        return [];
+      }
+
       const rows = await context.db
         .select(summarySelect)
         .from(posts)
         .where(
           and(
             visible,
-            sql`${posts.slug} <> ${input.slug}`,
+            ne(posts.id, anchor.id),
             or(
               sql`exists (
                 select 1 from ${postTags} pt1
                   join ${postTags} pt2 on pt2.tag_id = pt1.tag_id
-                  join ${posts} p2 on p2.id = pt2.post_id
-                 where pt1.post_id = "posts"."id" and p2.slug = ${input.slug}
+                 where pt1.post_id = ${posts.id} and pt2.post_id = ${anchor.id}
               )`,
-              sql`${posts.categorySlug} is not null and ${posts.categorySlug} = (
-                select p3.category_slug from ${posts} p3 where p3.slug = ${input.slug} limit 1
-              )`
+              anchor.categorySlug === null
+                ? sql`false`
+                : eq(posts.categorySlug, anchor.categorySlug)
             )
           )
         )

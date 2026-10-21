@@ -53,6 +53,7 @@ const toAdminSummary = (row: Post) => ({
   id: row.id,
   publishedAt: row.publishedAt,
   slug: row.slug,
+  slugOnly: row.slugOnly,
   status: statusOf(row),
   title: row.title,
   updatedAt: row.updatedAt,
@@ -68,7 +69,7 @@ const toAdminDetail = (row: Post, tagSlugs: string[]) => ({
   tagSlugs,
 });
 
-const findPost = async (db: Database, id: string): Promise<Post> => {
+const findPost = async (db: Database, id: number): Promise<Post> => {
   const [row] = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
 
   if (row === undefined) {
@@ -82,7 +83,7 @@ const findPost = async (db: Database, id: string): Promise<Post> => {
 const assertSlugFree = async (
   db: Database,
   slug: string,
-  exceptId: string | null
+  exceptId: number | null
 ): Promise<void> => {
   const [taken] = await db
     .select({ id: posts.id })
@@ -152,7 +153,7 @@ const ensureTagIds = async (db: Writer, slugs: string[]): Promise<string[]> => {
   return rows.map((row) => row.id);
 };
 
-const tagSlugsOf = async (db: Writer, postId: string): Promise<string[]> => {
+const tagSlugsOf = async (db: Writer, postId: number): Promise<string[]> => {
   const rows = await db
     .select({ slug: tags.slug })
     .from(postTags)
@@ -182,7 +183,7 @@ const normalizeTagSlugs = (slugs: string[]): string[] =>
  */
 const syncPostTags = async (
   db: Writer,
-  postId: string,
+  postId: number,
   slugs: string[]
 ): Promise<string[]> => {
   const desired = normalizeTagSlugs(slugs);
@@ -312,7 +313,10 @@ export const adminPostsRouter = {
     .output(adminPostDetailSchema)
     .handler(async ({ context, input }) => {
       assertStorableBody(input.bodyMd);
-      await assertSlugFree(context.db, input.slug, null);
+
+      if (input.slug !== null) {
+        await assertSlugFree(context.db, input.slug, null);
+      }
 
       const { row, slugs } = await context.db.transaction(async (tx) => {
         const values: NewPost = {
@@ -321,6 +325,7 @@ export const adminPostsRouter = {
           description: input.description,
           featured: input.featured,
           slug: input.slug,
+          slugOnly: input.slugOnly,
           title: input.title,
           updatedAt: new Date(),
           ...statusFields(input.status, dayAtMidnight(input.publishedAt)),
@@ -438,6 +443,7 @@ export const adminPostsRouter = {
         featured,
         id,
         publishedAt,
+        slugOnly,
         status,
         tagSlugs,
         ...changes
@@ -445,11 +451,22 @@ export const adminPostsRouter = {
 
       const existing = await findPost(context.db, id);
 
+      const effectiveSlug =
+        changes.slug === undefined ? existing.slug : changes.slug;
+
+      const effectiveSlugOnly = slugOnly ?? existing.slugOnly;
+
+      if (effectiveSlugOnly && effectiveSlug === null) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "slugOnly requires a slug",
+        });
+      }
+
       if (changes.bodyMd !== undefined) {
         assertStorableBody(changes.bodyMd);
       }
 
-      if (changes.slug !== undefined) {
+      if (changes.slug !== undefined && changes.slug !== null) {
         await assertSlugFree(context.db, changes.slug, id);
       }
 
@@ -462,6 +479,10 @@ export const adminPostsRouter = {
 
         if (coverKey !== undefined) {
           stored.coverKey = coverKey;
+        }
+
+        if (slugOnly !== undefined) {
+          stored.slugOnly = slugOnly;
         }
 
         if (status !== undefined) {

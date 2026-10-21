@@ -164,7 +164,7 @@ CREATE TABLE "tools" (
 );
 --> statement-breakpoint
 CREATE TABLE "album_photos" (
-	"album_id" uuid NOT NULL,
+	"album_id" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"description" text,
 	"height" integer,
@@ -183,15 +183,17 @@ CREATE TABLE "albums" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"date" date,
 	"description" text,
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "albums_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"published" boolean DEFAULT true NOT NULL,
 	"published_at" timestamp with time zone,
-	"slug" text NOT NULL,
+	"slug" text,
+	"slug_only" boolean DEFAULT false NOT NULL,
 	"sort_order" integer DEFAULT 0 NOT NULL,
 	"source_hash" text,
 	"source_path" text,
 	"tags" text[] DEFAULT '{}'::text[] NOT NULL,
-	"title" text NOT NULL
+	"title" text NOT NULL,
+	CONSTRAINT "albums_slug_only_requires_slug" CHECK (not ("slug_only" and "slug" is null))
 );
 --> statement-breakpoint
 CREATE TABLE "devices" (
@@ -276,16 +278,18 @@ CREATE TABLE "posts" (
 	"description" text,
 	"draft" boolean DEFAULT false NOT NULL,
 	"featured" boolean DEFAULT false NOT NULL,
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "posts_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"published" boolean DEFAULT true NOT NULL,
 	"published_at" timestamp with time zone,
 	"reading_minutes" integer,
-	"slug" text NOT NULL,
+	"slug" text,
+	"slug_only" boolean DEFAULT false NOT NULL,
 	"source_hash" text,
 	"source_path" text,
 	"title" text NOT NULL,
 	"updated_at" timestamp with time zone,
-	"views" integer DEFAULT 0 NOT NULL
+	"views" integer DEFAULT 0 NOT NULL,
+	CONSTRAINT "posts_slug_only_requires_slug" CHECK (not ("slug_only" and "slug" is null))
 );
 --> statement-breakpoint
 CREATE TABLE "categories" (
@@ -299,7 +303,7 @@ CREATE TABLE "categories" (
 );
 --> statement-breakpoint
 CREATE TABLE "post_tags" (
-	"post_id" uuid,
+	"post_id" integer,
 	"tag_id" uuid,
 	CONSTRAINT "post_tags_pkey" PRIMARY KEY("post_id","tag_id")
 );
@@ -349,7 +353,7 @@ CREATE UNIQUE INDEX "tools_slug_key" ON "tools" ("slug");--> statement-breakpoin
 CREATE INDEX "album_photos_album_idx" ON "album_photos" ("album_id","sort_order");--> statement-breakpoint
 CREATE INDEX "albums_date_idx" ON "albums" ("date");--> statement-breakpoint
 CREATE INDEX "albums_sort_order_idx" ON "albums" ("sort_order");--> statement-breakpoint
-CREATE UNIQUE INDEX "albums_slug_key" ON "albums" ("slug");--> statement-breakpoint
+CREATE UNIQUE INDEX "albums_slug_key" ON "albums" ("slug") WHERE "slug" is not null;--> statement-breakpoint
 CREATE INDEX "devices_category_idx" ON "devices" ("category");--> statement-breakpoint
 CREATE INDEX "devices_sort_order_idx" ON "devices" ("sort_order");--> statement-breakpoint
 CREATE UNIQUE INDEX "devices_slug_key" ON "devices" ("slug");--> statement-breakpoint
@@ -362,7 +366,7 @@ CREATE INDEX "posts_category_idx" ON "posts" ("category_id");--> statement-break
 CREATE INDEX "posts_draft_published_idx" ON "posts" ("draft","published");--> statement-breakpoint
 CREATE INDEX "posts_published_at_idx" ON "posts" ("published_at");--> statement-breakpoint
 CREATE INDEX "posts_views_idx" ON "posts" ("views");--> statement-breakpoint
-CREATE UNIQUE INDEX "posts_slug_key" ON "posts" ("slug");--> statement-breakpoint
+CREATE UNIQUE INDEX "posts_slug_key" ON "posts" ("slug") WHERE "slug" is not null;--> statement-breakpoint
 CREATE INDEX "categories_sort_order_idx" ON "categories" ("sort_order");--> statement-breakpoint
 CREATE UNIQUE INDEX "categories_slug_key" ON "categories" ("slug");--> statement-breakpoint
 CREATE INDEX "post_tags_tag_idx" ON "post_tags" ("tag_id");--> statement-breakpoint

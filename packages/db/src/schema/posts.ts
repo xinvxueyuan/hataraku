@@ -1,5 +1,7 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   index,
   integer,
   snakeCase,
@@ -21,11 +23,12 @@ export const posts = snakeCase.table(
     description: text(),
     draft: boolean().notNull().default(false),
     featured: boolean().notNull().default(false),
-    id: uuid().primaryKey().defaultRandom(),
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
     published: boolean().notNull().default(true),
     publishedAt: timestamp({ withTimezone: true }),
     readingMinutes: integer(),
-    slug: text().notNull(),
+    slug: text(),
+    slugOnly: boolean().notNull().default(false),
     sourceHash: text(),
     sourcePath: text(),
     title: text().notNull(),
@@ -37,7 +40,13 @@ export const posts = snakeCase.table(
     index("posts_draft_published_idx").on(table.draft, table.published),
     index("posts_published_at_idx").on(table.publishedAt),
     index("posts_views_idx").on(table.views),
-    uniqueIndex("posts_slug_key").on(table.slug),
+    uniqueIndex("posts_slug_key")
+      .on(table.slug)
+      .where(sql`${table.slug} is not null`),
+    check(
+      "posts_slug_only_requires_slug",
+      sql`not (${table.slugOnly} and ${table.slug} is null)`
+    ),
   ]
 );
 

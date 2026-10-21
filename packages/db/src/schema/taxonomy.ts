@@ -46,7 +46,7 @@ export const tags = snakeCase.table(
 export const postTags = snakeCase.table(
   "post_tags",
   {
-    postId: uuid().notNull(),
+    postId: integer().notNull(),
     tagId: uuid().notNull(),
   },
   (table) => [

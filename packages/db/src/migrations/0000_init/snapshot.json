@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "df7ccd81-78a5-4c5b-9db0-62ddb359f3c6",
+  "id": "89368952-281c-4fa5-8170-bda28eefa4e7",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -1822,7 +1822,7 @@
       "table": "tools"
     },
     {
-      "type": "uuid",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
@@ -2030,13 +2030,22 @@
       "table": "albums"
     },
     {
-      "type": "uuid",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "gen_random_uuid()",
+      "default": null,
       "generated": null,
-      "identity": null,
+      "identity": {
+        "type": "always",
+        "name": "albums_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
       "name": "id",
       "entityType": "columns",
       "schema": "public",
@@ -2071,12 +2080,25 @@
     {
       "type": "text",
       "typeSchema": null,
-      "notNull": true,
+      "notNull": false,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
       "name": "slug",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "albums"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "slug_only",
       "entityType": "columns",
       "schema": "public",
       "table": "albums"
@@ -3031,13 +3053,22 @@
       "table": "posts"
     },
     {
-      "type": "uuid",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "gen_random_uuid()",
+      "default": null,
       "generated": null,
-      "identity": null,
+      "identity": {
+        "type": "always",
+        "name": "posts_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
       "name": "id",
       "entityType": "columns",
       "schema": "public",
@@ -3085,12 +3116,25 @@
     {
       "type": "text",
       "typeSchema": null,
-      "notNull": true,
+      "notNull": false,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
       "name": "slug",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "posts"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "slug_only",
       "entityType": "columns",
       "schema": "public",
       "table": "posts"
@@ -3252,7 +3296,7 @@
       "table": "categories"
     },
     {
-      "type": "uuid",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
@@ -4036,7 +4080,7 @@
         }
       ],
       "isUnique": true,
-      "where": null,
+      "where": "\"slug\" is not null",
       "with": "",
       "method": "btree",
       "concurrently": false,
@@ -4316,7 +4360,7 @@
         }
       ],
       "isUnique": true,
-      "where": null,
+      "where": "\"slug\" is not null",
       "with": "",
       "method": "btree",
       "concurrently": false,
@@ -4769,11 +4813,25 @@
       "entityType": "uniques"
     },
     {
+      "value": "not (\"slug_only\" and \"slug\" is null)",
+      "name": "albums_slug_only_requires_slug",
+      "entityType": "checks",
+      "schema": "public",
+      "table": "albums"
+    },
+    {
       "value": "\"id\" = 1",
       "name": "site_profile_single_row",
       "entityType": "checks",
       "schema": "public",
       "table": "site_profile"
+    },
+    {
+      "value": "not (\"slug_only\" and \"slug\" is null)",
+      "name": "posts_slug_only_requires_slug",
+      "entityType": "checks",
+      "schema": "public",
+      "table": "posts"
     },
     {
       "value": "char_length(btrim(\"title\")) between 1 and 200",

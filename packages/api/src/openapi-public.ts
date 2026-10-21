@@ -33,20 +33,20 @@ export const PUBLIC_API_ROUTES = [
     tag: "文章",
   },
   {
-    key: "posts.bySlug",
-    path: "/posts/{slug}",
-    summary: "按 slug 读取一篇文章",
+    key: "posts.byRef",
+    path: "/posts/{segment}",
+    summary: "按 id 或 slug 读取一篇文章",
     tag: "文章",
   },
   {
     key: "posts.adjacent",
-    path: "/posts/{slug}/adjacent",
+    path: "/posts/{segment}/adjacent",
     summary: "读取相邻文章",
     tag: "文章",
   },
   {
     key: "posts.related",
-    path: "/posts/{slug}/related",
+    path: "/posts/{segment}/related",
     summary: "读取相关文章",
     tag: "文章",
   },
@@ -129,9 +129,9 @@ export const PUBLIC_API_ROUTES = [
     tag: "相册",
   },
   {
-    key: "media.albums.bySlug",
-    path: "/albums/{slug}",
-    summary: "按 slug 读取相册与照片",
+    key: "media.albums.byRef",
+    path: "/albums/{segment}",
+    summary: "按 id 或 slug 读取相册与照片",
     tag: "相册",
   },
   {

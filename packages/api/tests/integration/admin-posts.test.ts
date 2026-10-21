@@ -22,27 +22,11 @@ describe("posts write path", () => {
       async () =>
         await anonymous.posts.create({ bodyMd: "", slug: "x", title: "x" }),
     ],
-    [
-      "byId",
-      async () => await anonymous.posts.byId({ id: crypto.randomUUID() }),
-    ],
-    [
-      "update",
-      async () =>
-        await anonymous.posts.update({ id: crypto.randomUUID(), title: "x" }),
-    ],
-    [
-      "publish",
-      async () => await anonymous.posts.publish({ id: crypto.randomUUID() }),
-    ],
-    [
-      "unpublish",
-      async () => await anonymous.posts.unpublish({ id: crypto.randomUUID() }),
-    ],
-    [
-      "remove",
-      async () => await anonymous.posts.remove({ id: crypto.randomUUID() }),
-    ],
+    ["byId", async () => await anonymous.posts.byId({ id: 1 })],
+    ["update", async () => await anonymous.posts.update({ id: 1, title: "x" })],
+    ["publish", async () => await anonymous.posts.publish({ id: 1 })],
+    ["unpublish", async () => await anonymous.posts.unpublish({ id: 1 })],
+    ["remove", async () => await anonymous.posts.remove({ id: 1 })],
   ])("rejects an anonymous %s with UNAUTHORIZED", async (_, call) => {
     await expect(call()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
@@ -81,7 +65,7 @@ describe("posts write path", () => {
 
     expect(created.status).toBe("draft");
     await expect(
-      anonymous.posts.bySlug({ slug: post.slug })
+      anonymous.posts.byRef({ segment: post.slug ?? "" })
     ).rejects.toMatchObject({ code: "NOT_FOUND" });
     await expect(
       owner.posts
@@ -92,12 +76,12 @@ describe("posts write path", () => {
     await owner.posts.publish({ id: created.id });
 
     await expect(
-      anonymous.posts.bySlug({ slug: post.slug })
+      anonymous.posts.byRef({ segment: post.slug ?? "" })
     ).resolves.toMatchObject({ bodyMd: post.bodyMd, title: post.title });
 
     await owner.posts.unpublish({ id: created.id });
     await expect(
-      anonymous.posts.bySlug({ slug: post.slug })
+      anonymous.posts.byRef({ segment: post.slug ?? "" })
     ).rejects.toMatchObject({ code: "NOT_FOUND" });
   });
 
@@ -112,7 +96,7 @@ describe("posts write path", () => {
     ).resolves.toMatchObject({ bodyMd });
 
     await expect(
-      anonymous.posts.bySlug({ slug: post.slug })
+      anonymous.posts.byRef({ segment: post.slug ?? "" })
     ).resolves.toMatchObject({ bodyMd });
   });
 
@@ -166,14 +150,14 @@ describe("posts write path", () => {
     const owner = await signUp();
 
     await expect(
-      owner.posts.update({ id: crypto.randomUUID(), title: "x" })
+      owner.posts.update({ id: 999_999, title: "x" })
     ).rejects.toMatchObject({ code: "NOT_FOUND" });
-    await expect(
-      owner.posts.publish({ id: crypto.randomUUID() })
-    ).rejects.toMatchObject({ code: "NOT_FOUND" });
-    await expect(
-      owner.posts.byId({ id: crypto.randomUUID() })
-    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(owner.posts.publish({ id: 999_999 })).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+    await expect(owner.posts.byId({ id: 999_999 })).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
   });
 });
 

@@ -1,0 +1,153 @@
+note: You are running `vp test` as a Vite+ built-in command. If you meant to run the test npm script, use `vpr test` instead.
+
+ RUN  v5.0.5 C:/dev/dsh/projects/hataraku
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > mails a token to the registered address and the new password signs in
+2026-10-21T17:34:46.375Z WARN [Better Auth]: Invalid password
+
+stderr | packages/api/tests/integration/change-password.test.ts > change password > replaces the password: the old one stops working and the new one signs in
+2026-10-21T17:34:46.544Z WARN [Better Auth]: Invalid password
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > answers the same for an unknown address and sends nothing
+2026-10-21T17:34:46.588Z WARN [Better Auth]: Reset Password: User not found
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > checks the length floor before spending the token
+2026-10-21T17:34:46.757Z WARN [Better Auth]: Password is too short
+
+stderr | packages/api/tests/integration/change-password.test.ts > change password > keeps the v2 floor of 16 characters, accepting exactly 16
+2026-10-21T17:34:47.211Z WARN [Better Auth]: Password is too short
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > throttles reset requests through Better Auth's own rule
+2026-10-21T17:34:47.244Z WARN [Better Auth]: Reset Password: User not found
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > throttles reset requests through Better Auth's own rule
+2026-10-21T17:34:47.245Z WARN [Better Auth]: Reset Password: User not found
+
+stderr | packages/api/tests/integration/password-reset.test.ts > password reset by email > throttles reset requests through Better Auth's own rule
+2026-10-21T17:34:47.284Z WARN [Better Auth]: Reset Password: User not found
+
+stderr | packages/api/tests/integration/change-password.test.ts > change password > applies the same floor to sign-up
+2026-10-21T17:34:47.507Z WARN [Better Auth]: Password is too short
+
+ ✓ |integration| packages/api/tests/integration/posts.test.ts (27 tests) 2063ms
+ ✓ |integration| packages/api/tests/integration/site-analytics.test.ts (11 tests) 2258ms
+ ✓ |integration| packages/api/tests/integration/change-password.test.ts (4 tests) 2214ms
+   ✓ change password (4)
+     ✓ replaces the password: the old one stops working and the new one signs in 748ms
+     ✓ refuses a wrong current password with a code the page can explain 373ms
+     ✓ keeps the v2 floor of 16 characters, accepting exactly 16 418ms
+ ✓ |integration| packages/api/tests/integration/todos.test.ts (10 tests) 2276ms
+ ✓ |integration| packages/api/tests/integration/password-reset.test.ts (6 tests) 2321ms
+   ✓ password reset by email (6)
+     ✓ mails a token to the registered address and the new password signs in 567ms
+     ✓ consumes the token after a successful reset 318ms
+ ✓ |integration| packages/api/tests/integration/admin-content.test.ts (24 tests) 2907ms
+ ✓ |integration| packages/api/tests/integration/admin-posts.test.ts (31 tests) 5128ms
+   ✓ posts filing: category, tags, cover, featured, publish day (8)
+     ✓ deletes the tag links together with the post 303ms
+   ✓ admin list query (6)
+     ✓ matches the term in the title, the slug and the body 392ms
+     ✓ orders by publish day when asked, and by edit time otherwise 341ms
+stderr | packages/api/tests/integration/login-attempts-resilience.test.ts > login attempt audit resilience > keeps the sign-in result when the audit row cannot be written
+login attempt audit failed DrizzleQueryError: Failed query: insert into "login_attempts" ("created_at", "duration_ms", "email_hash", "id", "ip_hash", "outcome") values (default, $1, $2, default, $3, $4)
+params: 200,8a708a211703ac0f32223593c18f0ce7dc03a149e22938239e6f809af51e27cc,,success
+    at file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/drizzle-orm@1.0.0-rc.4_postgres@3.4.9_zod@4.6.7/node_modules/drizzle-orm/pg-core/async/session.js:41:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at writeAttempt (C:/dev/dsh/projects/hataraku/packages/auth/src/login-attempts.ts:120:3)
+    at Object.auth.handler (C:/dev/dsh/projects/hataraku/packages/auth/src/login-attempts.ts:167:7)
+    at signIn (C:/dev/dsh/projects/hataraku/packages/api/tests/integration/login-attempts-resilience.test.ts:17:20)
+    at C:/dev/dsh/projects/hataraku/packages/api/tests/integration/login-attempts-resilience.test.ts:42:5
+    at async file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/vitest@5.0.5_@types+node@24_a0959c8dfe7c5472edcb4d62715c657e/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20 {
+  query: 'insert into "login_attempts" ("created_at", "duration_ms", "email_hash", "id", "ip_hash", "outcome") values (default, $1, $2, default, $3, $4)',
+  params: [
+    200,
+    '8a708a211703ac0f32223593c18f0ce7dc03a149e22938239e6f809af51e27cc',
+    null,
+    'success'
+  ],
+  cause: PostgresError: relation "login_attempts" does not exist
+      at ErrorResponse (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:815:30)
+      at handle (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:489:6)
+      at Socket.data (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:324:9)
+      at Socket.emit (node:events:514:28)
+      at addChunk (node:internal/streams/readable:569:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:520:3)
+      at Readable.push (node:internal/streams/readable:400:5)
+      at TCP.onStreamRead (node:internal/stream_base_commons:194:23) {
+    severity_local: 'ERROR',
+    severity: 'ERROR',
+    code: '42P01',
+    position: '13',
+    file: 'parse_relation.c',
+    line: '1498',
+    routine: 'parserOpenTable'
+  }
+}
+
+stderr | packages/api/tests/integration/login-attempts.test.ts > login attempt audit > writes one row per sign-in with the outcome the caller saw
+2026-10-21T17:34:55.374Z WARN [Better Auth]: Invalid password
+
+stderr | packages/api/tests/integration/login-attempts-resilience.test.ts > login attempt audit resilience > keeps the sign-in result when the audit row cannot be written
+2026-10-21T17:34:55.430Z WARN [Better Auth]: Invalid password
+
+stderr | packages/api/tests/integration/login-attempts-resilience.test.ts > login attempt audit resilience > keeps the sign-in result when the audit row cannot be written
+login attempt audit failed DrizzleQueryError: Failed query: insert into "login_attempts" ("created_at", "duration_ms", "email_hash", "id", "ip_hash", "outcome") values (default, $1, $2, default, $3, $4)
+params: 162,8a708a211703ac0f32223593c18f0ce7dc03a149e22938239e6f809af51e27cc,,invalid
+    at file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/drizzle-orm@1.0.0-rc.4_postgres@3.4.9_zod@4.6.7/node_modules/drizzle-orm/pg-core/async/session.js:41:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at writeAttempt (C:/dev/dsh/projects/hataraku/packages/auth/src/login-attempts.ts:120:3)
+    at Object.auth.handler (C:/dev/dsh/projects/hataraku/packages/auth/src/login-attempts.ts:167:7)
+    at signIn (C:/dev/dsh/projects/hataraku/packages/api/tests/integration/login-attempts-resilience.test.ts:17:20)
+    at C:/dev/dsh/projects/hataraku/packages/api/tests/integration/login-attempts-resilience.test.ts:43:5
+    at async file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/vitest@5.0.5_@types+node@24_a0959c8dfe7c5472edcb4d62715c657e/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20 {
+  query: 'insert into "login_attempts" ("created_at", "duration_ms", "email_hash", "id", "ip_hash", "outcome") values (default, $1, $2, default, $3, $4)',
+  params: [
+    162,
+    '8a708a211703ac0f32223593c18f0ce7dc03a149e22938239e6f809af51e27cc',
+    null,
+    'invalid'
+  ],
+  cause: PostgresError: relation "login_attempts" does not exist
+      at ErrorResponse (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:815:30)
+      at handle (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:489:6)
+      at Socket.data (file:///C:/dev/dsh/projects/hataraku/node_modules/.pnpm/postgres@3.4.9/node_modules/postgres/src/connection.js:324:9)
+      at Socket.emit (node:events:514:28)
+      at addChunk (node:internal/streams/readable:569:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:520:3)
+      at Readable.push (node:internal/streams/readable:400:5)
+      at TCP.onStreamRead (node:internal/stream_base_commons:194:23) {
+    severity_local: 'ERROR',
+    severity: 'ERROR',
+    code: '42P01',
+    position: '13',
+    file: 'parse_relation.c',
+    line: '1498',
+    routine: 'parserOpenTable'
+  }
+}
+
+stderr | packages/api/tests/integration/login-attempts.test.ts > login attempt audit > exposes the digest prefix and never the email digest on the read path
+2026-10-21T17:34:55.926Z WARN [Better Auth]: Invalid password
+
+ ✓ |integration| packages/api/tests/integration/search.test.ts (28 tests) 1370ms
+ ✓ |integration| packages/api/tests/integration/media.test.ts (12 tests) 715ms
+ ✓ |integration| packages/api/tests/integration/login-attempts.test.ts (2 tests) 1801ms
+   ✓ login attempt audit (2)
+     ✓ writes one row per sign-in with the outcome the caller saw 704ms
+     ✓ exposes the digest prefix and never the email digest on the read path 545ms
+ ✓ |integration| packages/api/tests/integration/login-attempts-resilience.test.ts (1 test) 1752ms
+   ✓ login attempt audit resilience (1)
+     ✓ keeps the sign-in result when the audit row cannot be written 693ms
+ ✓ |integration| packages/api/tests/integration/security.test.ts (6 tests) 1610ms
+   ✓ security.overview (3)
+     ✓ lists the caller's own sessions and never another account's 545ms
+ ✓ |integration| packages/api/tests/integration/site-profile.test.ts (9 tests) 1767ms
+ ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 235ms
+ ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 138ms
+ ✓ |integration| packages/api/tests/integration/taxonomy.test.ts (7 tests) 147ms
+
+ Test Files  16 passed (16)
+      Tests  193 passed (193)
+   Start at  01:34:40
+   Duration  19.22s (import 73%, tests 25%, transform 1%)
+

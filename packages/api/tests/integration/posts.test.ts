@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { listPostsInput } from "#src/schemas.ts";
+import { posts } from "@hataraku/db/schema/posts";
+
+import { createPostInput, listPostsInput } from "#src/schemas.ts";
 
 import { createClient, db } from "../support/api.ts";
 import { RSC_BODY, seedBlog } from "../support/fixtures.ts";
@@ -97,47 +99,80 @@ describe("posts.list", () => {
   });
 });
 
-describe("posts.bySlug", () => {
-  it("returns the body and its category", async () => {
-    const post = await client.posts.bySlug({ slug: "rsc" });
+describe("posts.byRef", () => {
+  it("returns the body by numeric id", async () => {
+    const page = await client.posts.list({});
+    const id = page.items.find((post) => post.slug === "rsc")?.id;
+
+    expect(id).toBeDefined();
+
+    const post = await client.posts.byRef({ segment: String(id) });
 
     expect(post).toMatchObject({
       bodyMd: RSC_BODY,
       category: { accent: "#FF3D8C", name: "前端", slug: "frontend" },
       comment: true,
       slug: "rsc",
+      slugOnly: false,
       tags: ["react"],
       views: 0,
     });
   });
 
-  it.each(["missing", "draft-post"])(
+  it("returns the body by slug", async () => {
+    const post = await client.posts.byRef({ segment: "rsc" });
+
+    expect(post).toMatchObject({ bodyMd: RSC_BODY, slug: "rsc" });
+  });
+
+  it.each(["missing", "99999999", "draft-post"])(
     "answers NOT_FOUND for %s",
-    async (slug) => {
-      await expect(client.posts.bySlug({ slug })).rejects.toMatchObject({
+    async (segment) => {
+      await expect(client.posts.byRef({ segment })).rejects.toMatchObject({
         code: "NOT_FOUND",
       });
     }
   );
+
+  it("hides a slug-only post from its numeric id but serves it by slug", async () => {
+    const [post] = await db
+      .insert(posts)
+      .values({
+        bodyMd: "slug only",
+        published: true,
+        slug: "slug-only-post",
+        slugOnly: true,
+        title: "Slug only",
+      })
+      .returning();
+
+    expect(post).toBeDefined();
+    await expect(
+      client.posts.byRef({ segment: String(post?.id) })
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(
+      client.posts.byRef({ segment: "slug-only-post" })
+    ).resolves.toMatchObject({ id: post?.id, slugOnly: true });
+  });
 });
 
 describe("posts.adjacent", () => {
   it("walks the publish order around a post", async () => {
-    const around = await client.posts.adjacent({ slug: "rsc" });
+    const around = await client.posts.adjacent({ segment: "rsc" });
 
     expect(around.next).toBeNull();
     expect(around.previous?.slug).toBe("oklch");
   });
 
   it("returns both directions in the middle of the list", async () => {
-    const around = await client.posts.adjacent({ slug: "oklch" });
+    const around = await client.posts.adjacent({ segment: "oklch" });
 
     expect(around.next?.slug).toBe("rsc");
     expect(around.previous?.slug).toBe("existence");
   });
 
   it("returns nothing for a post that is not public", async () => {
-    const around = await client.posts.adjacent({ slug: "draft-post" });
+    const around = await client.posts.adjacent({ segment: "draft-post" });
 
     expect(around).toStrictEqual({ next: null, previous: null });
   });
@@ -145,20 +180,54 @@ describe("posts.adjacent", () => {
 
 describe("posts.related", () => {
   it("returns a post sharing a category", async () => {
-    const related = await client.posts.related({ slug: "rsc" });
+    const related = await client.posts.related({ segment: "rsc" });
 
     expect(related.map((post) => post.slug)).toStrictEqual(["oklch"]);
   });
 
   it("never returns the post itself", async () => {
-    const related = await client.posts.related({ slug: "existence" });
+    const related = await client.posts.related({ segment: "existence" });
 
     expect(related.map((post) => post.slug)).not.toContain("existence");
   });
 
   it("caps the limit", async () => {
     await expect(
-      client.posts.related({ limit: 11, slug: "rsc" })
+      client.posts.related({ limit: 11, segment: "rsc" })
     ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+});
+
+describe("posts slug invariants", () => {
+  it("rejects slugOnly without a slug in the database", async () => {
+    await expect(
+      db.insert(posts).values({
+        bodyMd: "",
+        slugOnly: true,
+        title: "db rejects",
+      })
+    ).rejects.toThrow('Failed query: insert into "posts"');
+  });
+
+  it("rejects slugOnly without a slug in the input schema", () => {
+    const parsed = createPostInput.safeParse({
+      slugOnly: true,
+      title: "zod rejects",
+    });
+
+    expect(parsed.success).toBeFalsy();
+  });
+
+  it("allows several posts with no slug", async () => {
+    const inserted = await db
+      .insert(posts)
+      .values([
+        { bodyMd: "", slug: null, title: "no slug one" },
+        { bodyMd: "", slug: null, title: "no slug two" },
+      ])
+      .returning({ id: posts.id });
+
+    expect(inserted).toHaveLength(2);
+    expect(new Set(inserted.map((row) => row.id)).size).toBe(2);
   });
 });

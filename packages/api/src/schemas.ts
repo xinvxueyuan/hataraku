@@ -92,10 +92,11 @@ export const postSummarySchema = z.object({
   coverKey: z.string().nullable(),
   description: z.string().nullable(),
   featured: z.boolean(),
-  id: z.string(),
+  id: z.int(),
   publishedAt: z.date().nullable(),
   readingMinutes: z.int().nullable(),
-  slug: z.string(),
+  slug: z.string().nullable(),
+  slugOnly: z.boolean(),
   tags: z.array(z.string()),
   title: z.string(),
   updatedAt: z.date().nullable(),
@@ -134,9 +135,12 @@ export const listPostsInput = z.object({
 
 export const slugInput = z.object({ slug: z.string().min(1) });
 
+/** One public content segment: digits address the id, anything else addresses the slug. */
+export const refInput = z.object({ segment: z.string().min(1) });
+
 export const relatedPostsInput = z.object({
   limit: z.coerce.number().int().min(1).max(10).default(3),
-  slug: z.string().min(1),
+  segment: z.string().min(1),
 });
 
 export const adjacentPostsSchema = z.object({
@@ -152,9 +156,10 @@ export const adjacentPostsSchema = z.object({
 const postStatusSchema = z.enum(["draft", "published"]);
 
 export const adminPostSummarySchema = z.object({
-  id: z.string(),
+  id: z.int(),
   publishedAt: z.date().nullable(),
-  slug: z.string(),
+  slug: z.string().nullable(),
+  slugOnly: z.boolean(),
   status: postStatusSchema,
   title: z.string(),
   updatedAt: z.date().nullable(),
@@ -169,7 +174,7 @@ export const adminPostDetailSchema = adminPostSummarySchema.extend({
   tagSlugs: z.array(z.string()),
 });
 
-export const postIdInput = z.object({ id: z.uuid() });
+export const postIdInput = z.object({ id: z.int() });
 
 /** Kebab-case, so a URL stays predictable and two titles cannot collide on case alone. */
 const postSlug = z
@@ -197,29 +202,51 @@ const postFields = {
   description: z.string().max(999).nullable(),
   featured: z.boolean(),
   publishedAt: publishedDateSchema,
-  slug: postSlug,
+  slug: postSlug.nullable(),
+  slugOnly: z.boolean(),
   status: postStatusSchema,
   tagSlugs: z.array(taxonomySlugSchema).max(24),
   title: z.string().trim().min(1).max(200),
 };
 
-export const createPostInput = z.object({
-  ...postFields,
-  bodyMd: postFields.bodyMd.default(""),
-  categorySlug: postFields.categorySlug.default(null),
-  coverKey: postFields.coverKey.default(null),
-  description: postFields.description.default(null),
-  featured: postFields.featured.default(false),
-  publishedAt: postFields.publishedAt.default(null),
-  status: postFields.status.default("draft"),
-  tagSlugs: postFields.tagSlugs.default([]),
-});
+export const createPostInput = z
+  .object({
+    ...postFields,
+    bodyMd: postFields.bodyMd.default(""),
+    categorySlug: postFields.categorySlug.default(null),
+    coverKey: postFields.coverKey.default(null),
+    description: postFields.description.default(null),
+    featured: postFields.featured.default(false),
+    publishedAt: postFields.publishedAt.default(null),
+    slug: postFields.slug.default(null),
+    slugOnly: postFields.slugOnly.default(false),
+    status: postFields.status.default("draft"),
+    tagSlugs: postFields.tagSlugs.default([]),
+  })
+  .superRefine((value, context) => {
+    if (value.slugOnly && value.slug === null) {
+      context.addIssue({
+        code: "custom",
+        message: "slugOnly requires a slug",
+        path: ["slug"],
+      });
+    }
+  });
 
 /** Every field but the id is optional, and an omitted field is left as stored. */
 export const updatePostInput = z
   .object(postFields)
   .partial()
-  .extend(postIdInput.shape);
+  .extend(postIdInput.shape)
+  .superRefine((value, context) => {
+    if (value.slugOnly === true && value.slug === null) {
+      context.addIssue({
+        code: "custom",
+        message: "slugOnly requires a slug",
+        path: ["slug"],
+      });
+    }
+  });
 
 /* -------------------------------------------------------------------------- */
 /* taxonomy                                                                    */
@@ -270,9 +297,11 @@ const searchSnippetSchema = z.object({
 const searchHitSchema = z.object({
   categorySlug: z.string().nullable(),
   description: z.string().nullable(),
+  id: z.int(),
   publishedAt: z.date().nullable(),
   rank: z.number(),
-  slug: z.string(),
+  slug: z.string().nullable(),
+  slugOnly: z.boolean(),
   /** Body evidence when neither title nor summary carries the query; null otherwise. */
   snippet: searchSnippetSchema.nullable(),
   title: z.string(),
@@ -731,7 +760,7 @@ export const uploadPolicySchema = z.object({
 /* -------------------------------------------------------------------------- */
 
 const albumPhotoSchema = z.object({
-  albumId: z.string(),
+  albumId: z.int(),
   createdAt: z.date(),
   description: z.string().nullable(),
   height: z.int().nullable(),
@@ -750,10 +779,11 @@ export const albumSchema = z.object({
   createdAt: z.date(),
   date: z.string().nullable(),
   description: z.string().nullable(),
-  id: z.string(),
+  id: z.int(),
   published: z.boolean(),
   publishedAt: z.date().nullable(),
-  slug: z.string(),
+  slug: z.string().nullable(),
+  slugOnly: z.boolean(),
   sortOrder: z.int(),
   tags: z.array(z.string()),
   title: z.string(),

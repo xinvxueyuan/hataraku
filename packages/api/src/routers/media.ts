@@ -27,25 +27,40 @@ import {
   listTimelineInput,
   paginatedSchema,
   albumSchema,
-  slugInput,
+  refInput,
   timelineEntrySchema,
   uploadPolicySchema,
   uploadTicketSchema,
 } from "#src/schemas.ts";
 
+const MAX_INTEGER_ID = 2_147_483_647;
+const NUMERIC_SEGMENT = /^\d+$/u;
+
 const albumsRouter = {
-  bySlug: publicProcedure
-    .route(publicRoute("media.albums.bySlug"))
-    .input(slugInput)
+  byRef: publicProcedure
+    .route(publicRoute("media.albums.byRef"))
+    .input(refInput)
     .output(albumWithPhotosSchema)
     .handler(async ({ context, input }) => {
+      const numeric = NUMERIC_SEGMENT.test(input.segment);
+      const id = numeric ? Number(input.segment) : null;
+
+      const validId =
+        id !== null && Number.isSafeInteger(id) && id <= MAX_INTEGER_ID;
+
+      let refWhere = eq(albums.slug, input.segment);
+
+      if (numeric) {
+        refWhere = validId ? eq(albums.id, id) : sql`false`;
+      }
+
       const [album] = await context.db
         .select()
         .from(albums)
-        .where(and(eq(albums.published, true), eq(albums.slug, input.slug)))
+        .where(and(eq(albums.published, true), refWhere))
         .limit(1);
 
-      if (!album) {
+      if (!album || (numeric && album.slugOnly)) {
         throw new ORPCError("NOT_FOUND", { message: "Album not found" });
       }
 

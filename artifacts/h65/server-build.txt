@@ -1,0 +1,89 @@
+$ vp pack
+ℹ  entry: src/index.ts, src/migrate.ts
+ℹ  tsconfig: tsconfig.json
+ℹ  Build start
+ℹ  Cleaning 25 files
+ℹ  Hint: consider adding deps.onlyBundle option to avoid unintended bundling of dependencies, or set deps.onlyBundle: false to disable this hint.
+See more at https://tsdown.dev/options/dependencies#deps-onlybundle
+Detected dependencies in bundle:
+- @hono/node-server
+- hono
+- @better-auth/core
+- drizzle-orm
+- @better-auth/drizzle-adapter
+- zod
+- @better-auth/expo
+- @better-auth/utils
+- better-call
+- rou3
+- better-auth
+- @noble/hashes
+- jose
+- @noble/ciphers
+- defu
+- @better-fetch/fetch
+- @better-auth/telemetry
+- @orpc/shared
+- @orpc/client
+- @orpc/standard-server
+- @orpc/standard-server-fetch
+- @orpc/server
+- @orpc/contract
+- @orpc/openapi-client
+- @orpc/openapi
+- json-schema-typed
+- @orpc/json-schema
+- @orpc/zod
+- @aws-sdk/checksums
+- @aws-sdk/core
+- @smithy/core
+- @aws/lambda-invoke-store
+- @aws-sdk/middleware-sdk-s3
+- @smithy/signature-v4
+- @aws-sdk/signature-v4-multi-region
+- @aws-sdk/xml-builder
+- @aws-sdk/credential-provider-env
+- @smithy/credential-provider-imds
+- @smithy/node-http-handler
+- @aws-sdk/credential-provider-http
+- @aws-sdk/nested-clients
+- @aws-sdk/token-providers
+- @aws-sdk/credential-provider-sso
+- @aws-sdk/credential-provider-login
+- @aws-sdk/credential-provider-process
+- @aws-sdk/credential-provider-web-identity
+- @aws-sdk/credential-provider-ini
+- @aws-sdk/credential-provider-node
+- @aws-sdk/client-s3
+- @aws-sdk/s3-request-presigner
+- @orama/orama
+- @orama/stopwords
+- @better-auth/kysely-adapter
+- kysely
+- @better-auth/memory-adapter
+- postgres
+- @t3-oss/env-core
+- bowser
+- @smithy/types
+ℹ  dist\index.mjs                                        2.20 MB
+ℹ  dist\migrate.mjs                                      2.44 kB │ gzip:  1.11 kB
+ℹ  dist\env-DTXzMvu9.mjs                               365.55 kB │ gzip: 73.95 kB
+ℹ  dist\sqlite-introspector-DSCAP82F-W5ob3GWe.mjs      288.65 kB │ gzip: 47.65 kB
+ℹ  dist\event-streams-Dvlr1Hhq.mjs                     278.20 kB │ gzip: 58.99 kB
+ℹ  dist\dist-Bp9hUmUI.mjs                              226.55 kB │ gzip: 40.54 kB
+ℹ  dist\schemas-DNeG-IcF.mjs                           184.56 kB │ gzip: 40.38 kB
+ℹ  dist\factory-C6TrvW8c.mjs                            79.15 kB │ gzip: 19.01 kB
+ℹ  dist\es5-BqvRkxVH.mjs                                52.91 kB │ gzip:  8.49 kB
+ℹ  dist\get-model-name-C68Z2akK.mjs                     27.40 kB │ gzip:  7.08 kB
+ℹ  dist\generate-drizzle-schema-iWvrXnu0-bSg9DDFx.mjs   17.84 kB │ gzip:  4.64 kB
+ℹ  dist\dist-ZKYobMz5.mjs                               14.89 kB │ gzip:  4.12 kB
+ℹ  dist\d1-sqlite-dialect-m0f01-4z-C1OsgVNy.mjs          5.27 kB │ gzip:  1.78 kB
+ℹ  dist\bun-sqlite-dialect-DoOVo4ja-Dxttzacj.mjs         3.19 kB │ gzip:  1.14 kB
+ℹ  dist\node-sqlite-dialect-kUCLCwJf.mjs                 3.19 kB │ gzip:  1.13 kB
+ℹ  dist\sqlite-adapter-CXJLB6fj.mjs                      2.25 kB │ gzip:  0.87 kB
+ℹ  dist\rolldown-runtime-1p2KPIdQ.mjs                    1.94 kB │ gzip:  0.87 kB
+ℹ  dist\event-streams-DAl2HEGo.mjs                       1.00 kB │ gzip:  0.32 kB
+ℹ  dist\compiled-query-B6dql7eT.mjs                      0.45 kB │ gzip:  0.30 kB
+ℹ  dist\kysely-adapter-dFIAoBFL.mjs                      0.08 kB │ gzip:  0.09 kB
+ℹ  20 files, total: 3.76 MB
+✔  Build complete in 924ms

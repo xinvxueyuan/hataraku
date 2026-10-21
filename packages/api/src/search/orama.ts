@@ -118,8 +118,10 @@ const searchSchema = {
   content: "string",
   description: "string",
   id: "string",
+  postId: "number",
   publishedAt: "number",
   slug: "string",
+  slugOnly: "boolean",
   tags: "string[]",
   title: "string",
 } as const;
@@ -132,8 +134,10 @@ interface SearchDocument {
   content: string;
   description: string;
   id: string;
+  postId: number;
   publishedAt: number;
   slug: string;
+  slugOnly: boolean;
   tags: string[];
   title: string;
 }
@@ -141,7 +145,7 @@ interface SearchDocument {
 interface CachedIndex {
   database: SearchDatabase;
   /** Every token the document contributed; the router's AND filter is applied against this list. */
-  tokensBySlug: Map<string, string[]>;
+  tokensById: Map<number, string[]>;
   signature: string;
 }
 
@@ -161,13 +165,13 @@ const signatureOf = async (db: Database): Promise<string> => {
   return `${row?.count ?? 0}:${row?.newestUpdate ?? ""}`;
 };
 
-const tagsByPost = async (db: Database): Promise<Map<string, string[]>> => {
+const tagsByPost = async (db: Database): Promise<Map<number, string[]>> => {
   const rows = await db
     .select({ postId: postTags.postId, slug: tags.slug })
     .from(postTags)
     .innerJoin(tags, eq(tags.id, postTags.tagId));
 
-  const byPost = new Map<string, string[]>();
+  const byPost = new Map<number, string[]>();
 
   for (const row of rows) {
     const list = byPost.get(row.postId) ?? [];
@@ -202,7 +206,7 @@ export const createSearchIndex = async (
 ): Promise<{
   database: SearchDatabase;
   documentCount: number;
-  tokensBySlug: Map<string, string[]>;
+  tokensById: Map<number, string[]>;
 }> => {
   const rows = await db
     .select({
@@ -212,6 +216,7 @@ export const createSearchIndex = async (
       id: posts.id,
       publishedAt: posts.publishedAt,
       slug: posts.slug,
+      slugOnly: posts.slugOnly,
       title: posts.title,
     })
     .from(posts)
@@ -219,7 +224,7 @@ export const createSearchIndex = async (
 
   const postTagsByPost = await tagsByPost(db);
   const database = create({ components: { tokenizer }, schema: searchSchema });
-  const tokensBySlug = new Map<string, string[]>();
+  const tokensById = new Map<number, string[]>();
 
   await Promise.all(
     rows.map(async (row) => {
@@ -237,19 +242,21 @@ export const createSearchIndex = async (
           row.categorySlug ?? "",
         ].join(" "),
         description: row.description ?? "",
-        id: row.id,
+        id: String(row.id),
+        postId: row.id,
         publishedAt: row.publishedAt?.getTime() ?? 0,
-        slug: row.slug,
+        slug: row.slug ?? "",
+        slugOnly: row.slugOnly,
         tags: tagsOfRow,
         title: row.title,
       };
 
-      tokensBySlug.set(row.slug, tokensOf(document));
+      tokensById.set(row.id, tokensOf(document));
       await insert(database, document);
     })
   );
 
-  return { database, documentCount: rows.length, tokensBySlug };
+  return { database, documentCount: rows.length, tokensById };
 };
 
 /** The current index for this database, rebuilt only when the fingerprint moved. */
@@ -280,7 +287,7 @@ const indexFor = async (db: Database, depth = 0): Promise<CachedIndex> => {
       const entry: CachedIndex = {
         database: result.database,
         signature,
-        tokensBySlug: result.tokensBySlug,
+        tokensById: result.tokensById,
       };
 
       cache.set(db, entry);
@@ -307,7 +314,9 @@ interface SearchHit {
   description: string | null;
   publishedAt: Date | null;
   rank: number;
-  slug: string;
+  id: number;
+  slug: string | null;
+  slugOnly: boolean;
   /** Body evidence for a hit whose title and summary do not contain the query; null otherwise. */
   snippet: SearchSnippet | null;
   title: string;
@@ -532,10 +541,12 @@ const toHit = (
 ): SearchHit => ({
   categorySlug: document.category === "" ? null : document.category,
   description: document.description === "" ? null : document.description,
+  id: document.postId,
   publishedAt:
     document.publishedAt === 0 ? null : new Date(document.publishedAt),
   rank: score,
-  slug: document.slug,
+  slug: document.slug === "" ? null : document.slug,
+  slugOnly: document.slugOnly,
   snippet,
   title: document.title,
 });
@@ -607,7 +618,7 @@ export const searchPosts = async (
   });
 
   const matches = result.hits.filter((hit) => {
-    const documentTokens = index.tokensBySlug.get(hit.document.slug);
+    const documentTokens = index.tokensById.get(hit.document.postId);
 
     if (documentTokens === undefined) {
       return false;

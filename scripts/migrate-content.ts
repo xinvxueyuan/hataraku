@@ -105,6 +105,11 @@ interface UntouchedResult {
   table: string;
 }
 
+interface ClearedSlugResult {
+  cleared: number;
+  table: string;
+}
+
 interface Endpoint {
   database: string;
   host: string;
@@ -120,6 +125,7 @@ interface Report {
   dryRun: boolean;
   failures: string[];
   generatedAt: string;
+  clearedSlugs: ClearedSlugResult[];
   source: Endpoint;
   tables: ReconcileResult[];
   target: Endpoint;
@@ -405,7 +411,10 @@ const copyTable = async (
   await Promise.all(
     batches.map(async (batch) => {
       const parameters = batch.flatMap((row) =>
-        plan.columns.map((column) => row[column.name] ?? null)
+        plan.columns.map(
+          (column) =>
+            row[column.name] ?? (column.name === "slug_only" ? false : null)
+        )
       );
 
       await target.unsafe(buildInsert(plan, batch.length), parameters);
@@ -587,6 +596,33 @@ const collectReferences = async (
     }))
   );
 
+/**
+ * Clears aliases after the content copy. The public address model is id-first: an existing slug is
+ * an opt-in alias, so a migrated row must not keep the old site's slug as if the author had chosen it.
+ */
+const clearSlugs = async (target: SqlClient): Promise<ClearedSlugResult[]> =>
+  await Promise.all(
+    ["posts", "albums"].map(async (table): Promise<ClearedSlugResult> => {
+      const [row] = await target.unsafe(
+        `with cleared as (update "${table}" set slug = null where slug is not null returning 1) select count(*)::int as n from cleared`
+      );
+
+      const cleared = row?.n;
+
+      if (!isCount(cleared)) {
+        throw new Error(`could not count cleared slugs in ${table}`);
+      }
+
+      return { cleared, table };
+    })
+  );
+
+const printClearedSlugs = (results: ClearedSlugResult[]): void => {
+  for (const result of results) {
+    console.log(`cleared ${result.cleared} slug(s) from ${result.table}`);
+  }
+};
+
 const untouchedResults = (
   before: Map<string, number>,
   after: Map<string, number>
@@ -751,7 +787,12 @@ try {
     const untouched = untouchedResults(untouchedBefore, untouchedAfter);
     printUntouched(untouched, failures);
 
+    console.log("\n--- clear aliases (id-first address model) ---");
+    const clearedSlugs = await clearSlugs(target);
+    printClearedSlugs(clearedSlugs);
+
     await writeReport(options.reportPath, {
+      clearedSlugs,
       copies,
       dryRun: false,
       failures,
