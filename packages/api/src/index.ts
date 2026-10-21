@@ -12,6 +12,15 @@ import { todosRouter } from "#src/routers/todos.ts";
 
 export type { Context } from "#src/context.ts";
 
+export {
+  isPublicApiPath,
+  isPublicApiProcedure,
+  PUBLIC_API_ROUTES,
+  PUBLIC_API_TAGS,
+  publicApiCorsHeaders,
+  publicRoute,
+} from "#src/openapi-public.ts";
+
 export const appRouter = {
   content: contentRouter,
   health,

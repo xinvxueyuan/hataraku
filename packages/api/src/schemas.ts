@@ -11,10 +11,31 @@ import { z } from "zod";
 const DEFAULT_PAGE_SIZE = 12;
 const MAX_PAGE_SIZE = 100;
 
+/**
+ * GET query values arrive as strings. Coercing here keeps the shared schemas usable by both the RPC
+ * transport (numbers and booleans) and the OpenAPI GET transport (strings); a value of the wrong
+ * shape still fails validation.
+ */
+const queryBoolean = z.preprocess((value) => {
+  if (value === "true") {
+    return true;
+  }
+
+  if (value === "false") {
+    return false;
+  }
+
+  return value;
+}, z.boolean());
 /** Shared page/pageSize fields. `pageSize` is capped so no caller can pull a whole table. */
 const paginationFields = {
-  page: z.int().min(1).default(1),
-  pageSize: z.int().min(1).max(MAX_PAGE_SIZE).default(DEFAULT_PAGE_SIZE),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(MAX_PAGE_SIZE)
+    .default(DEFAULT_PAGE_SIZE),
 };
 
 export const paginatedSchema = <T extends z.ZodType>(item: T) =>
@@ -116,7 +137,7 @@ const sortDirectionSchema = z.enum(["asc", "desc"]);
 export const listPostsInput = z.object({
   categorySlug: z.string().min(1).optional(),
   direction: sortDirectionSchema.optional(),
-  featuredOnly: z.boolean().optional(),
+  featuredOnly: queryBoolean.optional(),
   orderBy: postOrderFieldSchema.optional(),
   tagSlugs: z.array(z.string().min(1)).min(1).optional(),
   ...paginationFields,
@@ -125,7 +146,7 @@ export const listPostsInput = z.object({
 export const slugInput = z.object({ slug: z.string().min(1) });
 
 export const relatedPostsInput = z.object({
-  limit: z.int().min(1).max(10).default(3),
+  limit: z.coerce.number().int().min(1).max(10).default(3),
   slug: z.string().min(1),
 });
 
@@ -235,7 +256,7 @@ export const tagWithCountSchema = z.object({
 });
 
 export const listTagsInput = z.object({
-  minCount: z.int().min(0).default(1),
+  minCount: z.coerce.number().int().min(0).default(1),
   orderBy: z.enum(["count", "name"]).default("count"),
 });
 
@@ -431,7 +452,7 @@ export const skillSchema = z.object({
 });
 
 export const listProjectsInput = z.object({
-  featuredOnly: z.boolean().optional(),
+  featuredOnly: queryBoolean.optional(),
   status: z.string().min(1).optional(),
   ...paginationFields,
 });
@@ -442,13 +463,13 @@ export const listMicroInput = z.object({
 });
 
 export const listChangelogInput = z.object({
-  highlightOnly: z.boolean().optional(),
+  highlightOnly: queryBoolean.optional(),
   ...paginationFields,
 });
 
 export const listToolsInput = z.object({
   category: z.string().min(1).optional(),
-  featuredOnly: z.boolean().optional(),
+  featuredOnly: queryBoolean.optional(),
   ...paginationFields,
 });
 

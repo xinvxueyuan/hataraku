@@ -21,6 +21,7 @@ import type {
 } from "@hataraku/db/schema/content";
 
 import { assertStorableBody } from "#src/mdx-guard.ts";
+import { publicRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
 import { adminProcedure, publicProcedure } from "#src/procedures.ts";
 import {
@@ -240,6 +241,7 @@ const projectsRouter = {
     ),
 
   bySlug: publicProcedure
+    .route(publicRoute("content.projects.bySlug"))
     .input(slugInput)
     .output(projectSchema)
     .handler(async ({ context, input }) => {
@@ -296,6 +298,7 @@ const projectsRouter = {
     }),
 
   list: publicProcedure
+    .route(publicRoute("content.projects.list"))
     .input(listProjectsInput)
     .output(paginatedSchema(projectSchema))
     .handler(async ({ context, input }) => {
@@ -481,6 +484,7 @@ const microRouter = {
     }),
 
   list: publicProcedure
+    .route(publicRoute("content.micro.list"))
     .input(listMicroInput)
     .output(paginatedSchema(microPostSchema))
     .handler(async ({ context, input }) => {
@@ -702,6 +706,7 @@ const changelogRouter = {
     }),
 
   list: publicProcedure
+    .route(publicRoute("content.changelog.list"))
     .input(listChangelogInput)
     .output(paginatedSchema(changelogEntrySchema))
     .handler(async ({ context, input }) => {
@@ -793,6 +798,7 @@ const changelogRouter = {
 
 const toolsRouter = {
   list: publicProcedure
+    .route(publicRoute("content.tools.list"))
     .input(listToolsInput)
     .output(paginatedSchema(toolSchema))
     .handler(async ({ context, input }) => {
@@ -831,6 +837,7 @@ export const contentRouter = {
   friends: {
     /** A link list is short by nature, so it is returned whole rather than paged. */
     list: publicProcedure
+      .route(publicRoute("content.friends.list"))
       .output(friendSchema.array())
       .handler(({ context }) =>
         context.db
@@ -844,6 +851,7 @@ export const contentRouter = {
   projects: projectsRouter,
   skills: {
     list: publicProcedure
+      .route(publicRoute("content.skills.list"))
       .output(skillSchema.array())
       .handler(({ context }) =>
         context.db

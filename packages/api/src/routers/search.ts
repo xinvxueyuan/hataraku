@@ -1,3 +1,4 @@
+import { publicRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
 import { publicProcedure } from "#src/procedures.ts";
 import { searchInput, searchResultSchema } from "#src/schemas.ts";
@@ -13,6 +14,7 @@ import { searchPosts } from "#src/search/orama.ts";
  */
 export const searchRouter = {
   query: publicProcedure
+    .route(publicRoute("search.query"))
     .input(searchInput)
     .output(searchResultSchema)
     .handler(async ({ context, input }) => {

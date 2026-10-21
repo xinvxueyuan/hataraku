@@ -7,6 +7,7 @@ import type { CoverMeta } from "@hataraku/db/schema/json";
 import { posts } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
+import { publicRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
 import { publicProcedure } from "#src/procedures.ts";
 import { adminPostsRouter } from "#src/routers/admin-posts.ts";
@@ -70,6 +71,7 @@ export const postsRouter = {
 
   /** Adjacent posts by publish date, for the article footer. */
   adjacent: publicProcedure
+    .route(publicRoute("posts.adjacent"))
     .input(slugInput)
     .output(adjacentPostsSchema)
     .handler(async ({ context, input }) => {
@@ -105,6 +107,7 @@ export const postsRouter = {
     }),
 
   bySlug: publicProcedure
+    .route(publicRoute("posts.bySlug"))
     .input(slugInput)
     .output(postDetailSchema)
     .handler(async ({ context, input }) => {
@@ -145,6 +148,7 @@ export const postsRouter = {
     }),
 
   list: publicProcedure
+    .route(publicRoute("posts.list"))
     .input(listPostsInput)
     .output(paginatedSchema(postSummarySchema))
     .handler(async ({ context, input }) => {
@@ -208,6 +212,7 @@ export const postsRouter = {
 
   /** Related by shared tag, else same category, newest first. */
   related: publicProcedure
+    .route(publicRoute("posts.related"))
     .input(relatedPostsInput)
     .output(z.array(postSummarySchema))
     .handler(async ({ context, input }) => {

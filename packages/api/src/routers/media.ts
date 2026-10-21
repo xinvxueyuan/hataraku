@@ -5,6 +5,7 @@ import type { SQL } from "drizzle-orm";
 import { albumPhotos, albums, devices } from "@hataraku/db/schema/media";
 import { diaryEntries, timelineEntries } from "@hataraku/db/schema/pages";
 
+import { publicRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
 import { adminProcedure, publicProcedure } from "#src/procedures.ts";
 import {
@@ -34,6 +35,7 @@ import {
 
 const albumsRouter = {
   bySlug: publicProcedure
+    .route(publicRoute("media.albums.bySlug"))
     .input(slugInput)
     .output(albumWithPhotosSchema)
     .handler(async ({ context, input }) => {
@@ -57,6 +59,7 @@ const albumsRouter = {
     }),
 
   list: publicProcedure
+    .route(publicRoute("media.albums.list"))
     .input(listAlbumsInput)
     .output(paginatedSchema(albumSchema))
     .handler(async ({ context, input }) => {
@@ -125,6 +128,7 @@ export const mediaRouter = {
   albums: albumsRouter,
   devices: {
     list: publicProcedure
+      .route(publicRoute("media.devices.list"))
       .input(listDevicesInput)
       .output(paginatedSchema(deviceSchema))
       .handler(async ({ context, input }) => {
@@ -155,6 +159,7 @@ export const mediaRouter = {
   },
   diary: {
     list: publicProcedure
+      .route(publicRoute("media.diary.list"))
       .input(listDiaryInput)
       .output(paginatedSchema(diaryEntrySchema))
       .handler(async ({ context, input }) => {
@@ -195,6 +200,7 @@ export const mediaRouter = {
   },
   timeline: {
     list: publicProcedure
+      .route(publicRoute("media.timeline.list"))
       .input(listTimelineInput)
       .output(paginatedSchema(timelineEntrySchema))
       .handler(async ({ context, input }) => {

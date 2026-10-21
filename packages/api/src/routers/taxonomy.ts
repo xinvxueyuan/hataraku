@@ -4,6 +4,7 @@ import { posts } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
 import type { Context } from "#src/context.ts";
+import { publicRoute } from "#src/openapi-public.ts";
 import { publicProcedure } from "#src/procedures.ts";
 import {
   categoryWithCountSchema,
@@ -74,6 +75,7 @@ const listCategories = async (db: Context["db"]) => {
 
 export const taxonomyRouter = {
   categories: publicProcedure
+    .route(publicRoute("taxonomy.categories"))
     .output(categoryWithCountSchema.array())
     .handler(async ({ context }) => await listCategories(context.db)),
 
@@ -82,6 +84,7 @@ export const taxonomyRouter = {
    * the taxonomy index passes 0 to show every tag, including ones whose posts are all drafts.
    */
   overview: publicProcedure
+    .route(publicRoute("taxonomy.overview"))
     .output(taxonomyOverviewSchema)
     .handler(async ({ context }) => {
       const [tagRows, categoryRows, totalRow] = await Promise.all([
@@ -101,6 +104,7 @@ export const taxonomyRouter = {
     }),
 
   tags: publicProcedure
+    .route(publicRoute("taxonomy.tags"))
     .input(listTagsInput)
     .output(tagWithCountSchema.array())
     .handler(async ({ context, input }) => await listTags(context.db, input)),

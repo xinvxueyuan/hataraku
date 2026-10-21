@@ -1,0 +1,175 @@
+{
+  "spec": {
+    "adminMatches": [],
+    "info": {
+      "contact": {
+        "email": "xinvxueyuan@yeah.net",
+        "name": "xinvStar"
+      },
+      "description": "夜行栈的公开只读 API：文章、分类标签、微言、项目、更新日志、站点资料、时间线、友链、相册与搜索。无需鉴权；跨域请求只允许 GET、HEAD 与预检。",
+      "license": {
+        "name": "All rights reserved"
+      },
+      "title": "夜行栈 API",
+      "version": "0.0.0"
+    },
+    "methods": [
+      "GET"
+    ],
+    "openapi": "3.1.1",
+    "paths": [
+      "/changelog",
+      "/friends",
+      "/micro",
+      "/projects/{slug}",
+      "/projects",
+      "/skills",
+      "/tools",
+      "/health",
+      "/albums/{slug}",
+      "/albums",
+      "/devices",
+      "/diary",
+      "/timeline",
+      "/posts/{slug}/adjacent",
+      "/posts/{slug}",
+      "/posts",
+      "/posts/{slug}/related",
+      "/search",
+      "/site",
+      "/taxonomy/categories",
+      "/taxonomy",
+      "/taxonomy/tags"
+    ],
+    "pathsCount": 22,
+    "servers": [
+      {
+        "description": "当前站点",
+        "url": "https://hataraku.example/api"
+      }
+    ],
+    "specJson": {
+      "bytes": 37247,
+      "status": 200
+    },
+    "status": 200
+  },
+  "specSame": true,
+  "timing": {
+    "coldMs": 115.1,
+    "hotMs": 21,
+    "specBytes": 37247
+  },
+  "publicGet": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 200,
+    "bodyHead": "{\"items\":[{\"categorySlug\":\"ai\",\"cover\":null,\"coverKey\":null,\"description\":\"从规划功能、生成 Kotlin 应用、模拟器测试，到 USB 安装和 Google Play 私密部署，手把手走一遍 Google AI Studio 的 Android 应用流程。\",\"featured\":false,\"id\":\"0eff9639-"
+  },
+  "bySlug": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 200
+  },
+  "invalidGet": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 400,
+    "bodyHead": "{\"defined\":false,\"code\":\"BAD_REQUEST\",\"status\":400,\"message\":\"Input validation failed\",\"data\":{\"issues\":[{\"origin\":\"number\",\"code\":\"too_big\",\"maximum\":100,\"inclusive\":true,\"path\":[\"pageSize\"],\"message"
+  },
+  "missingGet": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 404,
+    "bodyHead": "{\"defined\":false,\"code\":\"NOT_FOUND\",\"status\":404,\"message\":\"Post not found\"}"
+  },
+  "searchGet": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 200,
+    "bodyHead": "{\"items\":[{\"categorySlug\":\"devops\",\"description\":\"这是一篇关于Nginx的深度技术文章\",\"publishedAt\":\"2025-11-09T00:00:00.000Z\",\"rank\":17.452740081604162,\"slug\":\"2025-11-09-nginx-反向代理与负载均衡实战\",\"snippet\":{\"matches\":[{\"l"
+  },
+  "taxonomyGet": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 200
+  },
+  "publicSpec": {
+    "acao": "*",
+    "acam": null,
+    "acah": null,
+    "cacheControl": "public, max-age=60",
+    "contentType": "application/json; charset=utf-8",
+    "status": 200
+  },
+  "adminPost": {
+    "acao": null,
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 401
+  },
+  "publicPreflight": {
+    "acao": "*",
+    "acam": "GET, HEAD, OPTIONS",
+    "acah": "Accept, Content-Type",
+    "cacheControl": null,
+    "contentType": null,
+    "status": 204
+  },
+  "adminPreflight": {
+    "acao": null,
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "text/plain;charset=UTF-8",
+    "status": 404
+  },
+  "rpc": {
+    "acao": null,
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "application/json",
+    "status": 200,
+    "bodyHead": "{\"json\":{\"items\":[{\"categorySlug\":\"ai\",\"cover\":null,\"coverKey\":null,\"description\":\"从规划功能、生成 Kotlin 应用、模拟器测试，到 USB 安装和 Google Play 私密部署，手把手走一遍 Google AI Studio 的"
+  },
+  "rpcWrong": {
+    "acao": null,
+    "acam": null,
+    "acah": null,
+    "cacheControl": null,
+    "contentType": "text/plain;charset=UTF-8",
+    "status": 404
+  },
+  "docsPage": {
+    "hasCodeBlock": true,
+    "hasTable": true,
+    "hasTitle": true,
+    "status": 200
+  },
+  "referenceUi": {
+    "hasScalar": true,
+    "hasSpecUrl": true,
+    "status": 200
+  }
+}

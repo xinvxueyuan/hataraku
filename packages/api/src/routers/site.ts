@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import type { HeroMeta } from "@hataraku/db/schema/json";
 import { siteProfile } from "@hataraku/db/schema/pages";
 
+import { publicRoute } from "#src/openapi-public.ts";
 import { adminProcedure, publicProcedure } from "#src/procedures.ts";
 import { siteProfileSchema, updateSiteProfileInput } from "#src/schemas.ts";
 
@@ -73,6 +74,7 @@ const compactSocial = (
  */
 export const siteRouter = {
   profile: publicProcedure
+    .route(publicRoute("site.profile"))
     .output(siteProfileSchema)
     .handler(async ({ context }) => {
       const [row] = await context.db
