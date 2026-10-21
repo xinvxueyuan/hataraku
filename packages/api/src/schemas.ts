@@ -368,7 +368,7 @@ const analyticsFields = z.object({
 });
 
 /** The checks one field cannot make: which fields the chosen provider actually needs. */
-export const analyticsInputSchema = analyticsFields
+const analyticsInputSchema = analyticsFields
   .refine((value) => value.provider !== "custom" || value.scriptSrc !== "", {
     message: "The custom provider needs an https script URL",
     path: ["scriptSrc"],
@@ -382,7 +382,7 @@ export const analyticsInputSchema = analyticsFields
   );
 
 /** What a stored row reads back as. Lenient on purpose; see the comment above. */
-export const analyticsConfigSchema = z.object({
+const analyticsConfigSchema = z.object({
   enabled: z.boolean(),
   provider: analyticsProviderSchema,
   respectDnt: z.boolean(),
