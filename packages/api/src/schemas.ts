@@ -249,12 +249,22 @@ export const taxonomyOverviewSchema = z.object({
 /* search                                                                      */
 /* -------------------------------------------------------------------------- */
 
+const searchSnippetSchema = z.object({
+  /** Plain text only; the client renders it as text and marks the ranges itself. */
+  matches: z.array(
+    z.object({ length: z.int().positive(), start: z.int().nonnegative() })
+  ),
+  text: z.string(),
+});
+
 const searchHitSchema = z.object({
   categorySlug: z.string().nullable(),
   description: z.string().nullable(),
   publishedAt: z.date().nullable(),
   rank: z.number(),
   slug: z.string(),
+  /** Body evidence when neither title nor summary carries the query; null otherwise. */
+  snippet: searchSnippetSchema.nullable(),
   title: z.string(),
 });
 

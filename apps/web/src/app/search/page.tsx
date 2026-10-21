@@ -117,6 +117,14 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                       {highlight(hit.description, query)}
                     </p>
                   )}
+                  {hit.snippet === null ? null : (
+                    <p
+                      className="text-muted-foreground text-sm"
+                      data-slot="search-snippet"
+                    >
+                      {highlight(hit.snippet.text, query, hit.snippet.matches)}
+                    </p>
+                  )}
                   {hit.publishedAt === null ? null : (
                     <time
                       className="text-muted-foreground text-xs"

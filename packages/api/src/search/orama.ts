@@ -317,7 +317,19 @@ interface SearchHit {
   publishedAt: Date | null;
   rank: number;
   slug: string;
+  /** Body evidence for a hit whose title and summary do not contain the query; null otherwise. */
+  snippet: SearchSnippet | null;
   title: string;
+}
+
+export interface SearchSnippetMatch {
+  length: number;
+  start: number;
+}
+
+export interface SearchSnippet {
+  matches: SearchSnippetMatch[];
+  text: string;
 }
 
 export interface SearchResult {
@@ -326,18 +338,235 @@ export interface SearchResult {
   total: number;
 }
 
-const toHit = (hit: {
-  document: SearchDocument;
-  score: number;
-}): SearchHit => ({
-  categorySlug: hit.document.category === "" ? null : hit.document.category,
-  description:
-    hit.document.description === "" ? null : hit.document.description,
+/** Context on each side of the first hit, in characters; widened to whole Latin words below. */
+const SNIPPET_RADIUS = 48;
+const SNIPPET_LIMIT = 200;
+const LATIN_WORD_CHAR = /[\p{Script=Latin}\p{N}]/u;
+
+/** Markdown that is presentation rather than evidence, removed before the excerpt is built. */
+const PLAIN_TEXT_RULES = [
+  [/^```[^\n]*$/gmu, ""],
+  [/^#{1,6}\s+/gmu, ""],
+  [/^>\s?/gmu, ""],
+  [/!\[(?<alt>[^\]]*)\]\([^)]*\)/gu, "$<alt>"],
+  [/\[(?<label>[^\]]+)\]\([^)]*\)/gu, "$<label>"],
+  [/`+/gu, ""],
+] as const;
+
+const plainTextOf = (markdown: string): string => {
+  let text = markdown;
+
+  for (const [pattern, replacement] of PLAIN_TEXT_RULES) {
+    text = text.replaceAll(pattern, replacement);
+  }
+
+  return text.replaceAll(/\s+/gu, " ").trim();
+};
+
+/** Keeps a slice from ending inside a surrogate pair (Han characters outside the BMP). */
+const codePointStart = (text: string, index: number): number => {
+  if (index <= 0) {
+    return 0;
+  }
+
+  if (index >= text.length) {
+    return text.length;
+  }
+
+  const code = text.codePointAt(index);
+
+  return code !== undefined && code >= 0xdc_00 && code <= 0xdf_ff
+    ? index - 1
+    : index;
+};
+
+const codePointEnd = (text: string, index: number): number => {
+  if (index <= 0) {
+    return 0;
+  }
+
+  if (index >= text.length) {
+    return text.length;
+  }
+
+  const code = text.codePointAt(index - 1);
+
+  return code !== undefined &&
+    (code > 0xff_ff || (code >= 0xd8_00 && code <= 0xdb_ff))
+    ? index - 1
+    : index;
+};
+
+/**
+ * Widens an excerpt boundary to a whole Latin word, within a small overshoot budget.
+ *
+ * Chinese runs are deliberately left alone: every Han character is its own unit, so walking the
+ * boundary across a CJK run would grow the excerpt to the start of the paragraph.
+ */
+const widenStart = (text: string, start: number, floor: number): number => {
+  let next = start;
+
+  while (
+    next > floor &&
+    LATIN_WORD_CHAR.test(text[next - 1] ?? "") &&
+    LATIN_WORD_CHAR.test(text[next] ?? "")
+  ) {
+    next -= 1;
+  }
+
+  return next;
+};
+
+const widenEnd = (text: string, end: number, ceiling: number): number => {
+  let next = end;
+
+  while (
+    next < ceiling &&
+    LATIN_WORD_CHAR.test(text[next - 1] ?? "") &&
+    LATIN_WORD_CHAR.test(text[next] ?? "")
+  ) {
+    next += 1;
+  }
+
+  return next;
+};
+
+const matchesOf = (
+  text: string,
+  tokens: readonly string[]
+): SearchSnippetMatch[] => {
+  const haystack = text.toLowerCase();
+  const ranges: SearchSnippetMatch[] = [];
+
+  for (const token of tokens) {
+    if (token === "") {
+      continue;
+    }
+
+    let from = 0;
+
+    while (from < haystack.length) {
+      const at = haystack.indexOf(token, from);
+
+      if (at === -1) {
+        break;
+      }
+
+      ranges.push({ length: token.length, start: at });
+      from = at + Math.max(token.length, 1);
+    }
+  }
+
+  const merged: SearchSnippetMatch[] = [];
+
+  for (const range of ranges.toSorted(
+    (left, right) => left.start - right.start
+  )) {
+    const last = merged.at(-1);
+
+    if (last !== undefined && range.start <= last.start + last.length) {
+      last.length = Math.max(
+        last.length,
+        range.start + range.length - last.start
+      );
+    } else {
+      merged.push({ ...range });
+    }
+  }
+
+  return merged;
+};
+
+/**
+ * Builds a one-line body excerpt around the first query hit.
+ *
+ * Only called for hits whose title and summary do not contain a query token, which is exactly the
+ * case the result page looks unexplained. The returned text is plain (no markup) and the ranges
+ * let the React highlighter mark the evidence without re-tokenising on the client.
+ */
+const buildSnippet = (
+  body: string,
+  query: string,
+  tokens: readonly string[]
+): SearchSnippet | null => {
+  const text = plainTextOf(body);
+
+  if (text === "") {
+    return null;
+  }
+
+  const haystack = text.toLowerCase();
+  const needle = query.toLowerCase();
+  let hit = haystack.indexOf(needle);
+  let hitLength = needle.length;
+
+  if (hit === -1) {
+    for (const token of tokens.toSorted(
+      (left, right) => right.length - left.length
+    )) {
+      const at = haystack.indexOf(token);
+
+      if (at !== -1) {
+        hit = at;
+        hitLength = token.length;
+        break;
+      }
+    }
+  }
+
+  if (hit === -1) {
+    return null;
+  }
+
+  const floor = Math.max(0, hit - SNIPPET_RADIUS - 24);
+  const ceiling = Math.min(text.length, hit + hitLength + SNIPPET_RADIUS + 24);
+
+  const start = widenStart(
+    text,
+    codePointStart(text, Math.max(0, hit - SNIPPET_RADIUS)),
+    floor
+  );
+
+  let end = widenEnd(
+    text,
+    codePointEnd(text, Math.min(text.length, hit + hitLength + SNIPPET_RADIUS)),
+    ceiling
+  );
+
+  if (end - start > SNIPPET_LIMIT) {
+    end = codePointEnd(text, start + SNIPPET_LIMIT);
+  }
+
+  const snippetText = `${start > 0 ? "…" : ""}${text.slice(start, end)}${end < text.length ? "…" : ""}`;
+
+  return {
+    matches: matchesOf(snippetText, tokens),
+    text: snippetText,
+  };
+};
+
+const titleOrSummaryHasToken = (
+  document: SearchDocument,
+  tokens: readonly string[]
+): boolean => {
+  const haystack = `${document.title} ${document.description}`.toLowerCase();
+
+  return tokens.some((token) => haystack.includes(token));
+};
+
+const toHit = (
+  document: SearchDocument,
+  score: number,
+  snippet: SearchSnippet | null
+): SearchHit => ({
+  categorySlug: document.category === "" ? null : document.category,
+  description: document.description === "" ? null : document.description,
   publishedAt:
-    hit.document.publishedAt === 0 ? null : new Date(hit.document.publishedAt),
-  rank: hit.score,
-  slug: hit.document.slug,
-  title: hit.document.title,
+    document.publishedAt === 0 ? null : new Date(document.publishedAt),
+  rank: score,
+  slug: document.slug,
+  snippet,
+  title: document.title,
 });
 
 const countOccurrences = (haystack: string, needle: string): number => {
@@ -441,9 +670,17 @@ export const searchPosts = async (
   const start = (input.page - 1) * input.pageSize;
 
   return {
-    items: ranked
-      .slice(start, start + input.pageSize)
-      .map((entry) => toHit(entry.hit)),
+    items: ranked.slice(start, start + input.pageSize).map((entry) => {
+      const { document } = entry.hit;
+
+      // The excerpt exists to answer "why did this match?"; when the visible title or summary
+      // already carries a query token, the reader has the evidence and another line would repeat it.
+      const snippet = titleOrSummaryHasToken(document, queryTokens)
+        ? null
+        : buildSnippet(document.bodyText, query, queryTokens);
+
+      return toHit(document, entry.hit.score, snippet);
+    }),
     query,
     total: ranked.length,
   };

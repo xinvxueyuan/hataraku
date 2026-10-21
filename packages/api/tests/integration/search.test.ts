@@ -15,6 +15,12 @@ const slugs = async (q: string) => {
   return result.items.map((hit) => hit.slug);
 };
 
+const rscHit = async (q: string) => {
+  const result = await client.search.query({ q });
+
+  return result.items.find((hit) => hit.slug === "rsc");
+};
+
 describe("search.query", () => {
   it("finds an ASCII term", async () => {
     const result = await client.search.query({ q: "React" });
@@ -103,6 +109,54 @@ describe("search.query", () => {
     await expect(
       client.search.query({ pageSize: 101, q: "React" })
     ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+
+  it("returns a body snippet when the title and summary do not carry the query", async () => {
+    const hit = await rscHit("限流");
+
+    expect(hit?.snippet).not.toBeNull();
+    expect(hit?.snippet?.text).toContain("限流");
+
+    const snippet = hit?.snippet;
+
+    if (snippet === null || snippet === undefined) {
+      return;
+    }
+
+    expect(snippet.matches.length).toBeGreaterThan(0);
+
+    for (const match of snippet.matches) {
+      expect(
+        snippet.text.slice(match.start, match.start + match.length)
+      ).toHaveLength(match.length);
+    }
+
+    expect(
+      snippet.matches.some((match) =>
+        snippet.text
+          .slice(match.start, match.start + match.length)
+          .includes("限流")
+      )
+    ).toBeTruthy();
+  });
+
+  it("does not repeat a hit the title or summary already shows", async () => {
+    await expect(rscHit("状态层")).resolves.toMatchObject({ snippet: null });
+    await expect(rscHit("银弹")).resolves.toMatchObject({ snippet: null });
+  });
+
+  it("keeps a Latin word whole at the snippet boundary", async () => {
+    const hit = await rscHit("supercalifragilistic");
+
+    expect(hit?.snippet?.text).toContain("supercalifragilisticexpialidocious");
+  });
+
+  it("returns the body as plain text, so markup in it stays text", async () => {
+    const hit = await rscHit("<b>&");
+    const text = hit?.snippet?.text ?? "";
+
+    expect(text).toContain("<b>&");
+    expect(text).not.toContain("<mark");
   });
 
   it("indexes published, non-draft posts only", async () => {

@@ -76,7 +76,8 @@ export const seedBlog = async (db: Database) => {
     await db
       .insert(posts)
       .values({
-        bodyMd: "状态层有三个来源。限流网关与 monorepo 也会影响。",
+        bodyMd:
+          "状态层有三个来源。限流网关与 monorepo 也会影响。supercalifragilisticexpialidocious 与 <b>& 符号。",
         categoryId: frontend.id,
         categorySlug: frontend.slug,
         cover: { alt: "封面", height: 630, src: "/rsc.webp", width: 1200 },

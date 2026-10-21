@@ -1,0 +1,39 @@
+H44 — 正文命中片段（snippet）实测证据
+时间: 2026-10-21 (Asia/Shanghai)　实例: http://localhost:3000
+
+== 1. 搜「限流」（正文命中，标题/摘要不含） ==
+RPC /rpc/search/query q=限流 → total 1，首条 snippet：
+  text = "…header X-Cache-Status $upstream_cache_status; } } 限流 定义限流区域 limit_req_zone $binary_remote_addr zone=…"
+  matches = [{start:51,length:2,slice:'限流'},{start:56,length:2,slice:'限流'}]
+DOM：li 内 [data-slot=search-snippet] 存在，<mark> 文本 = ['限流','限流']
+  HTML 片段: …<mark class="bg-primary/15 text-foreground rounded-sm px-0.5">限流</mark> 定义<mark …>限流</mark>区域…
+
+== 2. 搜「局限」（标题命中 → 不显示片段） ==
+RPC：snippet = null；DOM：search-snippet 数量 0，mark 数量 1（标题里的「局限」）。
+
+== 3. 搜「Google」等标题命中 ==
+首条（标题含 Google）snippet=null；其余仅正文命中的条目出现 snippet（共 3 条），这是逐条判断的结果，不是全局开关。
+
+== 4. 边界截断（集成测试） ==
+fixture rsc 正文含 supercalifragilisticexpialidocious；查询 supercalifragilistic（前缀）→ snippet.text 包含完整长单词，未从词中被切开。
+中文：matches 的 slice 均为完整「限流」；plainTextOf 只删除围栏/标题/链接语法，不按字符切中文。
+
+== 5. HTML 安全 ==
+fixture 正文含 `<b>&`；查询 `<b>&` → snippet.text 含字面量 `<b>&`，且不含 `<mark`；React 侧统一转义为文本。
+全仓 grep dangerouslySetInnerHTML → 0 处。
+
+== 6. 性能 ==
+方法：同一构建下 RPC /rpc/search/query 各 50 次（排除页面渲染/网络波动）：
+  无 snippet（q=局限，标题命中）：P50 37.43ms / P95 101.92ms
+  有 snippet（q=限流，正文命中）：P50 35.04ms / P95 51.74ms（复测 33.31 / 42.67）
+  → 片段路径没有更慢；差值落在 RPC 噪声内。H41 报告的进程内热查询 P50 2.236 / P95 3.200ms 仍是搜索本身成本。
+页面 SSR 对照（同样 25 次）：改前 限流 P50 131.47/P95 160.67；改后 154.09/258.85（dev 抖动，期间有其他任务并发请求，非片段计算量）。
+
+== 7. 测试 ==
+vp test --project integration packages/api/tests/integration/search.test.ts → 27 tests passed（新增 4 个：片段存在且区间可切、标题/摘要命中不重复、拉丁词边界完整、正文标记按纯文本返回）。
+
+== 截图 ==
+search-限流-1440.png（light，片段+两处高亮）、search-限流-390.png（dark）、search-局限-1440.png（无片段行）。
+
+== e2e / 门禁 ==
+e2e 7/7；ready 见 evidence-ready.txt（本次运行被并发任务的未格式化文件/生成目录阻断，见报告）。
