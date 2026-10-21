@@ -41,7 +41,7 @@ const postLines = (post: SitePost, body: string, origin: string): string[] => {
   const lines = [
     `## ${post.title}`,
     "",
-    `- URL: ${absoluteUrl(origin, `/posts/${post.slug}`)}`,
+    `- URL: ${absoluteUrl(origin, `/blog/${post.slug}`)}`,
   ];
 
   if (post.publishedAt !== null) {
@@ -83,7 +83,7 @@ const microLines = (entry: MicroRow): string[] => {
   ].filter((part) => part !== null);
 
   return [
-    `## 微文：${entry.slug}`,
+    `## 微言：${entry.slug}`,
     "",
     ...meta.map((part) => `- ${part}`),
     "",
@@ -164,7 +164,7 @@ const GET = async (): Promise<Response> => {
     `语言: ${SITE_LANGUAGE}`,
     `作者: ${site.author}`,
     `文章数: ${latest.length} / 全站 ${posts.length}`,
-    `微文: ${Math.min(micro.length, MICRO_LIMIT)} / 全站 ${micro.length}`,
+    `微言: ${Math.min(micro.length, MICRO_LIMIT)} / 全站 ${micro.length}`,
     `更新日志: ${Math.min(changelog.length, CHANGELOG_LIMIT)} / 全站 ${changelog.length}`,
     "",
     "---",

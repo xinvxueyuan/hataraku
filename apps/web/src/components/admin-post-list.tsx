@@ -89,7 +89,7 @@ export const AdminPostList = ({
                 {post.title}
               </Link>
               <span className="text-muted-foreground truncate text-xs">
-                /posts/{post.slug} · 更新于 {formatDate(post.updatedAt)}
+                /blog/{post.slug} · 更新于 {formatDate(post.updatedAt)}
               </span>
             </div>
 

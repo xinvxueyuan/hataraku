@@ -77,7 +77,7 @@ const GET = async (): Promise<Response> => {
   );
 
   for (const post of latest) {
-    const link = absoluteUrl(origin, `/posts/${post.slug}`);
+    const link = absoluteUrl(origin, `/blog/${post.slug}`);
     const updated = post.updatedAt ?? post.publishedAt;
     const body = bodies.get(post.slug)?.trim() ?? "";
 

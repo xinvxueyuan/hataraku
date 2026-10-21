@@ -11,8 +11,7 @@ import { serverCall } from "#src/server/query.ts";
 /**
  * Albums, newest first.
  *
- * A cover may come in two shapes: an absolute `cover.src` written by the migration, or a bare
- * object key. `MediaImage` takes either, so the card does not branch on which one this row has.
+ * A cover is a bare object key; `MediaImage` resolves it through the configured media host.
  */
 
 export const metadata: Metadata = {
@@ -61,7 +60,7 @@ const focusRing =
 const AlbumCard = ({ album }: { album: Album }) => {
   const date = formatDate(album);
   const dateTime = album.date ?? album.publishedAt?.toISOString();
-  const coverSource = album.cover?.src ?? album.coverKey;
+  const coverSource = album.coverKey;
 
   return (
     <Link
@@ -70,13 +69,12 @@ const AlbumCard = ({ album }: { album: Album }) => {
     >
       <span className="bg-muted relative block aspect-[16/9] overflow-hidden">
         <MediaImage
-          alt={album.cover?.alt ?? album.title}
+          alt={album.title}
           assetKey={album.coverKey}
           className="object-cover"
           fill
-          src={album.cover?.src}
         />
-        {coverSource === null || coverSource === undefined ? (
+        {coverSource === null || coverSource === "" ? (
           <span
             aria-hidden="true"
             className="text-muted-foreground absolute inset-0 flex items-center justify-center"
@@ -128,7 +126,7 @@ const AlbumsPage = async ({ searchParams }: PageProps) => {
           {result.total === 0 ? (
             <>
               还没有相册。整理好第一组照片后，它会出现在这里——先去{" "}
-              <Link className={`${focusRing} underline`} href="/archive">
+              <Link className={`${focusRing} underline`} href="/blog/archive">
                 归档
               </Link>{" "}
               逛逛，或者回到{" "}

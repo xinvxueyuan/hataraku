@@ -128,8 +128,8 @@ interface PageProps {
 
 const hrefFor = (kind: TaxonomyKind, slug: string, page: number): string =>
   page <= 1
-    ? `/taxonomy/${kind}/${slug}`
-    : `/taxonomy/${kind}/${slug}?page=${page}`;
+    ? `/blog/taxonomy/${kind}/${slug}`
+    : `/blog/taxonomy/${kind}/${slug}?page=${page}`;
 
 const focusRing =
   "rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none";
@@ -185,7 +185,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
       <header className="flex flex-col gap-2">
         <Link
           className={`${focusRing} text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline`}
-          href="/taxonomy"
+          href="/blog/taxonomy"
         >
           ← 全部{label}
         </Link>
@@ -222,7 +222,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
           ) : (
             <>
               {" "}
-              <Link className={`${focusRing} underline`} href="/archive">
+              <Link className={`${focusRing} underline`} href="/blog/archive">
                 去归档看看
               </Link>
               。
@@ -237,7 +237,6 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
                 <PostCover
                   className="hidden w-28 shrink-0 sm:block sm:w-40"
                   coverKey={post.coverKey}
-                  coverSrc={post.cover?.src ?? null}
                   sizes="(min-width: 640px) 160px, 112px"
                   title={post.title}
                 />
@@ -245,7 +244,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
                   <h2 className="text-lg leading-snug font-medium">
                     <Link
                       className={`${focusRing} hover:underline`}
-                      href={`/posts/${post.slug}`}
+                      href={`/blog/${post.slug}`}
                     >
                       {post.title}
                     </Link>
@@ -267,7 +266,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
                     {post.tags.map((tag) => (
                       <Link
                         className={`${focusRing} hover:underline`}
-                        href={`/taxonomy/tag/${tag}`}
+                        href={`/blog/taxonomy/tag/${tag}`}
                         key={tag}
                       >
                         #{tag}

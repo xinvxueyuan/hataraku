@@ -43,8 +43,8 @@ const TaxonomyPage = async () => {
         {categories.length === 0 ? (
           <p className="text-muted-foreground rounded-lg border border-dashed p-6">
             还没有分类。给文章分好类之后，这里会按顺序列出它们——先去{" "}
-            <Link className={`${focusRing} underline`} href="/article">
-              文章列表
+            <Link className={`${focusRing} underline`} href="/blog">
+              写作
             </Link>{" "}
             看看现在的文章。
           </p>
@@ -57,7 +57,7 @@ const TaxonomyPage = async () => {
               <li key={category.id}>
                 <Link
                   className={`${focusRing} hover:bg-accent flex h-full flex-col gap-1 rounded-lg border p-4 transition-colors`}
-                  href={`/taxonomy/category/${category.slug}`}
+                  href={`/blog/taxonomy/category/${category.slug}`}
                 >
                   <span className="flex items-center justify-between gap-3">
                     <span className="font-medium">{category.name}</span>
@@ -87,7 +87,7 @@ const TaxonomyPage = async () => {
         {tags.length === 0 ? (
           <p className="text-muted-foreground rounded-lg border border-dashed p-6">
             还没有标签。给文章打上标签后，它们会在这里聚成一团——从{" "}
-            <Link className={`${focusRing} underline`} href="/archive">
+            <Link className={`${focusRing} underline`} href="/blog/archive">
               归档
             </Link>{" "}
             里挑一篇文章开始。
@@ -98,7 +98,7 @@ const TaxonomyPage = async () => {
               <li key={tag.id}>
                 <Link
                   className={`${focusRing} hover:bg-accent inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm transition-colors`}
-                  href={`/taxonomy/tag/${tag.slug}`}
+                  href={`/blog/taxonomy/tag/${tag.slug}`}
                 >
                   <span>{tag.name}</span>
                   <Badge variant="secondary">{tag.postCount}</Badge>
@@ -111,12 +111,12 @@ const TaxonomyPage = async () => {
 
       <footer className="text-muted-foreground border-t pt-4 text-sm">
         也可以按时间浏览：
-        <Link className={`${focusRing} ml-1 underline`} href="/archive">
+        <Link className={`${focusRing} ml-1 underline`} href="/blog/archive">
           归档
         </Link>
         ，或者去{" "}
-        <Link className={`${focusRing} underline`} href="/article">
-          文章列表
+        <Link className={`${focusRing} underline`} href="/blog">
+          写作
         </Link>
         。
       </footer>

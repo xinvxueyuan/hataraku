@@ -155,7 +155,7 @@ const ArchiveEntry = ({ post }: { post: ArchivePost }) => {
         <h4 className="text-base leading-snug font-medium">
           <Link
             className={`${focusRing} hover:underline`}
-            href={`/posts/${post.slug}`}
+            href={`/blog/${post.slug}`}
           >
             {post.title}
           </Link>
@@ -167,7 +167,7 @@ const ArchiveEntry = ({ post }: { post: ArchivePost }) => {
           {post.tags.map((tag) => (
             <Link
               className={`${focusRing} hover:underline`}
-              href={`/taxonomy/tag/${tag}`}
+              href={`/blog/taxonomy/tag/${tag}`}
               key={tag}
             >
               #{tag}
@@ -193,7 +193,7 @@ const ArchivePage = async () => {
         <p className="text-muted-foreground">
           {total} 篇文章，按发布月份排列（{SITE_TIME_ZONE}）。
           {truncated
-            ? ` 这里只列出最近 ${MAX_PAGES * PAGE_SIZE} 篇，更早的文章请到文章列表翻页。`
+            ? ` 这里只列出最近 ${MAX_PAGES * PAGE_SIZE} 篇，更早的文章请到写作页继续翻页。`
             : null}
         </p>
       </header>
@@ -201,8 +201,8 @@ const ArchivePage = async () => {
       {total === 0 ? (
         <p className="text-muted-foreground rounded-lg border border-dashed p-6">
           还没有可归档的文章。发布第一篇后，它会按月份出现在这里——先去{" "}
-          <Link className={`${focusRing} underline`} href="/article">
-            文章列表
+          <Link className={`${focusRing} underline`} href="/blog">
+            写作
           </Link>{" "}
           看看，或者回到{" "}
           <Link className={`${focusRing} underline`} href="/">
@@ -304,7 +304,7 @@ const ArchivePage = async () => {
 
       <footer className="text-muted-foreground border-t pt-4 text-sm">
         换个角度看：按{" "}
-        <Link className={`${focusRing} underline`} href="/taxonomy">
+        <Link className={`${focusRing} underline`} href="/blog/taxonomy">
           分类与标签
         </Link>{" "}
         浏览，或者去{" "}

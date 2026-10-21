@@ -61,7 +61,7 @@ const linksOf = (project: Project): { href: string; label: string }[] => {
 };
 
 const ProjectCard = ({ project }: { project: Project }) => {
-  const coverSource = project.cover?.src ?? project.coverKey;
+  const coverSource = project.coverKey;
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-xl border">
@@ -71,9 +71,8 @@ const ProjectCard = ({ project }: { project: Project }) => {
           assetKey={project.coverKey}
           className="object-cover"
           fill
-          src={project.cover?.src}
         />
-        {coverSource === null || coverSource === undefined ? (
+        {coverSource === null || coverSource === "" ? (
           <span
             aria-hidden="true"
             className="text-muted-foreground absolute inset-0 flex items-center justify-center"
@@ -154,8 +153,8 @@ const ProjectsPage = async ({ searchParams }: PageProps) => {
           {result.total === 0 ? (
             <>
               还没有公开的项目。等项目整理好后会出现在这里——先去{" "}
-              <Link className={`${focusRing} underline`} href="/article">
-                文章列表
+              <Link className={`${focusRing} underline`} href="/blog">
+                写作
               </Link>{" "}
               看看最近在写什么，或者回到{" "}
               <Link className={`${focusRing} underline`} href="/">

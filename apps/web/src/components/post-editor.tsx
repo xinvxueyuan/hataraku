@@ -248,7 +248,7 @@ export const PostEditor = ({
             value={form.slug}
           />
           <p className="text-muted-foreground text-xs">
-            文章地址是 /posts/&lt;slug&gt;：小写字母、数字与连字符。
+            文章地址是 /blog/&lt;slug&gt;：小写字母、数字与连字符。
           </p>
         </div>
 
@@ -288,7 +288,7 @@ export const PostEditor = ({
           />
           <p className="text-muted-foreground text-xs">
             用逗号分隔；不存在的标签会新建。标签页地址是
-            /taxonomy/tag/&lt;slug&gt;。
+            /blog/taxonomy/tag/&lt;slug&gt;。
           </p>
         </div>
 

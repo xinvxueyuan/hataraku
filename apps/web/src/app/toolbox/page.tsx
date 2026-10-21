@@ -361,7 +361,7 @@ const ToolboxPage = async ({ searchParams }: PageProps) => {
         {skillGroups.length === 0 ? (
           <p className="text-muted-foreground rounded-lg border border-dashed p-6">
             技能清单还没有整理。等它准备好后，会按分类列在这里——先去{" "}
-            <Link className={`${focusRing} underline`} href="/archive">
+            <Link className={`${focusRing} underline`} href="/blog/archive">
               归档
             </Link>{" "}
             读几篇相关的文章。
@@ -407,8 +407,8 @@ const ToolboxPage = async ({ searchParams }: PageProps) => {
               项目
             </Link>{" "}
             或{" "}
-            <Link className={`${focusRing} underline`} href="/micro">
-              微文
+            <Link className={`${focusRing} underline`} href="/notes">
+              微言
             </Link>{" "}
             看看这个站点最近在做什么。
           </p>

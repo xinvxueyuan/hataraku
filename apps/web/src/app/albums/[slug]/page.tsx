@@ -122,7 +122,7 @@ const AlbumPage = async ({ params }: PageProps) => {
             相册列表
           </Link>
           ，或者去{" "}
-          <Link className={`${focusRing} underline`} href="/archive">
+          <Link className={`${focusRing} underline`} href="/blog/archive">
             归档
           </Link>{" "}
           逛逛。

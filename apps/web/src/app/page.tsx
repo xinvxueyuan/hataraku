@@ -73,7 +73,7 @@ const HomePage = async () => {
           </h2>
           <Link
             className="text-muted-foreground text-sm hover:underline"
-            href="/article"
+            href="/blog"
           >
             全部文章
           </Link>
@@ -86,7 +86,7 @@ const HomePage = async () => {
         ) : (
           <ul className="flex flex-col gap-3" data-slot="latest-list">
             {latest.items.map((post, index) => {
-              // The newest post leads the section, matching /article: one larger title and a
+              // The newest post leads the section, matching /blog: one larger title and a
               // wider cover give the list a single place for the eye to land.
               const isLead = index === 0;
 
@@ -94,12 +94,11 @@ const HomePage = async () => {
                 <li key={post.id}>
                   <Link
                     className="hover:bg-accent flex gap-4 rounded-lg border p-4 transition-colors"
-                    href={`/posts/${post.slug}`}
+                    href={`/blog/${post.slug}`}
                   >
                     <PostCover
                       className={`hidden shrink-0 sm:block ${isLead ? "sm:w-56" : "sm:w-40"}`}
                       coverKey={post.coverKey}
-                      coverSrc={post.cover?.src ?? null}
                       sizes={
                         isLead
                           ? "(min-width: 640px) 224px, 112px"
@@ -157,7 +156,7 @@ const HomePage = async () => {
               <li key={category.id}>
                 <Link
                   className="hover:bg-accent inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm"
-                  href={`/article?category=${category.slug}`}
+                  href={`/blog?category=${category.slug}`}
                 >
                   {category.name}
                   <span className="text-muted-foreground text-xs">

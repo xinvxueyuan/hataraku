@@ -366,7 +366,7 @@ export const SiteProfileForm = ({
               onChange={(event) => {
                 patchHero({ ctaHref: event.target.value });
               }}
-              placeholder="https://… 或 /archive"
+              placeholder="https://… 或 /blog/archive"
               value={form.hero.ctaHref}
             />
           </div>

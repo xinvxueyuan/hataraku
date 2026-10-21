@@ -1,0 +1,51 @@
+H63 — 路由从零迁移证据
+时间: 2026-10-22 (Asia/Shanghai)
+
+== 新路由（dev :3000，HTTP 状态） ==
+200 /           200 /blog        200 /blog/archive    200 /blog/taxonomy
+200 /blog/taxonomy/tag/ai          200 /blog/2026-10-17-google-ai-studio-personal-android-apps
+200 /notes      200 /docs        200 /docs/api
+
+== 旧路由（应为 404，无重定向） ==
+404 /article
+404 /article/2026-10-17-google-ai-studio-personal-android-apps
+404 /posts/2026-10-17-google-ai-studio-personal-android-apps
+404 /archive  404 /taxonomy  404 /micro
+
+== 导航（1440） ==
+bar: 首页 写作 文档 项目 相册 更多 关于 搜索（写作/文档同层可见）
+aria-current：/blog→写作；/docs→文档；/blog/archive→归档；/blog/taxonomy→分类（各页只有 1 个 current；更多组在子项激活时高亮）
+
+== 导航（390，抽屉） ==
+labels: 首页 写作 文档 项目 相册 关于 搜索 微言 更新日志 工具箱 归档 分类；/docs 时 current=文档
+四条关闭路径：
+- 外部点击：open=true → false
+- Escape：open=false，activeElement=「菜单」
+- 链接：/docs → /blog，open details=0
+- 路由变化：/docs → /blog → back → /docs，open details=0
+
+== 文案与路由 ==
+/micro → /notes；导航/页脚/llms/sitemap/后台提示统一「微言」；写作标签统一「写作」。
+/article 与 /posts/* 旧页面已删除；无 redirect/兼容模块；check:compat 通过。
+
+== 封面收敛（H62 追加） ==
+web 源码 `coverSrc|cover.src|cover.alt|post.cover` 匹配数 = 0；
+PostCover 只有 coverKey；albums/projects 以 title 作 alt、coverKey 作 assetKey；sitemap 用 assetUrl(album.coverKey) 且为空时不输出 images。
+
+== 引用扫描 ==
+`/article`：0（源码 + content）
+`/posts/`：仅 /settings/admin/posts/* 后台路由（当前路由，非旧公开路由）
+`/micro`：仅 /settings/admin/micro/* 与 API `/api/micro`（当前接口，非旧网页路由）
+`/api/posts/*` 是 API 契约，保留。
+
+== 门禁 ==
+pnpm run check:compat → EXIT=0（171 source files）
+pnpm run check:design → EXIT=0
+vp check（apps/web/src + content）→ 108 files 0 errors
+pnpm exec knip → EXIT=0
+pnpm exec e2e run → 7/7
+pnpm --filter @hataraku/web build → EXIT=0，路由表包含 /blog、/blog/[slug]、/blog/archive、/blog/taxonomy/[type]/[slug]、/notes；不再有 /article、/posts、/archive、/taxonomy、/micro
+说明：全仓 `vp check` 被工作区未跟踪的 `explore/*.html`（其他任务产物）拦下，非本任务源码；本任务范围 108 文件为 0。
+
+== 截图 ==
+final-home-1440/390、final-blog-1440/390、final-docs-1440/390

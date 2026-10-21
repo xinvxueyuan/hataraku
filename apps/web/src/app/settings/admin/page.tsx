@@ -65,7 +65,7 @@ const AdminIndexPage = async () => {
     },
     {
       count: `${counts.micro} 条`,
-      description: "短句与碎片，纯文本，读者在「微文」里看到。",
+      description: "短句与碎片，纯文本，读者在「微言」里看到。",
       href: "/settings/admin/micro",
       label: "微言",
     },

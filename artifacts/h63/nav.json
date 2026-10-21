@@ -1,0 +1,32 @@
+### Result
+{"blog":{"items":[{"text":"首页","current":false},{"text":"写作","current":true},{"text":"文档","current":false},{"text":"项目","current":false},{"text":"相册","current":false},{"text":"更多微言更新日志工具箱归档分类","current":false},{"text":"微言","current":false},{"text":"更新日志","current":false},{"text":"工具箱","current":false},{"text":"归档","current":false},{"text":"分类","current":false},{"text":"关于","current":false},{"text":"搜索","current":false}],"current":["写作"],"docsVisible":true,"writingVisible":true},"docs":{"items":[{"text":"首页","current":false},{"text":"写作","current":false},{"text":"文档","current":true},{"text":"项目","current":false},{"text":"相册","current":false},{"text":"更多微言更新日志工具箱归档分类","current":false},{"text":"微言","current":false},{"text":"更新日志","current":false},{"text":"工具箱","current":false},{"text":"归档","current":false},{"text":"分类","current":false},{"text":"关于","current":false},{"text":"搜索","current":false}],"current":["文档"],"docsVisible":true,"writingVisible":true},"archive":{"items":[{"text":"首页","current":false},{"text":"写作","current":false},{"text":"文档","current":false},{"text":"项目","current":false},{"text":"相册","current":false},{"text":"更多微言更新日志工具箱归档分类","current":true},{"text":"微言","current":false},{"text":"更新日志","current":false},{"text":"工具箱","current":false},{"text":"归档","current":true},{"text":"分类","current":false},{"text":"关于","current":false},{"text":"搜索","current":false}],"current":["归档"],"docsVisible":true,"writingVisible":true},"taxonomy":{"items":[{"text":"首页","current":false},{"text":"写作","current":false},{"text":"文档","current":false},{"text":"项目","current":false},{"text":"相册","current":false},{"text":"更多微言更新日志工具箱归档分类","current":true},{"text":"微言","current":false},{"text":"更新日志","current":false},{"text":"工具箱","current":false},{"text":"归档","current":false},{"text":"分类","current":true},{"text":"关于","current":false},{"text":"搜索","current":false}],"current":["分类"],"docsVisible":true,"writingVisible":true}}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.bringToFront();
+  await page.setViewportSize({ width: Math.round(1440 * 0.9), height: 900 });
+  await page.goto('http://localhost:3000/blog', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('theme', 'light'));
+  await page.reload({ waitUntil: 'networkidle' });
+  const measure = async (path) => {
+    await page.goto('http://localhost:3000' + path, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    return await page.evaluate(() => {
+      const bar = document.querySelector('nav[aria-label="主导航"]');
+      const items = [...bar.querySelectorAll('li')].map((li) => ({ text: (li.textContent || '').trim(), current: !!li.querySelector('[aria-current="page"]') }));
+      const current = [...bar.querySelectorAll('[aria-current="page"]')].map((el) => (el.textContent || '').trim());
+      return { items, current, docsVisible: items.some((i) => i.text === '文档'), writingVisible: items.some((i) => i.text === '写作') };
+    });
+  };
+  const blog = await measure('/blog');
+  const docs = await measure('/docs');
+  const archive = await measure('/blog/archive');
+  const taxonomy = await measure('/blog/taxonomy');
+  return { blog, docs, archive, taxonomy };
+})(page);
+```
+### Page
+- Page URL: http://localhost:3000/blog/taxonomy
+- Page Title: 分类与标签 · 夜行栈
+### Events
+- New console entries: .playwright-mcp\console-2026-10-21T15-05-39-344Z.log#L93-L118

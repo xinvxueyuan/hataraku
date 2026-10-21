@@ -83,7 +83,7 @@ export const MicroPostList = ({
                 {excerpt(post.content)}
               </Link>
               <span className="text-muted-foreground truncate text-xs">
-                {post.type} · /micro/{post.slug} · {formatDay(post.publishedAt)}
+                {post.type} · /notes/{post.slug} · {formatDay(post.publishedAt)}
               </span>
             </div>
 

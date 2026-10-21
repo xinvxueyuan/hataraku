@@ -57,19 +57,19 @@ const focusRing =
 const PLACES = [
   {
     description: "按发布月份排列的全部文章。",
-    href: "/archive",
+    href: "/blog/archive",
     label: "归档",
   },
   {
     description: "按分类与标签重新组织阅读顺序。",
-    href: "/taxonomy",
+    href: "/blog/taxonomy",
     label: "分类与标签",
   },
   { description: "生活碎片与视觉练习。", href: "/albums", label: "相册" },
   {
-    description: "按时间排列并支持筛选的文章列表。",
-    href: "/article",
-    label: "文章列表",
+    description: "按时间排列并支持筛选的写作。",
+    href: "/blog",
+    label: "写作",
   },
   { description: "按关键词检索文章正文。", href: "/search", label: "搜索" },
   { description: "站点实现说明，随仓库演进。", href: "/docs", label: "文档" },
@@ -87,9 +87,13 @@ const AboutPage = async () => {
   ]);
 
   const stats = [
-    { href: "/archive", label: "文章", value: taxonomy.totalPosts },
-    { href: "/taxonomy", label: "分类", value: taxonomy.categories.length },
-    { href: "/taxonomy", label: "标签", value: taxonomy.tags.length },
+    { href: "/blog/archive", label: "文章", value: taxonomy.totalPosts },
+    {
+      href: "/blog/taxonomy",
+      label: "分类",
+      value: taxonomy.categories.length,
+    },
+    { href: "/blog/taxonomy", label: "标签", value: taxonomy.tags.length },
     { href: "/albums", label: "相册", value: albums.total },
   ] as const;
 
@@ -111,7 +115,7 @@ const AboutPage = async () => {
       {profile === null ? (
         <p className="text-muted-foreground rounded-lg border border-dashed p-6">
           站点资料还没有写入。等它准备好后，这里会介绍作者与站点的来龙去脉——先去{" "}
-          <Link className={`${focusRing} underline`} href="/archive">
+          <Link className={`${focusRing} underline`} href="/blog/archive">
             归档
           </Link>{" "}
           读几篇文章。
@@ -207,7 +211,7 @@ const AboutPage = async () => {
         {timeline.length === 0 ? (
           <p className="text-muted-foreground rounded-lg border border-dashed p-6">
             时间线还没有记录。等站点走过第一个节点后，会在这里按时间排开——先去{" "}
-            <Link className={`${focusRing} underline`} href="/archive">
+            <Link className={`${focusRing} underline`} href="/blog/archive">
               归档
             </Link>{" "}
             读几篇最近的文章。

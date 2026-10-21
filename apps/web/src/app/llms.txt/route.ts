@@ -35,19 +35,19 @@ interface PageEntry {
 const PAGES: PageEntry[] = [
   { description: "最新文章、分类概览与站点自述", path: "/", title: "首页" },
   {
-    description: "按时间排列并支持分类、标签筛选的文章列表",
-    path: "/article",
-    title: "文章列表",
+    description: "按时间排列并支持分类、标签筛选的写作",
+    path: "/blog",
+    title: "写作",
   },
   {
     description: "全部文章按发布月份归档",
-    path: "/archive",
+    path: "/blog/archive",
     title: "归档",
   },
   {
     description: "短句、代码片段、图片与对话组成的碎片流",
-    path: "/micro",
-    title: "微文",
+    path: "/notes",
+    title: "微言",
   },
   {
     description: "正在维护和已经交付的项目",
@@ -56,7 +56,7 @@ const PAGES: PageEntry[] = [
   },
   {
     description: "全部分类与标签的索引",
-    path: "/taxonomy",
+    path: "/blog/taxonomy",
     title: "分类与标签",
   },
   {
@@ -139,12 +139,12 @@ const taxonomyRows = (origin: string, taxonomy: TaxonomyOverview) => ({
     (category) =>
       `- [${category.name}](${absoluteUrl(
         origin,
-        `/taxonomy/category/${category.slug}`
+        `/blog/taxonomy/category/${category.slug}`
       )}): ${category.postCount} 篇`
   ),
   tags: taxonomy.tags.map(
     (tag) =>
-      `- [${tag.name}](${absoluteUrl(origin, `/taxonomy/tag/${tag.slug}`)}): ${
+      `- [${tag.name}](${absoluteUrl(origin, `/blog/taxonomy/tag/${tag.slug}`)}): ${
         tag.postCount
       } 篇`
   ),
@@ -176,7 +176,7 @@ const microRows = (micro: MicroRow[]): string[] =>
   });
 
 const microNote = (origin: string, micro: MicroRow[]): string =>
-  `（共 ${micro.length} 条，全部列在 ${absoluteUrl(origin, "/micro")}。）`;
+  `（共 ${micro.length} 条，全部列在 ${absoluteUrl(origin, "/notes")}。）`;
 
 const projectRows = (projects: ProjectRow[]): string[] =>
   projects.map((project) => {
@@ -230,7 +230,7 @@ const postRows = (origin: string, posts: SitePost[]): string[] =>
       post.description === null ? null : excerptOf(post.description, 160),
     ].filter((part) => part !== null);
 
-    return `- [${post.title}](${absoluteUrl(origin, `/posts/${post.slug}`)})${
+    return `- [${post.title}](${absoluteUrl(origin, `/blog/${post.slug}`)})${
       meta.length === 0 ? "" : `: ${meta.join(" — ")}`
     }`;
   });
@@ -295,7 +295,7 @@ const GET = async (): Promise<Response> => {
     `- 分类: ${taxonomy.categories.length} 个`,
     `- 标签: ${taxonomy.tags.length} 个`,
     `- 相册: ${albums.length} 本`,
-    `- 微文: ${micro.length} 条`,
+    `- 微言: ${micro.length} 条`,
     `- 项目: ${projects.length} 个`,
     `- 更新日志: ${changelog.length} 条`,
     "",
@@ -311,7 +311,7 @@ const GET = async (): Promise<Response> => {
     ...section("分类", taxonomySections.categories),
     ...section("标签", taxonomySections.tags),
     ...section("相册", albumRows(origin, albums)),
-    ...section("微文", microRows(micro), microNote(origin, micro)),
+    ...section("微言", microRows(micro), microNote(origin, micro)),
     ...section("项目", projectRows(projects), projectNote(origin)),
     ...section("工具箱", toolboxRows(tools, devices), toolboxNote(origin)),
     ...section(

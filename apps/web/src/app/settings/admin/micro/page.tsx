@@ -79,7 +79,7 @@ const AdminMicroPage = async ({
         </Link>
       }
       current={PATH}
-      description="短句与碎片，前台在 /micro。"
+      description="短句与碎片，前台在 /notes。"
       title="微言"
     >
       <AdminListToolbar

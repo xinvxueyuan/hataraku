@@ -127,7 +127,7 @@ export const generateMetadata = async ({
       ],
       title: post.title,
       type: "article",
-      url: `/posts/${post.slug}`,
+      url: `/blog/${post.slug}`,
     },
     title: post.title,
   };
@@ -153,7 +153,6 @@ const PostPage = async ({ params }: PageProps) => {
         <PostCover
           aspectClassName="aspect-[2/1]"
           coverKey={post.coverKey}
-          coverSrc={post.cover?.src ?? null}
           sizes="(min-width: 768px) 768px, 100vw"
           title={post.title}
         />

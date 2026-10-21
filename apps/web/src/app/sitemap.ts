@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { assetUrl } from "#src/components/asset-url.ts";
 import {
   loadAlbums,
   loadAllPosts,
@@ -35,12 +36,12 @@ interface StaticPage {
  */
 const STATIC_PAGES: StaticPage[] = [
   { changeFrequency: "daily", path: "/", priority: 1 },
-  { changeFrequency: "daily", path: "/article", priority: 0.9 },
-  { changeFrequency: "daily", path: "/micro", priority: 0.8 },
+  { changeFrequency: "daily", path: "/blog", priority: 0.9 },
+  { changeFrequency: "daily", path: "/notes", priority: 0.8 },
   { changeFrequency: "weekly", path: "/projects", priority: 0.8 },
-  { changeFrequency: "weekly", path: "/archive", priority: 0.7 },
+  { changeFrequency: "weekly", path: "/blog/archive", priority: 0.7 },
   { changeFrequency: "weekly", path: "/albums", priority: 0.7 },
-  { changeFrequency: "weekly", path: "/taxonomy", priority: 0.6 },
+  { changeFrequency: "weekly", path: "/blog/taxonomy", priority: 0.6 },
   { changeFrequency: "weekly", path: "/toolbox", priority: 0.6 },
   { changeFrequency: "weekly", path: "/changelog", priority: 0.6 },
   { changeFrequency: "monthly", path: "/docs", priority: 0.6 },
@@ -71,7 +72,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "monthly",
       lastModified: post.updatedAt ?? post.publishedAt ?? siteUpdated,
       priority: 0.8,
-      url: absoluteUrl(origin, `/posts/${post.slug}`),
+      url: absoluteUrl(origin, `/blog/${post.slug}`),
     });
   }
 
@@ -80,7 +81,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "weekly",
       lastModified: siteUpdated,
       priority: 0.5,
-      url: absoluteUrl(origin, `/taxonomy/category/${category.slug}`),
+      url: absoluteUrl(origin, `/blog/taxonomy/category/${category.slug}`),
     });
   }
 
@@ -89,11 +90,13 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "weekly",
       lastModified: siteUpdated,
       priority: 0.4,
-      url: absoluteUrl(origin, `/taxonomy/tag/${tag.slug}`),
+      url: absoluteUrl(origin, `/blog/taxonomy/tag/${tag.slug}`),
     });
   }
 
   for (const album of albums) {
+    const cover = assetUrl(album.coverKey);
+
     const lastModified =
       album.date === null
         ? (album.publishedAt ?? siteUpdated)
@@ -101,7 +104,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
     entries.push({
       changeFrequency: "monthly",
-      images: album.cover?.src === undefined ? undefined : [album.cover.src],
+      images: cover === null ? undefined : [cover],
       lastModified,
       priority: 0.5,
       url: absoluteUrl(origin, `/albums/${album.slug}`),

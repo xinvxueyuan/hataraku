@@ -364,7 +364,7 @@ export const seedBlog = async (db: Database) => {
   await db.insert(siteProfile).values({
     author: "xinvStar",
     description: "夜行栈",
-    hero: { badge: "全栈工程", cta: "阅读最新文章", ctaHref: "/article" },
+    hero: { badge: "全栈工程", cta: "阅读最新文章", ctaHref: "/blog" },
     id: 1,
     name: "夜行栈",
     nameEn: "NightStack",

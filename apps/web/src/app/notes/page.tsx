@@ -18,7 +18,7 @@ import { serverCall } from "#src/server/query.ts";
 
 export const metadata: Metadata = {
   description: "短句、代码片段、对话与音乐组成的碎片流。",
-  title: "微动态",
+  title: "微言",
 };
 
 const PAGE_SIZE = 10;
@@ -44,7 +44,7 @@ const readPage = (raw: string | undefined): number => {
 };
 
 const hrefFor = (page: number): string =>
-  page <= 1 ? "/micro" : `/micro?page=${page}`;
+  page <= 1 ? "/notes" : `/notes?page=${page}`;
 
 interface MicroImage {
   key: string | null;
@@ -126,7 +126,7 @@ const MicroEntry = ({ entry }: { entry: MicroPost }) => {
             <li key={tag}>
               <Link
                 className={`${focusRing} hover:underline`}
-                href={`/taxonomy/tag/${tag}`}
+                href={`/blog/taxonomy/tag/${tag}`}
               >
                 #{tag}
               </Link>
@@ -154,7 +154,7 @@ const MicroPage = async ({ searchParams }: PageProps) => {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">微动态</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">微言</h1>
         <p className="text-muted-foreground">
           {result.total} 条碎片，按发布时间从新到旧排列。
         </p>
@@ -165,8 +165,8 @@ const MicroPage = async ({ searchParams }: PageProps) => {
           <p className="text-muted-foreground w-full rounded-lg border border-dashed p-6">
             {result.total === 0 ? (
               <>
-                还没有微动态。短句、代码与图片发出来后，会按时间排在这里——先去{" "}
-                <Link className={`${focusRing} underline`} href="/archive">
+                还没有微言。短句、代码与图片发出来后，会按时间排在这里——先去{" "}
+                <Link className={`${focusRing} underline`} href="/blog/archive">
                   归档
                 </Link>{" "}
                 读篇文章，或者回到{" "}
@@ -178,7 +178,7 @@ const MicroPage = async ({ searchParams }: PageProps) => {
             ) : (
               <>
                 这一页没有碎片了。{" "}
-                <Link className={`${focusRing} underline`} href="/micro">
+                <Link className={`${focusRing} underline`} href="/notes">
                   回到第一页
                 </Link>
                 。
@@ -199,7 +199,7 @@ const MicroPage = async ({ searchParams }: PageProps) => {
       <Pager
         currentPage={result.page}
         hrefFor={hrefFor}
-        label="微动态分页"
+        label="微言分页"
         totalPages={result.totalPages}
       />
     </div>

@@ -35,7 +35,7 @@ const EmptyResult = ({ query }: { query: string }) => {
         </p>
         <p className="text-sm">
           换一个更具体的词试试，或者{" "}
-          <Link className="underline underline-offset-4" href="/article">
+          <Link className="underline underline-offset-4" href="/blog">
             去看全部文章
           </Link>
           。
@@ -52,7 +52,7 @@ const EmptyResult = ({ query }: { query: string }) => {
         </p>
         <p className="text-sm">
           试试更短的词，或者{" "}
-          <Link className="underline underline-offset-4" href="/article">
+          <Link className="underline underline-offset-4" href="/blog">
             去看全部文章
           </Link>
           。
@@ -68,7 +68,7 @@ const EmptyResult = ({ query }: { query: string }) => {
       </p>
       <p className="text-sm">
         试试更短的词，或者{" "}
-        <Link className="underline underline-offset-4" href="/article">
+        <Link className="underline underline-offset-4" href="/blog">
           去看全部文章
         </Link>
         。
@@ -109,7 +109,7 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                 <li key={hit.slug}>
                   <Link
                     className="text-lg font-medium hover:underline"
-                    href={`/posts/${hit.slug}`}
+                    href={`/blog/${hit.slug}`}
                   >
                     {highlightMatches(hit.title, query)}
                   </Link>

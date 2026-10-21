@@ -11,9 +11,10 @@ import { useDisclosure } from "@hataraku/components/use-disclosure";
  * The site's main navigation.
  *
  * Active state is derived from the pathname rather than passed in, so a link and its
- * `aria-current="page"` cannot disagree. Desktop keeps seven top-level items and folds the
- * browsing directories (归档 / 分类 / 相册 / 工具箱) into a "更多" disclosure; the mobile panel lists
- * every destination flat, because a disclosure inside a disclosure is worse than a longer list.
+ * `aria-current="page"` cannot disagree. Desktop keeps five top-level items and folds the
+ * browsing directories (微言 / 更新日志 / 工具箱 / 归档 / 分类) into a "更多" disclosure; the mobile
+ * panel lists every destination flat, because a disclosure inside a disclosure is worse than a
+ * longer list.
  *
  * Both disclosures are controlled by `useDisclosure`, so outside-click, route change, Escape and a
  * link activation all close through the same state instead of separate patches per panel.
@@ -34,23 +35,39 @@ const HOME: NavItem = {
   label: "首页",
 };
 
-const ARTICLES: NavItem = {
-  href: "/article",
+const WRITING: NavItem = {
+  href: "/blog",
+  // Archive and taxonomy are their own destinations inside the "更多" group; marking Writing as
+  // current there would leave two items claiming the same page.
   isActive: (pathname) =>
-    isSection("/article")(pathname) || pathname.startsWith("/posts/"),
-  label: "文章",
+    isSection("/blog")(pathname) &&
+    !isSection("/blog/archive")(pathname) &&
+    !isSection("/blog/taxonomy")(pathname),
+  label: "写作",
 };
 
-const MICRO: NavItem = {
-  href: "/micro",
-  isActive: isSection("/micro"),
-  label: "微文",
+const DOCS: NavItem = {
+  href: "/docs",
+  isActive: isSection("/docs"),
+  label: "文档",
+};
+
+const NOTES: NavItem = {
+  href: "/notes",
+  isActive: isSection("/notes"),
+  label: "微言",
 };
 
 const PROJECTS: NavItem = {
   href: "/projects",
   isActive: isSection("/projects"),
   label: "项目",
+};
+
+const ALBUMS: NavItem = {
+  href: "/albums",
+  isActive: isSection("/albums"),
+  label: "相册",
 };
 
 const CHANGELOG: NavItem = {
@@ -73,13 +90,22 @@ const SEARCH: NavItem = {
 
 /** Directories that are worth their own page but not worth a top-level slot on the bar. */
 const BROWSE: NavItem[] = [
-  { href: "/archive", isActive: isSection("/archive"), label: "归档" },
-  { href: "/taxonomy", isActive: isSection("/taxonomy"), label: "分类" },
-  { href: "/albums", isActive: isSection("/albums"), label: "相册" },
+  NOTES,
+  CHANGELOG,
   { href: "/toolbox", isActive: isSection("/toolbox"), label: "工具箱" },
+  {
+    href: "/blog/archive",
+    isActive: isSection("/blog/archive"),
+    label: "归档",
+  },
+  {
+    href: "/blog/taxonomy",
+    isActive: isSection("/blog/taxonomy"),
+    label: "分类",
+  },
 ];
 
-const BAR_LINKS = [HOME, ARTICLES, MICRO, PROJECTS, CHANGELOG, ABOUT, SEARCH];
+const BAR_LINKS = [HOME, WRITING, DOCS, PROJECTS, ALBUMS, ABOUT, SEARCH];
 
 /** Number of bar links shown before the "更多" disclosure. */
 const BAR_BREAK = 5;

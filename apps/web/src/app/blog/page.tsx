@@ -14,7 +14,7 @@ import { serverCall } from "#src/server/query.ts";
 
 export const metadata: Metadata = {
   description: "按时间排列的全部文章。",
-  title: "文章",
+  title: "写作",
 };
 
 const PAGE_SIZE = 10;
@@ -39,7 +39,7 @@ const readPage = (raw: string | undefined): number => {
 };
 
 /** A link that stays inside this route; `next/link` is typed against the route's own shape. */
-type ArticleListHref = `/article${string}`;
+type ArticleListHref = `/blog${string}`;
 
 /** Builds a list URL that keeps the active filters. */
 const listHref = (params: {
@@ -63,7 +63,7 @@ const listHref = (params: {
 
   const query = search.toString();
 
-  return query.length === 0 ? "/article" : `/article?${query}`;
+  return query.length === 0 ? "/blog" : `/blog?${query}`;
 };
 
 const ArticlePage = async ({ searchParams }: PageProps) => {
@@ -83,7 +83,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-2">
         <h1 className="text-3xl leading-tight font-semibold tracking-tight">
-          文章
+          写作
         </h1>
         <p className="text-muted-foreground">
           共 {result.total} 篇
@@ -91,7 +91,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
           {tag === undefined ? null : `，标签：${tag}`}
         </p>
         {category === undefined && tag === undefined ? null : (
-          <Link className="text-sm hover:underline" href="/article">
+          <Link className="text-sm hover:underline" href="/blog">
             清除筛选
           </Link>
         )}
@@ -114,7 +114,6 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
                   <PostCover
                     className={`hidden shrink-0 sm:block ${isLead ? "sm:w-56" : "sm:w-40"}`}
                     coverKey={post.coverKey}
-                    coverSrc={post.cover?.src ?? null}
                     sizes={
                       isLead
                         ? "(min-width: 640px) 224px, 112px"
@@ -125,7 +124,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
                   <div className="flex min-w-0 flex-col gap-1">
                     <Link
                       className={`${isLead ? "text-2xl leading-normal font-semibold tracking-tight" : "text-lg font-medium"} hover:underline`}
-                      href={`/posts/${post.slug}`}
+                      href={`/blog/${post.slug}`}
                     >
                       {post.title}
                     </Link>

@@ -1,0 +1,45 @@
+### Result
+{"opened":true,"labels":["首页","写作","文档","项目","相册","关于","搜索","微言","更新日志","工具箱","归档","分类"],"current":["文档"],"outside":false,"afterOutside":"http://localhost:3000/docs","esc":{"open":false,"active":"菜单"},"link":{"url":"http://localhost:3000/blog","open":0},"route":{"url":"http://localhost:3000/docs","open":0}}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.bringToFront();
+  await page.setViewportSize({ width: Math.round(390 * 0.9), height: 844 });
+  await page.goto('http://localhost:3000/docs', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(400);
+  const menu = page.locator('details').filter({ has: page.locator('summary', { hasText: '菜单' }) }).first();
+  await menu.locator('summary').click();
+  await page.waitForTimeout(200);
+  const opened = await menu.evaluate((d) => d.open);
+  const labels = await menu.locator('nav a').allTextContents();
+  const current = await menu.locator('[aria-current="page"]').allTextContents();
+  await page.mouse.click(10, 120);
+  await page.waitForTimeout(200);
+  const outside = await menu.evaluate((d) => d.open);
+  const afterOutside = page.url();
+  await menu.locator('summary').click();
+  await page.waitForTimeout(150);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(200);
+  const esc = await menu.evaluate((d) => ({ open: d.open, active: (document.activeElement?.textContent || '').trim() }));
+  await menu.locator('summary').click();
+  await page.waitForTimeout(150);
+  await menu.locator('a', { hasText: '写作' }).first().click();
+  await page.waitForURL('**/blog', { timeout: 30000 });
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(400);
+  const link = { url: page.url(), open: await page.locator('details[open]').count() };
+  const menu2 = page.locator('details').filter({ has: page.locator('summary', { hasText: '菜单' }) }).first();
+  await menu2.locator('summary').click();
+  await page.waitForTimeout(150);
+  await page.goBack({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  const route = { url: page.url(), open: await page.locator('details[open]').count() };
+  return { opened, labels, current, outside, afterOutside, esc, link, route };
+})(page);
+```
+### Page
+- Page URL: http://localhost:3000/docs
+- Page Title: 文档 · 夜行栈
+### Events
+- New console entries: .playwright-mcp\console-2026-10-21T15-05-39-344Z.log#L206-L207
