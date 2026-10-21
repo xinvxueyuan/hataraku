@@ -16,6 +16,10 @@ import {
 import { Input } from "@hataraku/ui/components/input";
 import { Label } from "@hataraku/ui/components/label";
 
+import {
+  TurnstileWidget,
+  turnstileSiteKey,
+} from "#src/components/turnstile-widget.tsx";
 import { authClient } from "#src/lib/auth-client.ts";
 
 /**
@@ -24,6 +28,14 @@ import { authClient } from "#src/lib/auth-client.ts";
  * endpoint refuses to be.
  */
 const SENT_MESSAGE = "如果该地址已注册，我们已发送重置邮件。";
+
+/**
+ * The header the auth form sends for its captcha. The widget only mounts when a site key is
+ * configured, and the deployment registers the captcha plugin only when it has the secret, so the
+ * two sides agree without a flag: no key, no widget, no header.
+ */
+const captchaHeaders = (token: string) =>
+  token === "" ? undefined : { "x-captcha-response": token };
 
 /**
  * A failure the reader can act on. Throttling and an unconfigured deployment are not "no such
@@ -42,6 +54,12 @@ const readableFailure = (error: {
     return "本站暂未开启密码重置。";
   }
 
+  // The deployment protects this endpoint with Turnstile; when the widget has not produced a token
+  // yet the server answers with this code, and the reader can act on it.
+  if (error.code === "MISSING_RESPONSE") {
+    return "请先完成人机验证，再发送重置邮件。";
+  }
+
   if (error.status !== undefined && error.status >= 500) {
     return "邮件服务暂时不可用，请稍后再试。";
   }
@@ -52,12 +70,16 @@ const readableFailure = (error: {
 /** Asks for a reset link. The reply is deliberately the same for every address. */
 export const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
   const [sent, setSent] = useState(false);
 
   const request = useMutation({
     mutationFn: async (address: string) => {
+      const headers = captchaHeaders(captchaToken);
+
       const { error } = await authClient.requestPasswordReset({
         email: address,
+        fetchOptions: headers === undefined ? undefined : { headers },
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
@@ -120,6 +142,9 @@ export const ForgotPasswordForm = () => {
                 value={email}
               />
             </div>
+            {turnstileSiteKey === "" ? null : (
+              <TurnstileWidget onToken={setCaptchaToken} />
+            )}
             <Button
               disabled={request.isPending || email.trim() === ""}
               type="submit"

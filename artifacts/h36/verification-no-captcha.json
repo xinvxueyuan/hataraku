@@ -1,0 +1,30 @@
+{
+  "base": "http://localhost:3000",
+  "checkedAt": "2026-10-21T05:40:37.437Z",
+  "expectCaptcha": false,
+  "checks": [
+    {
+      "name": "without a site key the form renders no widget",
+      "passed": true,
+      "detail": "no widget input"
+    },
+    {
+      "name": "the form submits and shows the neutral answer",
+      "passed": true,
+      "detail": "200 + neutral message"
+    },
+    {
+      "name": "without a site key the submission carries no captcha header",
+      "passed": true,
+      "detail": "absent"
+    },
+    {
+      "name": "a request without a token passes when captcha is not configured",
+      "passed": true,
+      "detail": "200"
+    }
+  ],
+  "screenshots": [
+    "forgot-without-captcha.png"
+  ]
+}

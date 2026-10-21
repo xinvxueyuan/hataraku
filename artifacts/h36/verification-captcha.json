@@ -1,0 +1,35 @@
+{
+  "base": "http://localhost:3000",
+  "checkedAt": "2026-10-21T05:41:24.118Z",
+  "expectCaptcha": true,
+  "checks": [
+    {
+      "name": "the forgot-password form mounts the Turnstile widget and receives its token",
+      "passed": true,
+      "detail": "token 21 chars"
+    },
+    {
+      "name": "the form submits and shows the neutral answer",
+      "passed": true,
+      "detail": "200 + neutral message"
+    },
+    {
+      "name": "the submission carried the captcha token",
+      "passed": true,
+      "detail": "present"
+    },
+    {
+      "name": "a request without a token is still refused",
+      "passed": true,
+      "detail": "400 MISSING_RESPONSE"
+    },
+    {
+      "name": "the sign-in form mounts the same widget",
+      "passed": true,
+      "detail": "login widget mounted"
+    }
+  ],
+  "screenshots": [
+    "forgot-with-captcha.png"
+  ]
+}
