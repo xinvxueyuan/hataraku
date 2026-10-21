@@ -156,3 +156,10 @@ Edit a table in `packages/db/src/schema/`, then:
 vp run db:generate   # writes a migration to packages/db/src/migrations/
 vp run db:migrate    # applies it
 ```
+
+## License
+
+AGPL-3.0-or-later. The full text is in [LICENSE](./LICENSE).
+
+In short: you may run, study, share and modify this software. If you modify it and let others use it
+over a network, you must offer them the corresponding source. See the license for the exact terms.
