@@ -35,7 +35,9 @@
 - check:design / check:compat / knip：0。
 - `vp check packages/db/src packages/api/src packages/api/tests scripts/migrate-content.ts`：59 files formatted / lint+type 全绿；见 backend-check.txt。
 - `pnpm run db:migrate` 二次执行幂等。
-- `pnpm run ready`：H66 尚未落地，web 仍调用 `posts.bySlug` / `media.albums.bySlug`，因此本任务范围内只能验证 backend/API；H66 完成后重跑 ready。
+- `pnpm run ready`（H66 `3a9e571` 已落地，从 `C:\dev\dsh\projects\hataraku` 执行）：
+  - 直接跑：**EXIT=1**，唯一原因是仓库内未跟踪的 `explore/` 4 个文件（a/b/c.html、baseline-current-report.json）让 `vp check` 报格式化；不是代码错误。
+  - 把这个仓库内 `explore/` 临时移出后：**EXIT=0**，282 files formatted、223 files lint/type 全绿，277 tests、e2e 7/7、build 成功。日志：ready-after-h66-plain.txt / ready-after-h66.txt。
 
 ## 彩排
 

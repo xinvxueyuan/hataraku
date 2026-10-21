@@ -15,8 +15,28 @@
 
 ## 1. 前置
 
-1. 新代码（H65+H66）已部署且页面正常（旧 schema）。
-2. 停写/维护窗口；用直连（非 pooler）连接串，`sslmode=require`。
+### 1.0 部署与重建顺序（不要颠倒）
+
+**不能先部署新代码 + 旧库，也不能先重建库 + 旧代码**；两种都会造成 500/404。正确顺序：
+
+1. 线上继续跑 **旧代码 + 旧库**，不中断。
+2. 用本 runbook §3–5 建好 `hataraku_v2`（新 schema + 映射后的内容与认证），旧库保持读/写服务；导出/恢复期间短暂冻结写入，保证快照一致。
+3. 核对 v2：§6 计数/认证/地址；不通过就不切。
+4. **同一时刻**切换：Vercel 环境变量 `DATABASE_URL` → `hataraku_v2`，同时触发包含 H65+H66 的新部署；新 deployment 就绪后再切 alias。切换前线上仍是旧代码+旧库。
+5. 新 alias 生效那一刻起 = 新代码 + 新库；旧 deployment 和旧库都保留。
+
+**为什么不能提前部署新代码（旧库）**：
+- `posts.byRef`/albums 的数字分支执行 `eq(posts.id, integer)`；旧列是 uuid，PostgreSQL 返回 `operator does not exist: uuid = integer`（42883）→ 详情页 500。
+- 列表/详情输出 schema `id: z.int()` 会拒绝旧库返回的 UUID 字符串（oRPC 输出校验失败）。
+- Orama 文档 `postId: number` 收到 UUID 字符串；admin 的 `postIdInput: z.int()` 也拒绝 UUID。
+- `post_tags.post_id`/当前代码按整数比较，旧库 uuid 列同样会报类型错。
+
+**为什么不能先重建库（旧代码）**：旧代码仍按 `slug` 找文章、读取已删除的 `cover`；新库 slug 全 NULL，旧详情/列表会大量 404/500。
+
+### 1.1 前置检查
+
+1. 旧代码 + 旧库继续线上；新代码只构建、不切 alias。
+2. 停写/维护窗口（至少导出/恢复期间）；用直连（非 pooler）连接串，`sslmode=require`。
 3. 记录基线：posts 39、categories 7、tags 96、post_tags 122、projects 2、albums 1、album_photos 22、skills 5、devices 2、site_profile 1、user 1、account 1、session 2、two_factor 1、login_attempts 2；空表为 0。
 4. 变量：
 
