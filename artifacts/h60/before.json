@@ -1,0 +1,255 @@
+{
+  "buildMs": 519.21,
+  "docCount": 38,
+  "hotP50": 2.752,
+  "hotP95": 3.512,
+  "rows": [
+    {
+      "count": 6,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "firstSlug": "2026-10-17-google-ai-studio-personal-android-apps",
+      "q": "Goo",
+      "snippets": [
+        {
+          "slug": "markdown-tutorial",
+          "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: ---…"
+        },
+        {
+          "slug": "2026-07-07-开源安全威胁态势报告",
+          "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 |…"
+        },
+        {
+          "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+          "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | …"
+        }
+      ]
+    },
+    {
+      "count": 5,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "firstSlug": "2026-10-17-google-ai-studio-personal-android-apps",
+      "q": "goog",
+      "snippets": [
+        {
+          "slug": "markdown-tutorial",
+          "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: --- …"
+        },
+        {
+          "slug": "2026-07-07-开源安全威胁态势报告",
+          "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 | …"
+        },
+        {
+          "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+          "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | ✅…"
+        }
+      ]
+    },
+    {
+      "count": 5,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "firstSlug": "2026-10-17-google-ai-studio-personal-android-apps",
+      "q": "Google",
+      "snippets": [
+        {
+          "slug": "markdown-tutorial",
+          "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: --- [Google…"
+        },
+        {
+          "slug": "2026-07-07-开源安全威胁态势报告",
+          "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 | AI…"
+        },
+        {
+          "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+          "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | ✅ 有…"
+        }
+      ]
+    },
+    {
+      "count": 13,
+      "first": "CSS Grid 完全指南：告别 Flexbox 局限",
+      "firstSlug": "2025-11-23-css-grid-完全指南告别-flexbox-局限",
+      "q": "限",
+      "snippets": [
+        {
+          "slug": "2026-10-17-google-ai-studio-personal-android-apps",
+          "text": "…是个人小工具，可以先要求本机保存；不要默认加入账号系统或云端同步。 4. **是否真的需要设备权限。**只有用到相机、位置或蓝牙时才要求对应权限，并明确说明用途。 范围越清楚，AI 越不容易把简…"
+        },
+        {
+          "slug": "2026-07-04-claude-code-隐写标记-源码解析",
+          "text": "…工具信任的侵蚀 Claude Code 运行在开发者的代码仓库中，拥有： - 完整源代码的读取权限 - 文件结构和项目细节的访问权限 - 执行 Shell 命令的权限 - 修改文件的能力 对于拥…"
+        },
+        {
+          "slug": "2025-10-20-linux-服务器安全加固指南15-个必做配置",
+          "text": "…PasswordAuthentication no PubkeyAuthentication yes 限制登录用户 AllowUsers deploy 空闲超时 ClientAliveInterval…"
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "first": "Nginx 反向代理与负载均衡实战",
+      "firstSlug": "2025-11-09-nginx-反向代理与负载均衡实战",
+      "q": "限流",
+      "snippets": [
+        {
+          "slug": "2025-11-09-nginx-反向代理与负载均衡实战",
+          "text": "…header X-Cache-Status $upstream_cache_status; } } 限流 定义限流区域 limit_req_zone $binary_remote_addr zone=…"
+        }
+      ]
+    },
+    {
+      "count": 6,
+      "first": "Markdown 教程",
+      "firstSlug": "markdown-tutorial",
+      "q": "Markdown",
+      "snippets": [
+        {
+          "slug": "guide-index",
+          "text": "…片<br/>2. 以 / 开头：用于 public 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 | | tags | 文章的标签。 | | category | 文章的分类。 | | …"
+        },
+        {
+          "slug": "encrypted-post",
+          "text": "…片<br/>2. 以 / 开头：用于 public 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 | | tags | 文章的标签。 | | category | 文章的分类。 | | …"
+        },
+        {
+          "slug": "2026-07-07-开源安全威胁态势报告",
+          "text": "…码代理进行自我漏洞分析，结果发现了 **CVE-2026-22813（CVSS 9.4）**——Markdown 渲染管道中的严重缺陷，可导致未经身份验证的远程代码执行。 五、攻击者战术转型：MOE（效果衡量…"
+        }
+      ]
+    },
+    {
+      "count": 10,
+      "first": "2026年开源安全威胁态势全景报告",
+      "firstSlug": "2026-07-07-开源安全威胁态势报告",
+      "q": "安全",
+      "snippets": [
+        {
+          "slug": "2026-07-04-claude-code-隐写标记-源码解析",
+          "text": "…个较弱模型的技术。如果竞争对手通过大规模账户伪造来系统性提取模型能力，这确实构成严重的商业和国家安全威胁。 方法 vs 目的 然而，争议的焦点在于**实现方式而非目的本身**： 一个拥有源代码读取…"
+        },
+        {
+          "slug": "2025-10-12-typescript-高级类型体操你真的会用泛型吗",
+          "text": "… 的类型系统是图灵完备的——这意味着你可以在类型层面进行编程。掌握高级类型技巧，能让你的代码类型安全性提升一个档次。 泛型基础回顾 泛型允许我们编写可复用的类型安全代码： // 没有泛型：重复代码…"
+        },
+        {
+          "slug": "2025-10-05-docker-容器化最佳实践从开发到生产",
+          "text": "…彻底改变了我们构建、交付和运行应用程序的方式。但要写出高效的 Dockerfile，让镜像既小又安全，需要遵循一系列最佳实践。 1. 选择正确的基础镜像 基础镜像的选择直接影响最终镜像的大小和安全…"
+        }
+      ]
+    },
+    {
+      "count": 4,
+      "first": "Python 异步编程完全指南：async/await 深入剖析",
+      "firstSlug": "2025-10-27-python-异步编程完全指南async-await-深入剖析",
+      "q": "Python",
+      "snippets": [
+        {
+          "slug": "2025-10-20-linux-服务器安全加固指南15-个必做配置",
+          "text": "…'s Encrypt） 安装 Certbot sudo apt install certbot python3-certbot-nginx -y 获取证书 sudo certbot --nginx -d …"
+        },
+        {
+          "slug": "2025-09-28-rust-所有权系统详解从入门到实践",
+          "text": "…/C++）：程序员自己 malloc/free，容易出错 - **垃圾回收**（Java/Go/Python）：运行时自动回收，但带来性能开销 - **所有权系统**（Rust）：编译期检查，零运行时开销…"
+        }
+      ]
+    },
+    {
+      "count": 0,
+      "first": null,
+      "firstSlug": null,
+      "q": "不存在的词xyz",
+      "snippets": []
+    }
+  ],
+  "violations": [
+    {
+      "needle": "---",
+      "q": "Goo",
+      "slug": "markdown-tutorial",
+      "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: ---…"
+    },
+    {
+      "needle": "|",
+      "q": "Goo",
+      "slug": "2026-07-07-开源安全威胁态势报告",
+      "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 |…"
+    },
+    {
+      "needle": "|",
+      "q": "Goo",
+      "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+      "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | …"
+    },
+    {
+      "needle": "---",
+      "q": "goog",
+      "slug": "markdown-tutorial",
+      "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: --- …"
+    },
+    {
+      "needle": "|",
+      "q": "goog",
+      "slug": "2026-07-07-开源安全威胁态势报告",
+      "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 | …"
+    },
+    {
+      "needle": "|",
+      "q": "goog",
+      "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+      "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | ✅…"
+    },
+    {
+      "needle": "---",
+      "q": "Google",
+      "slug": "markdown-tutorial",
+      "text": "…\"Optional Title Here\" 使用空方括号时，链接文本本身作为标识符。 代码： [Google]: http://google.com/ [Google][] Preview: --- [Google…"
+    },
+    {
+      "needle": "|",
+      "q": "Google",
+      "slug": "2026-07-07-开源安全威胁态势报告",
+      "text": "… 漏洞利用 | 直接盗取会话 token（绕过 MFA） | | 自建 C2 服务器 | 利用 Google Calendar/Dropbox/GitHub 做隐蔽通道 | | 手动编写攻击代码 | AI…"
+    },
+    {
+      "needle": "|",
+      "q": "Google",
+      "slug": "2026-07-05-claude-封禁邮件-追踪像素分析",
+      "text": "… | Anthropic | ✅ 有 | 是 | | OpenAI | ✅ 有 | 是 | | Google (Gmail) | ✅ 有 | 是 | | Microsoft (Outlook) | ✅ 有…"
+    },
+    {
+      "needle": "**",
+      "q": "限",
+      "slug": "2026-10-17-google-ai-studio-personal-android-apps",
+      "text": "…是个人小工具，可以先要求本机保存；不要默认加入账号系统或云端同步。 4. **是否真的需要设备权限。**只有用到相机、位置或蓝牙时才要求对应权限，并明确说明用途。 范围越清楚，AI 越不容易把简…"
+    },
+    {
+      "needle": "|",
+      "q": "Markdown",
+      "slug": "guide-index",
+      "text": "…片<br/>2. 以 / 开头：用于 public 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 | | tags | 文章的标签。 | | category | 文章的分类。 | | …"
+    },
+    {
+      "needle": "|",
+      "q": "Markdown",
+      "slug": "encrypted-post",
+      "text": "…片<br/>2. 以 / 开头：用于 public 目录中的图片<br/>3. 无前缀：相对于 Markdown 文件 | | tags | 文章的标签。 | | category | 文章的分类。 | | …"
+    },
+    {
+      "needle": "**",
+      "q": "Markdown",
+      "slug": "2026-07-07-开源安全威胁态势报告",
+      "text": "…码代理进行自我漏洞分析，结果发现了 **CVE-2026-22813（CVSS 9.4）**——Markdown 渲染管道中的严重缺陷，可导致未经身份验证的远程代码执行。 五、攻击者战术转型：MOE（效果衡量…"
+    },
+    {
+      "needle": "**",
+      "q": "安全",
+      "slug": "2026-07-04-claude-code-隐写标记-源码解析",
+      "text": "…个较弱模型的技术。如果竞争对手通过大规模账户伪造来系统性提取模型能力，这确实构成严重的商业和国家安全威胁。 方法 vs 目的 然而，争议的焦点在于**实现方式而非目的本身**： 一个拥有源代码读取…"
+    },
+    {
+      "needle": "**",
+      "q": "Python",
+      "slug": "2025-09-28-rust-所有权系统详解从入门到实践",
+      "text": "…/C++）：程序员自己 malloc/free，容易出错 - **垃圾回收**（Java/Go/Python）：运行时自动回收，但带来性能开销 - **所有权系统**（Rust）：编译期检查，零运行时开销…"
+    }
+  ]
+}

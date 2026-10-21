@@ -1,4 +1,7 @@
+import { eq } from "drizzle-orm";
 import { describe, expect, it } from "vite-plus/test";
+
+import { posts } from "@hataraku/db/schema/posts";
 
 import { createSearchIndex } from "#src/search/orama.ts";
 
@@ -164,5 +167,52 @@ describe("search.query", () => {
 
     // rsc, oklch and existence are published; the draft post is not.
     expect(documentCount).toBe(3);
+  });
+
+  it("strips Markdown from the indexed body before building a snippet", async () => {
+    const slug = "h60-plain-snippet";
+
+    await db.insert(posts).values({
+      bodyMd: [
+        "## 标题",
+        "",
+        "**粗体** [链接](https://example.com) ![图](a.png)",
+        "",
+        "| 列 | 值 |",
+        "| --- | --- |",
+        "| 一 | 二 |",
+        "",
+        "---",
+        "",
+        "唯一词H60 与 `code`。",
+      ].join("\n"),
+      published: true,
+      slug,
+      title: "纯文本片段探针",
+    });
+
+    try {
+      const result = await client.search.query({ q: "唯一词H60" });
+      const hit = result.items.find((item) => item.slug === slug);
+      const text = hit?.snippet?.text ?? "";
+
+      expect(hit?.snippet).not.toBeNull();
+      expect(text).toContain("唯一词H60");
+
+      for (const forbidden of [
+        "](",
+        "|",
+        "**",
+        "__",
+        "---",
+        String.fromCodePoint(96),
+      ]) {
+        expect(text).not.toContain(forbidden);
+      }
+
+      expect(text).not.toMatch(/^#/u);
+    } finally {
+      await db.delete(posts).where(eq(posts.slug, slug));
+    }
   });
 });

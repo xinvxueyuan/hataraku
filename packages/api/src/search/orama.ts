@@ -7,6 +7,8 @@ import type { Database } from "@hataraku/db";
 import { posts } from "@hataraku/db/schema/posts";
 import { postTags, tags } from "@hataraku/db/schema/taxonomy";
 
+import { markdownToPlainText } from "#src/search/plain-text.ts";
+
 /**
  * Search runs on an in-process Orama index; Postgres stays the source of truth.
  *
@@ -234,14 +236,15 @@ export const createSearchIndex = async (
   await Promise.all(
     rows.map(async (row) => {
       const tagsOfRow = postTagsByPost.get(row.id) ?? [];
+      const bodyText = markdownToPlainText(row.bodyMd ?? "");
 
       const document: SearchDocument = {
-        bodyText: row.bodyMd ?? "",
+        bodyText,
         category: row.categorySlug ?? "",
         content: [
           row.title,
           row.description ?? "",
-          row.bodyMd ?? "",
+          bodyText,
           tagsOfRow.join(" "),
           row.categorySlug ?? "",
         ].join(" "),
@@ -342,26 +345,6 @@ export interface SearchResult {
 const SNIPPET_RADIUS = 48;
 const SNIPPET_LIMIT = 200;
 const LATIN_WORD_CHAR = /[\p{Script=Latin}\p{N}]/u;
-
-/** Markdown that is presentation rather than evidence, removed before the excerpt is built. */
-const PLAIN_TEXT_RULES = [
-  [/^```[^\n]*$/gmu, ""],
-  [/^#{1,6}\s+/gmu, ""],
-  [/^>\s?/gmu, ""],
-  [/!\[(?<alt>[^\]]*)\]\([^)]*\)/gu, "$<alt>"],
-  [/\[(?<label>[^\]]+)\]\([^)]*\)/gu, "$<label>"],
-  [/`+/gu, ""],
-] as const;
-
-const plainTextOf = (markdown: string): string => {
-  let text = markdown;
-
-  for (const [pattern, replacement] of PLAIN_TEXT_RULES) {
-    text = text.replaceAll(pattern, replacement);
-  }
-
-  return text.replaceAll(/\s+/gu, " ").trim();
-};
 
 /** Keeps a slice from ending inside a surrogate pair (Han characters outside the BMP). */
 const codePointStart = (text: string, index: number): number => {
@@ -489,7 +472,7 @@ const buildSnippet = (
   query: string,
   tokens: readonly string[]
 ): SearchSnippet | null => {
-  const text = plainTextOf(body);
+  const text = body;
 
   if (text === "") {
     return null;
