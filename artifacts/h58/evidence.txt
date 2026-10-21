@@ -1,0 +1,38 @@
+H58 — 评审修复实测证据
+时间: 2026-10-21 (Asia/Shanghai)　实例: http://localhost:3000
+
+== A2 封面占位 ==
+PostCover 在没有真实 coverKey/coverSrc 时返回 null，不再画灰框 + 首字。
+首页/文章列表/文章详情的 `[data-slot=post-cover]` 数量 = 0（当前 38 篇中仅 1 篇有 cover，列表页未命中）；页面无「灰框 + 单字符」形态。
+改后截图：artifacts/h58/after-home-1440.png、after-home-390.png、after-post-1440/390.png；改前见 artifacts/review-oil/post.png 等。
+
+== A3 重复 h1 ==
+长文原文以 `# 一步步用 Google AI Studio…` 开头；prepareBody 删除与页头同文的标题、其余 `#` 降为 `##`（跳过 fenced code）。
+实测 HTML：<h1> 标签数 = 1；[data-slot=post-body] 内 h1 = 0；页面标题只出现一次。
+
+== A4 首页层级 ==
+h1 48px；区块标题 14px（uppercase muted label）；首篇标题 24px/600；其余卡片 18px/500。首篇同时使用更宽封面（无封面时不占位）。
+
+== A5 长文目录 ==
+文章页复用 @hataraku/components/table-of-contents：正文 9 个 h2 → TOC 9 条，href 与 h2 id 逐一相等（9/9）。
+390px 抽屉四条关闭路径实测：外部点击 open→false；Escape open=false 且 activeElement=「本页目录」；点击 TOC 链接 → hash 变化且 open=false；SPA 路由变化（/article → 文章 → back）→ /article 且 open details=0。
+
+== A7 容器节奏 ==
+四种容器（note/tip/warning/danger）标题 top=33、正文 top=81（相对 aside），完全同一基线。
+
+== B5 分页禁用态 ==
+禁用「上一页」：opacity=0.3、pointer-events=none、cursor=not-allowed、text-decoration=none（另有 aria-disabled=true）。
+
+== 对比度 ==
+长文正文：light 10.1 / dark 13.02；弱化文本：light 6.02 / dark 6.62，均 ≥4.5，无回退。
+
+== 门禁 ==
+pnpm run check:design → design check passed，EXIT=0；
+vp check → 281 files formatted / 223 files 0 errors；
+pnpm exec knip → EXIT=0；
+pnpm exec e2e run → 7/7；
+pnpm --filter @hataraku/web build → EXIT=0。
+
+== 截图 ==
+artifacts/h58/after-home-1440.png、after-home-390.png、after-article-1440.png、after-post-1440.png、after-post-390.png；
+改前基线：artifacts/review-oil/（post.png、post-mobile.png、state-light-full.png 等）。

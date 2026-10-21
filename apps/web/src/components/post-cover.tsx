@@ -1,12 +1,12 @@
 import { MediaImage } from "#src/components/media-image.tsx";
 
 /**
- * An article's cover, with a stable frame whether or not a cover exists.
+ * An article's cover, when the article actually has one.
  *
- * Every card keeps the same aspect ratio, so a page mixes covered and uncovered articles without
- * the grid reflowing when the first image loads or when a row has no image at all. The letter behind
- * the image is the fallback: an article without a cover shows its initial on a muted gradient rather
- * than an empty hole or a broken-image icon.
+ * The frame used to render even without an image: a grey box with the title's first letter. Readers
+ * read that as a broken image ("一" and a dash are indistinguishable at that size), so a missing
+ * cover now renders nothing and the text takes the full column. An empty frame with a glyph is a
+ * placeholder that only the author understands.
  */
 interface PostCoverProps {
   /** Frame size and margins; the aspect ratio stays fixed unless `aspectClassName` overrides it. */
@@ -19,18 +19,9 @@ interface PostCoverProps {
   title: string;
 }
 
-/**
- * First letter or Han character in the title, skipping digits and punctuation.
- *
- * A placeholder is an intentional mark, not a fragment of the title: "2026年…" used to become "2"
- * and an em-dash title became "—". Digits and punctuation are skipped so the mark always reads as
- * a letter; a title with neither falls back to the site's own "夜".
- */
-const initialOf = (title: string): string => {
-  const first = /\p{L}/u.exec(title);
-
-  return (first?.[0] ?? "夜").toUpperCase();
-};
+const hasCover = (coverKey: string | null, coverSrc: string | null): boolean =>
+  (coverKey !== null && coverKey !== "") ||
+  (coverSrc !== null && coverSrc.trim() !== "");
 
 export const PostCover = ({
   aspectClassName = "aspect-video",
@@ -39,24 +30,24 @@ export const PostCover = ({
   coverSrc = null,
   sizes,
   title,
-}: PostCoverProps) => (
-  <div
-    className={`bg-muted relative overflow-hidden rounded-lg border ${aspectClassName} ${className}`}
-    data-slot="post-cover"
-  >
-    <span
-      aria-hidden="true"
-      className="text-muted-foreground from-muted to-muted/40 absolute inset-0 flex items-center justify-center bg-linear-to-br text-2xl font-semibold select-none"
+}: PostCoverProps) => {
+  if (!hasCover(coverKey, coverSrc)) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`bg-muted relative overflow-hidden rounded-lg border ${aspectClassName} ${className}`}
+      data-slot="post-cover"
     >
-      {initialOf(title)}
-    </span>
-    <MediaImage
-      alt={title}
-      assetKey={coverKey}
-      className="object-cover"
-      fill
-      sizes={sizes}
-      src={coverSrc}
-    />
-  </div>
-);
+      <MediaImage
+        alt={title}
+        assetKey={coverKey}
+        className="object-cover"
+        fill
+        sizes={sizes}
+        src={coverSrc}
+      />
+    </div>
+  );
+};

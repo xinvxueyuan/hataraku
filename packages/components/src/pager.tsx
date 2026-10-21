@@ -17,7 +17,7 @@ const linkClass =
 
 /** A disabled neighbour reads as unavailable: dimmed, not a link, and announced as disabled. */
 const disabledClass =
-  "text-muted-foreground cursor-not-allowed opacity-50 select-none";
+  "text-muted-foreground/60 pointer-events-none cursor-not-allowed opacity-30 select-none";
 
 export const Pager = ({
   currentPage,

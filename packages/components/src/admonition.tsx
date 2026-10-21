@@ -82,8 +82,10 @@ export const Admonition = ({
         className={`mt-0.5 size-5 shrink-0 ${variant.iconClassName}`}
       />
       <div className="flex min-w-0 flex-col gap-1">
-        <p className="font-medium">{label}</p>
-        <div className="text-sm leading-relaxed">{children}</div>
+        <p className="m-0 leading-6 font-medium">{label}</p>
+        <div className="text-sm leading-relaxed [&_p]:my-0 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_ul]:my-2">
+          {children}
+        </div>
       </div>
     </aside>
   );

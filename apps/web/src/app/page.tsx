@@ -52,7 +52,9 @@ const HomePage = async () => {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-12">
       <header className="flex flex-col gap-3">
-        <h1 className="text-4xl font-semibold tracking-tight">{siteName}</h1>
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+          {siteName}
+        </h1>
         {tagline === null ? null : (
           <p className="text-muted-foreground text-lg">{tagline}</p>
         )}
@@ -63,7 +65,10 @@ const HomePage = async () => {
 
       <section aria-labelledby="latest-heading" className="flex flex-col gap-4">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-xl font-semibold" id="latest-heading">
+          <h2
+            className="text-muted-foreground text-sm font-semibold tracking-wide uppercase"
+            id="latest-heading"
+          >
             最新文章
           </h2>
           <Link
@@ -80,38 +85,56 @@ const HomePage = async () => {
           </p>
         ) : (
           <ul className="flex flex-col gap-3" data-slot="latest-list">
-            {latest.items.map((post) => (
-              <li key={post.id}>
-                <Link
-                  className="hover:bg-accent flex gap-4 rounded-lg border p-4 transition-colors"
-                  href={`/posts/${post.slug}`}
-                >
-                  <PostCover
-                    className="hidden w-28 shrink-0 sm:block sm:w-40"
-                    coverKey={post.coverKey}
-                    coverSrc={post.cover?.src ?? null}
-                    sizes="(min-width: 640px) 160px, 112px"
-                    title={post.title}
-                  />
-                  <span className="flex min-w-0 flex-col gap-1">
-                    <span className="font-medium">{post.title}</span>
-                    {post.description === null ? null : (
-                      <span className="text-muted-foreground text-sm">
-                        {post.description}
-                      </span>
-                    )}
-                    {post.publishedAt === null ? null : (
-                      <time
-                        className="text-muted-foreground text-xs"
-                        dateTime={post.publishedAt.toISOString()}
+            {latest.items.map((post, index) => {
+              // The newest post leads the section, matching /article: one larger title and a
+              // wider cover give the list a single place for the eye to land.
+              const isLead = index === 0;
+
+              return (
+                <li key={post.id}>
+                  <Link
+                    className="hover:bg-accent flex gap-4 rounded-lg border p-4 transition-colors"
+                    href={`/posts/${post.slug}`}
+                  >
+                    <PostCover
+                      className={`hidden shrink-0 sm:block ${isLead ? "sm:w-56" : "sm:w-40"}`}
+                      coverKey={post.coverKey}
+                      coverSrc={post.cover?.src ?? null}
+                      sizes={
+                        isLead
+                          ? "(min-width: 640px) 224px, 112px"
+                          : "(min-width: 640px) 160px, 112px"
+                      }
+                      title={post.title}
+                    />
+                    <span className="flex min-w-0 flex-col gap-1">
+                      <span
+                        className={
+                          isLead
+                            ? "text-2xl font-semibold tracking-tight"
+                            : "text-lg font-medium"
+                        }
                       >
-                        {dateFormatter.format(post.publishedAt)}
-                      </time>
-                    )}
-                  </span>
-                </Link>
-              </li>
-            ))}
+                        {post.title}
+                      </span>
+                      {post.description === null ? null : (
+                        <span className="text-muted-foreground text-sm">
+                          {post.description}
+                        </span>
+                      )}
+                      {post.publishedAt === null ? null : (
+                        <time
+                          className="text-muted-foreground text-xs"
+                          dateTime={post.publishedAt.toISOString()}
+                        >
+                          {dateFormatter.format(post.publishedAt)}
+                        </time>
+                      )}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
@@ -120,7 +143,10 @@ const HomePage = async () => {
         aria-labelledby="taxonomy-heading"
         className="flex flex-col gap-3"
       >
-        <h2 className="text-xl font-semibold" id="taxonomy-heading">
+        <h2
+          className="text-muted-foreground text-sm font-semibold tracking-wide uppercase"
+          id="taxonomy-heading"
+        >
           分类
         </h2>
         {taxonomy.categories.length === 0 ? (

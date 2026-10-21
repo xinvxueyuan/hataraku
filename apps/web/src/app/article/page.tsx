@@ -172,7 +172,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
           {page <= 1 ? (
             <span
               aria-disabled="true"
-              className="text-muted-foreground cursor-not-allowed opacity-50 select-none"
+              className="text-muted-foreground/60 pointer-events-none cursor-not-allowed opacity-30 select-none"
             >
               上一页
             </span>
@@ -190,7 +190,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
           {page >= result.totalPages ? (
             <span
               aria-disabled="true"
-              className="text-muted-foreground cursor-not-allowed opacity-50 select-none"
+              className="text-muted-foreground/60 pointer-events-none cursor-not-allowed opacity-30 select-none"
             >
               下一页
             </span>

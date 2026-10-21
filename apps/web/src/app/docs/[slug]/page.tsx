@@ -9,7 +9,7 @@ import { findDoc, docs } from "#src/server/docs.ts";
 import { renderMdxWithToc } from "#src/server/mdx.ts";
 
 /**
- * A single doc. The body is markdown from the repository, rendered through the same `renderMdx`
+ * A single doc. The body is markdown from the repository, rendered through the same `renderMdxWithToc`
  * pipeline that renders article bodies, so headings, tables, and code blocks behave identically in
  * both places.
  *

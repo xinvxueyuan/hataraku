@@ -121,10 +121,3 @@ export const renderMdxWithToc = async (
 
   return rendered;
 };
-
-/** A body without its table of contents; the article pages consume this form. */
-export const renderMdx = async (source: string): Promise<ReactElement> => {
-  const { content } = await renderMdxWithToc(source);
-
-  return content;
-};

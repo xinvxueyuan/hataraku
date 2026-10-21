@@ -9,6 +9,10 @@ interface TableOfContentsProps {
   headings: readonly TocHeading[];
   /** Accessible name for the navigation landmark; the caller owns its language. */
   label?: string;
+  /** Called when a heading link is activated (a drawer uses it to close itself). */
+  onNavigate?: () => void;
+  /** Hide the visible title when a surrounding disclosure already labels the list. */
+  showTitle?: boolean;
 }
 
 /**
@@ -21,6 +25,8 @@ interface TableOfContentsProps {
 export const TableOfContents = ({
   headings,
   label = "本页目录",
+  onNavigate,
+  showTitle = true,
 }: TableOfContentsProps) => {
   if (headings.length === 0) {
     return null;
@@ -28,9 +34,11 @@ export const TableOfContents = ({
 
   return (
     <nav aria-label={label} className="flex flex-col gap-3 text-sm">
-      <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-        {label}
-      </p>
+      {showTitle ? (
+        <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          {label}
+        </p>
+      ) : null}
       <ul className="border-border flex flex-col gap-1 border-l">
         {headings.map((heading) => (
           <li
@@ -40,6 +48,7 @@ export const TableOfContents = ({
             <a
               className="text-muted-foreground hover:text-foreground focus-visible:ring-ring focus-visible:ring-offset-background -ml-px block border-l border-transparent transition-colors hover:border-current focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               href={`#${heading.id}`}
+              onClick={onNavigate}
             >
               {heading.text}
             </a>
