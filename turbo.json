@@ -9,7 +9,10 @@
     "TURNSTILE_SECRET_KEY",
     "ADMIN_EMAILS",
     "SERVER_URL",
-    "PORT"
+    "PORT",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_MEDIA_BASE_URL",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY"
   ],
   "tasks": {
     "build": {
