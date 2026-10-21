@@ -82,7 +82,9 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-12">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">文章</h1>
+        <h1 className="text-3xl leading-tight font-semibold tracking-tight">
+          文章
+        </h1>
         <p className="text-muted-foreground">
           共 {result.total} 篇
           {category === undefined ? null : `，分类：${category}`}
@@ -122,7 +124,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
                   />
                   <div className="flex min-w-0 flex-col gap-1">
                     <Link
-                      className={`${isLead ? "text-2xl font-semibold tracking-tight" : "text-lg font-medium"} hover:underline`}
+                      className={`${isLead ? "text-2xl leading-normal font-semibold tracking-tight" : "text-lg font-medium"} hover:underline`}
                       href={`/posts/${post.slug}`}
                     >
                       {post.title}

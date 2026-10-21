@@ -1,0 +1,28 @@
+H61 — 标题两行行高修复证据
+时间: 2026-10-22 (Asia/Shanghai)
+
+== 改前 computed（比例 = line-height / font-size） ==
+首页 h1：48px / 48px = 1.000；390 下 36px / 40px = 1.111
+首页 lead：24px / 32px = 1.333（两行标题高 64px）
+/article h1：30px / 36px = 1.200；lead：24px / 32px = 1.333（高 64px）
+文章页 h1：30px / 36px = 1.200；正文 h2：24px / 32px = 1.333
+区块标题：14px / 20px = 1.429；普通卡片：18px / 28px = 1.556（不改）
+
+== 改后 computed ==
+首页 h1：48px / 60px = 1.250（leading-tight）；390 下 36px / 45px = 1.250
+首页 lead：24px / 36px = 1.500（leading-normal，两行高 72px）
+/article h1：30px / 37.5px = 1.250；lead：24px / 36px = 1.500
+文章页 h1：30px / 36px = 1.200（未改，仍不低于 1.2）；正文 h2：1.333（未改）
+区块标题 1.429、普通卡片 1.556 保持不变。
+
+== 实现 ==
+只使用既有 Tailwind leading 工具类：h1 加 `leading-tight`，lead 标题加 `leading-normal`；没有任意值，没有新令牌。
+
+== 截图 ==
+before-home-1440/390、before-article-1440；after-home-1440/390、after-article-1440（1040 宽度标题两行）。
+
+== 运行环境说明 ==
+本机浏览器视口带 90% 缩放补偿，截图实际 CSS 宽度 1440/390。
+
+== 门禁 ==
+pnpm run check:design → EXIT=0；vp check → 281 formatted / 223 files 0 errors；knip → EXIT=0；e2e → 7/7。

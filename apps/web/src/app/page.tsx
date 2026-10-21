@@ -52,7 +52,7 @@ const HomePage = async () => {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-12">
       <header className="flex flex-col gap-3">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
           {siteName}
         </h1>
         {tagline === null ? null : (
@@ -111,7 +111,7 @@ const HomePage = async () => {
                       <span
                         className={
                           isLead
-                            ? "text-2xl font-semibold tracking-tight"
+                            ? "text-2xl leading-normal font-semibold tracking-tight"
                             : "text-lg font-medium"
                         }
                       >

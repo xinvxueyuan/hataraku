@@ -1,0 +1,37 @@
+### Result
+{"home":{"h1":{"text":"夜行栈","fontSize":"48px","lineHeight":"60px","ratio":1.25,"height":60},"section":{"text":"最新文章","fontSize":"14px","lineHeight":"20px","ratio":1.429,"height":20},"lead":{"text":"一步步用 Google AI Stu","fontSize":"24px","lineHeight":"36px","ratio":1.5,"height":72},"second":{"text":"2026年开源安全威胁态势全景报告","fontSize":"18px","lineHeight":"28px","ratio":1.556,"height":28}},"article":{"h1":{"text":"文章","fontSize":"30px","lineHeight":"37.5px","ratio":1.25,"height":38},"lead":{"text":"一步步用 Google AI Stu","fontSize":"24px","lineHeight":"36px","ratio":1.5,"height":72},"second":{"text":"2026年开源安全威胁态势全景报告","fontSize":"18px","lineHeight":"28px","ratio":1.556,"height":28}},"post":{"h1":{"text":"一步步用 Google AI Stu","fontSize":"30px","lineHeight":"36px","ratio":1.2,"height":108},"h2":{"text":"开始前：挑一个范围明确的小应用","fontSize":"24px","lineHeight":"31.9999px","ratio":1.333,"height":64}},"homeMobile":{"h1":{"text":"夜行栈","fontSize":"36px","lineHeight":"45px","ratio":1.25,"height":45},"section":{"text":"最新文章","fontSize":"14px","lineHeight":"20px","ratio":1.429,"height":20},"lead":{"text":"一步步用 Google AI Stu","fontSize":"24px","lineHeight":"36px","ratio":1.5,"height":108}}}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.bringToFront();
+  await page.setViewportSize({ width: Math.round(1440 * 0.9), height: 900 });
+  await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => localStorage.setItem('theme', 'light'));
+  await page.reload({ waitUntil: 'networkidle' });
+  const metrics = async (path, selectors) => {
+    await page.goto('http://localhost:3000' + path, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(400);
+    return await page.evaluate((sels) => {
+      const out = {};
+      for (const [name, sel] of Object.entries(sels)) {
+        const el = document.querySelector(sel);
+        if (!el) { out[name] = null; continue; }
+        const cs = getComputedStyle(el);
+        out[name] = { text: (el.textContent || '').trim().slice(0, 18), fontSize: cs.fontSize, lineHeight: cs.lineHeight, ratio: Number((parseFloat(cs.lineHeight) / parseFloat(cs.fontSize)).toFixed(3)), height: Math.round(el.getBoundingClientRect().height) };
+      }
+      return out;
+    }, selectors);
+  };
+  const home = await metrics('/', { h1: 'h1', section: 'h2', lead: '[data-slot="latest-list"] li span span', second: '[data-slot="latest-list"] li:nth-child(2) span span' });
+  const article = await metrics('/article', { h1: 'h1', lead: '[data-slot="article-list"] li:first-child a', second: '[data-slot="article-list"] li:nth-child(2) a' });
+  const post = await metrics('/posts/2026-10-17-google-ai-studio-personal-android-apps', { h1: 'h1', h2: '[data-slot="post-body"] h2' });
+  await page.setViewportSize({ width: Math.round(390 * 0.9), height: 844 });
+  const homeMobile = await metrics('/', { h1: 'h1', section: 'h2', lead: '[data-slot="latest-list"] li span span' });
+  return { home, article, post, homeMobile };
+})(page);
+```
+### Page
+- Page URL: http://localhost:3000/
+- Page Title: 夜行栈 NightStack
+### Events
+- New console entries: .playwright-mcp\console-2026-10-21T15-05-39-344Z.log#L76-L92
