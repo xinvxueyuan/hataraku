@@ -3,7 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import { listPostsInput } from "#src/schemas.ts";
 
 import { createClient, db } from "../support/api.ts";
-import { seedBlog } from "../support/fixtures.ts";
+import { RSC_BODY, seedBlog } from "../support/fixtures.ts";
 
 const client = createClient();
 
@@ -102,7 +102,7 @@ describe("posts.bySlug", () => {
     const post = await client.posts.bySlug({ slug: "rsc" });
 
     expect(post).toMatchObject({
-      bodyMd: "状态层有三个来源。限流网关与 monorepo 也会影响。",
+      bodyMd: RSC_BODY,
       category: { accent: "#FF3D8C", name: "前端", slug: "frontend" },
       comment: true,
       slug: "rsc",

@@ -37,6 +37,15 @@ const one = <T>(rows: T[]): T => {
  *   for the query 「不存在的词xyz」, so the precision test only means something while it is here.
  * - `draft` is unpublished and is the only post on `draft-only`, which pins the tag cloud rule.
  */
+/**
+ * Body of the \`rsc\` fixture.
+ *
+ * Exported so a test that asserts the stored body reads the same value the seed wrote; changing the
+ * fixture then cannot leave a second hard-coded copy behind.
+ */
+export const RSC_BODY =
+  "状态层有三个来源。限流网关与 monorepo 也会影响。supercalifragilisticexpialidocious 与 <b>& 符号。";
+
 export const seedBlog = async (db: Database) => {
   const frontend = one(
     await db
@@ -76,8 +85,7 @@ export const seedBlog = async (db: Database) => {
     await db
       .insert(posts)
       .values({
-        bodyMd:
-          "状态层有三个来源。限流网关与 monorepo 也会影响。supercalifragilisticexpialidocious 与 <b>& 符号。",
+        bodyMd: RSC_BODY,
         categoryId: frontend.id,
         categorySlug: frontend.slug,
         cover: { alt: "封面", height: 630, src: "/rsc.webp", width: 1200 },

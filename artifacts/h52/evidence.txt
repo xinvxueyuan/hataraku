@@ -1,0 +1,25 @@
+H52 — posts fixture 同源修复 + login_attempts 噪音判定
+时间: 2026-10-21 (Asia/Shanghai)
+
+== 1. posts.test 修复 ==
+fixtures.ts 导出 `RSC_BODY`（rsc 文章的正文），seedBlog 用它写库；
+posts.test.ts 的 `returns the body and its category` 断言 `bodyMd: RSC_BODY`，不再硬编码字符串。
+意图保持：仍同时断言 category、comment、tags、views。
+
+== 2. 集成测试 ==
+vp test --project integration → 16 test files / **185 tests passed**，EXIT=0（evidence-integration.txt）。
+其中 posts.test.ts 全部通过（含 body+category 用例）。
+
+== 3. login_attempts 日志判定 ==
+结论：**不是迁移/测试库缺表**，是 `login-attempts-resilience.test.ts` 故意制造的正常噪音。
+证据：
+- `20261020083325_needy_barracuda/migration.sql:1` 有 `CREATE TABLE "login_attempts"`；
+- dev 库 `select to_regclass('public.login_attempts')` → login_attempts；
+- 最新测试库 hataraku_test_0143488c 同样 → login_attempts；
+- `login-attempts-resilience.test.ts:40` 显式 `drop table "login_attempts"`，随后断言登录仍 200/401（模拟迁移滞后的部署）；
+- `packages/auth/src/login-attempts.ts:166-178` 的写审计在 try/catch 内，catch 只 `console.error('login attempt audit failed')` 并放行登录响应（注释：审计是观察，不是登录的一步）。
+所以日志刷屏来自该 resilience 用例，属预期；不需要另开缺表修复任务。可选清理是让该用例临时静音 console.error，本轮不改。
+
+== 4. 门禁 ==
+vp check → All 271 files formatted；217 files 0 warnings/lint/type errors。
+pnpm exec knip → EXIT=0。
