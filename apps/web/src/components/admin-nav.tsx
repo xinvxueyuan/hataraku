@@ -4,7 +4,7 @@ import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useDisclosure } from "#src/components/use-disclosure.ts";
+import { useDisclosure } from "@hataraku/components/use-disclosure";
 
 /** The settings surfaces. Naming them as literals is what keeps `<Link href>` type-checked. */
 export type AdminPath =

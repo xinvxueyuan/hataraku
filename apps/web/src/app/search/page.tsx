@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { highlightMatches } from "@hataraku/components/highlight";
+
 import { SearchForm } from "#src/components/search-form.tsx";
-import { highlight } from "#src/components/search-highlight.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -110,11 +111,11 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                     className="text-lg font-medium hover:underline"
                     href={`/posts/${hit.slug}`}
                   >
-                    {highlight(hit.title, query)}
+                    {highlightMatches(hit.title, query)}
                   </Link>
                   {hit.description === null ? null : (
                     <p className="text-muted-foreground text-sm">
-                      {highlight(hit.description, query)}
+                      {highlightMatches(hit.description, query)}
                     </p>
                   )}
                   {hit.snippet === null ? null : (
@@ -122,7 +123,11 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                       className="text-muted-foreground text-sm"
                       data-slot="search-snippet"
                     >
-                      {highlight(hit.snippet.text, query, hit.snippet.matches)}
+                      {highlightMatches(
+                        hit.snippet.text,
+                        query,
+                        hit.snippet.matches
+                      )}
                     </p>
                   )}
                   {hit.publishedAt === null ? null : (

@@ -3,9 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
+import { Pager } from "@hataraku/components/pager";
 import { Badge } from "@hataraku/ui/components/badge";
 
-import { Pager } from "#src/components/pager.tsx";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 

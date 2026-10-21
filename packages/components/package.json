@@ -1,0 +1,28 @@
+{
+  "name": "@hataraku/components",
+  "version": "0.0.0",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "exports": {
+    "./admonition": "./src/admonition.tsx",
+    "./code-block": "./src/code-block.tsx",
+    "./focus-ring": "./src/focus-ring.ts",
+    "./highlight": "./src/highlight.tsx",
+    "./pager": "./src/pager.tsx",
+    "./table-of-contents": "./src/table-of-contents.tsx",
+    "./use-disclosure": "./src/use-disclosure.ts"
+  },
+  "dependencies": {
+    "@hataraku/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@hataraku/config": "workspace:*",
+    "@types/react": "catalog:",
+    "react": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  }
+}

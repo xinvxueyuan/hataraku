@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { focusRing } from "@hataraku/components/focus-ring";
+import { Pager } from "@hataraku/components/pager";
 import { Badge } from "@hataraku/ui/components/badge";
 
 import { formatDisplayDate } from "#src/components/display-date.ts";
-import { focusRing } from "#src/components/focus-ring.ts";
 import { MediaImage } from "#src/components/media-image.tsx";
-import { Pager } from "#src/components/pager.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**

@@ -7,9 +7,9 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 
 import { assertSafeMdx } from "@hataraku/api/mdx-guard";
+import { Admonition } from "@hataraku/components/admonition";
+import { CodeBlock } from "@hataraku/components/code-block";
 
-import { Admonition } from "#src/components/docs-admonition.tsx";
-import { CodeBlock } from "#src/components/docs-code-block.tsx";
 import { Sheet } from "#src/components/sheet.tsx";
 import { expandAdmonitions } from "#src/lib/markdown/admonitions.ts";
 import { collectHeadings } from "#src/lib/markdown/headings.ts";

@@ -2,11 +2,12 @@
  * Previous/next links for a paginated server-rendered list.
  *
  * The caller owns `hrefFor` so each list keeps its own route and filters; plain anchors rather
- * than `next/link`, because a page turn is a server render and needs no client navigation.
+ * than a framework link, because a page turn is a server render and needs no client navigation.
  */
 interface PagerProps {
   currentPage: number;
   hrefFor: (page: number) => string;
+  /** Accessible name for the navigation landmark; the caller owns its language. */
   label: string;
   totalPages: number;
 }

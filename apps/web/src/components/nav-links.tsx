@@ -5,7 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useDisclosure } from "#src/components/use-disclosure.ts";
+import { useDisclosure } from "@hataraku/components/use-disclosure";
 
 /**
  * The site's main navigation.

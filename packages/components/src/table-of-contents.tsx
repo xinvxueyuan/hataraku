@@ -1,21 +1,35 @@
-import type { TocHeading } from "#src/lib/markdown/headings.ts";
+/** One heading in the rendered document, with the id its anchor uses. */
+export interface TocHeading {
+  depth: number;
+  id: string;
+  text: string;
+}
+
+interface TableOfContentsProps {
+  headings: readonly TocHeading[];
+  /** Accessible name for the navigation landmark; the caller owns its language. */
+  label?: string;
+}
 
 /**
- * The page's table of contents.
+ * A table of contents for headings already rendered by the caller.
  *
- * The headings are collected from the rendered body, so every href is the id the page actually
- * emitted. The scroll-highlighting variant is deliberately left out: it would need a second source
- * of truth for "current heading" (an IntersectionObserver) and the anchors work without it.
+ * The headings carry the ids the page actually emitted, so every href is a real anchor. Scroll
+ * highlighting is deliberately left out: it would need a second source of truth for "current
+ * heading" and the anchors work without it.
  */
-export const DocsToc = ({ headings }: { headings: readonly TocHeading[] }) => {
+export const TableOfContents = ({
+  headings,
+  label = "本页目录",
+}: TableOfContentsProps) => {
   if (headings.length === 0) {
     return null;
   }
 
   return (
-    <nav aria-label="本页目录" className="flex flex-col gap-3 text-sm">
+    <nav aria-label={label} className="flex flex-col gap-3 text-sm">
       <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-        本页目录
+        {label}
       </p>
       <ul className="border-border flex flex-col gap-1 border-l">
         {headings.map((heading) => (

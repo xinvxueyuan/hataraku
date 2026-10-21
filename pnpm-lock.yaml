@@ -594,6 +594,9 @@ importers:
       '@hataraku/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@hataraku/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@hataraku/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -783,6 +786,25 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.2
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/components:
+    dependencies:
+      '@hataraku/ui':
+        specifier: workspace:*
+        version: link:../ui
+    devDependencies:
+      '@hataraku/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
       typescript:
         specifier: 'catalog:'
         version: 7.0.2

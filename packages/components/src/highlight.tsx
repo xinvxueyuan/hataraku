@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
 /**
- * Wraps the parts of `text` that match the query in `<mark>`.
+ * Wraps the parts of `text` that match a query in `<mark>`.
  *
- * The query is split on whitespace because the server treats each term as a prefix filter; matching
+ * The query is split on whitespace because callers treat each term as a prefix filter; matching
  * each term as a substring highlights exactly the part a prefix hit selected ("Goo" inside
  * "Google"). Text stays React children — this returns elements, never an HTML string — so a query
  * containing `<` or a title containing markup cannot become an injection point.
@@ -24,7 +24,7 @@ const tokensOf = (query: string): string[] =>
     .map((token) => token.trim())
     .filter((token) => token !== "");
 
-export const highlight = (
+export const highlightMatches = (
   text: string,
   query: string,
   matches?: readonly HighlightMatch[]

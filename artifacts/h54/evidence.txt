@@ -1,0 +1,24 @@
+H54 — 组件包搬迁证据
+时间: 2026-10-21 (Asia/Shanghai)
+
+== 包契约 ==
+packages/components/package.json：private=true，license=AGPL-3.0-or-later；dependencies 只有 @hataraku/ui；peerDependencies react。
+grep next/ → 0；grep @hataraku/(api|db|auth) → 0；grep apps/ → 0；grep lucide-react → 0。
+
+== 迁移清单 ==
+搬入：pager、focus-ring、use-disclosure、highlight（原 search-highlight，重命名 highlightMatches）、table-of-contents（原 docs-toc）、admonition（原 docs-admonition）、code-block（原 docs-code-block）。
+不搬：其余 48 个业务/Next 耦合组件（见 component-inventory.md）。
+
+== 真机回归（迁移前后） ==
+同一 Playwright 指纹脚本，before.json / after.json 结构完全相等：
+- 首页：主题按钮 aria-label、theme class、前 3 条 time 文本、header link 圆角 9.6px；
+- /article：分页 nav label=分页、文案「上一页 第 1 / 4 页 下一页」、href=/article?page=2、禁用项「上一页」；
+- 键盘 Tab：焦点元素为 brand link，box-shadow 两段 ring + radius 9.6px；
+- /docs/authoring：TOC 4 个锚点、4 种 data-admonition、2 个复制按钮；点击复制后 aria-label=已复制代码、output=代码已复制。
+主题切换（mode-toggle 未搬，回归检查）：localStorage dark/light 重载后 html class = dark / light。
+
+== 门禁 ==
+vp check：278 files formatted，220 files 0 errors。
+pnpm --filter @hataraku/web build：EXIT=0。
+pnpm exec e2e run：7/7。
+pnpm exec knip：EXIT=0。

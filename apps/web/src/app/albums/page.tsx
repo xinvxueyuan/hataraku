@@ -2,10 +2,10 @@ import { Images } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { Pager } from "@hataraku/components/pager";
 import { Badge } from "@hataraku/ui/components/badge";
 
 import { MediaImage } from "#src/components/media-image.tsx";
-import { Pager } from "#src/components/pager.tsx";
 import { serverCall } from "#src/server/query.ts";
 
 /**

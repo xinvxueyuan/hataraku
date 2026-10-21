@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { SyntheticEvent } from "react";
 
 /**
- * One source of truth for a header disclosure.
+ * One source of truth for a controlled disclosure.
  *
  * The native `<details>` handles click, Enter and Space, but it does not close when the reader
  * clicks elsewhere; an uncontrolled element would need a separate patch for each closing route.
@@ -14,8 +14,8 @@ import type { SyntheticEvent } from "react";
  *   should not be read as a dismissal),
  * - Escape, which also returns focus to the summary,
  * - a link activation inside the panel (via `close`, for a same-route destination),
- * - a route change, which the owning components handle by keying the disclosure on `usePathname()`
- *   so its state starts closed on the next page.
+ * - a route change, which the owning component handles by keying the disclosure on the current
+ *   route so its state starts closed on the next page.
  *
  * The document listeners exist only while the panel is open and are removed symmetrically.
  */

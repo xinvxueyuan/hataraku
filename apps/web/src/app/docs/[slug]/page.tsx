@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { TableOfContents } from "@hataraku/components/table-of-contents";
+
 import { orderedDocs } from "#src/components/docs-nav.ts";
-import { DocsToc } from "#src/components/docs-toc.tsx";
 import { findDoc, docs } from "#src/server/docs.ts";
 import { renderMdxWithToc } from "#src/server/mdx.ts";
 
@@ -129,7 +130,7 @@ const DocPage = async ({ params }: PageProps) => {
 
       <aside className="hidden w-48 shrink-0 xl:block">
         <div className="sticky top-24">
-          <DocsToc headings={headings} />
+          <TableOfContents headings={headings} />
         </div>
       </aside>
     </div>

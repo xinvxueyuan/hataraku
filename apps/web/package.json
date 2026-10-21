@@ -18,6 +18,7 @@
   "dependencies": {
     "@hataraku/api": "workspace:*",
     "@hataraku/auth": "workspace:*",
+    "@hataraku/components": "workspace:*",
     "@hataraku/db": "workspace:*",
     "@hataraku/ui": "workspace:*",
     "@mdxeditor/editor": "catalog:",

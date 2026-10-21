@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: fileURLToPath(new URL("../..", import.meta.url)),
   reactCompiler: true,
-  transpilePackages: ["@hataraku/ui"],
+  transpilePackages: ["@hataraku/components", "@hataraku/ui"],
   typedRoutes: true,
 };
 

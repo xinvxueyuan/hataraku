@@ -4,9 +4,10 @@ import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useDisclosure } from "@hataraku/components/use-disclosure";
+
 import { docsBySection } from "#src/components/docs-nav.ts";
 import type { DocLink } from "#src/components/docs-nav.ts";
-import { useDisclosure } from "#src/components/use-disclosure.ts";
 
 /**
  * The docs navigation.

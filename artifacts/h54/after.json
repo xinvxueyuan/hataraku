@@ -1,0 +1,50 @@
+### Result
+{"home":{"themeButton":"Toggle theme","theme":"light","dates":["2026年10月17日","2026年7月7日","2026年7月5日"],"headerLinkRadius":"9.6px"},"pager":{"label":"分页","text":"上一页 第 1 / 4 页 下一页","links":["/article?page=2"],"disabled":["上一页"]},"focus":{"tag":"A","text":"夜行栈","boxShadow":"rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, lab(98.828 -0.0919402 -1.13482) 0px 0px 0px 2px, lab(40.2506 29.9121 -70.7129) 0px 0px 0px 4px, rgba(0, 0, 0, 0) 0px 0px 0px 0px","outline":"none","radius":"9.6px"},"docs":{"tocLabel":"本页目录","tocLinks":["#从一个标题开始","#三级标题也在目录里","#代码块","#表格与任务列表"],"admonitions":["note","tip","warning","danger"],"codeButtons":["复制代码","复制代码"]},"copy":{"label":"已复制代码","status":"代码已复制"}}
+### Ran Playwright code
+```js
+await (async (page) => {
+  await page.bringToFront();
+  await page.evaluate(() => localStorage.setItem('theme', 'light'));
+  await page.setViewportSize({ width: Math.round(1440 * 0.9), height: 900 });
+  const fingerprints = {};
+  await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  fingerprints.home = await page.evaluate(() => ({
+    themeButton: document.querySelector('header button[aria-label="Toggle theme"]')?.getAttribute('aria-label') ?? null,
+    theme: document.documentElement.className,
+    dates: [...document.querySelectorAll('time')].slice(0, 3).map((t) => t.textContent),
+    headerLinkRadius: getComputedStyle(document.querySelector('header a')).borderRadius,
+  }));
+  await page.goto('http://localhost:3000/article', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(400);
+  fingerprints.pager = await page.evaluate(() => {
+    const navs = [...document.querySelectorAll('nav')].filter((n) => n.querySelector('[aria-disabled="true"], a[href*="page="]'));
+    const nav = navs.at(-1);
+    return nav === undefined ? null : { label: nav.getAttribute('aria-label'), text: (nav.innerText || '').replace(/\s+/g, ' '), links: [...nav.querySelectorAll('a')].map((a) => a.getAttribute('href')), disabled: [...nav.querySelectorAll('[aria-disabled="true"]')].map((e) => e.textContent) };
+  });
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  fingerprints.focus = await page.evaluate(() => {
+    const el = document.activeElement;
+    const cs = getComputedStyle(el);
+    return { tag: el.tagName, text: (el.textContent || '').slice(0, 20), boxShadow: cs.boxShadow, outline: cs.outlineStyle, radius: cs.borderRadius };
+  });
+  await page.goto('http://localhost:3000/docs/authoring', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  fingerprints.docs = await page.evaluate(() => ({
+    tocLabel: document.querySelector('nav[aria-label="本页目录"]')?.getAttribute('aria-label') ?? null,
+    tocLinks: [...document.querySelectorAll('nav[aria-label="本页目录"] a')].map((a) => a.getAttribute('href')),
+    admonitions: [...document.querySelectorAll('[data-admonition]')].map((e) => e.getAttribute('data-admonition')),
+    codeButtons: [...document.querySelectorAll('[data-slot="code-block"] button')].map((b) => b.getAttribute('aria-label')),
+  }));
+  const copy = page.getByRole('button', { name: '复制代码' }).first();
+  if (await copy.count()) { await copy.click(); await page.waitForTimeout(300); fingerprints.copy = { label: await copy.getAttribute('aria-label'), status: await page.locator('[data-slot="code-block"] output').first().textContent() }; }
+  return fingerprints;
+})(page);
+```
+### Page
+- Page URL: http://localhost:3000/docs/authoring
+- Page Title: 写作与排版 · 夜行栈
+### Events
+- New console entries: .playwright-mcp\console-2026-10-21T10-31-36-014Z.log#L465-L1122

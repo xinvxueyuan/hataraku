@@ -1,4 +1,4 @@
-import { Pager } from "#src/components/pager.tsx";
+import { Pager } from "@hataraku/components/pager";
 
 export interface AdminListFilterField {
   label: string;
