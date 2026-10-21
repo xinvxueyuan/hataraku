@@ -1,0 +1,203 @@
+{
+  "base": "http://localhost:3005",
+  "checkedAt": "2026-10-21T11:28:53.055Z",
+  "checks": [
+    {
+      "name": "/settings/admin shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin marks exactly one current section",
+      "passed": true,
+      "detail": "总览"
+    },
+    {
+      "name": "/settings/admin does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/admin/posts shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin/posts marks exactly one current section",
+      "passed": true,
+      "detail": "文章"
+    },
+    {
+      "name": "/settings/admin/posts does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/admin/micro shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin/micro marks exactly one current section",
+      "passed": true,
+      "detail": "微言"
+    },
+    {
+      "name": "/settings/admin/micro does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/admin/projects shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin/projects marks exactly one current section",
+      "passed": true,
+      "detail": "项目"
+    },
+    {
+      "name": "/settings/admin/projects does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/admin/changelog shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin/changelog marks exactly one current section",
+      "passed": true,
+      "detail": "更新日志"
+    },
+    {
+      "name": "/settings/admin/changelog does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/admin/profile shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/admin/profile marks exactly one current section",
+      "passed": true,
+      "detail": "站点"
+    },
+    {
+      "name": "/settings/admin/profile does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/security shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/security marks exactly one current section",
+      "passed": true,
+      "detail": "安全"
+    },
+    {
+      "name": "/settings/security does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/two-factor shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/two-factor marks exactly one current section",
+      "passed": true,
+      "detail": "两步验证"
+    },
+    {
+      "name": "/settings/two-factor does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "/settings/password shows the left column with nine links",
+      "passed": true,
+      "detail": "nav left 272 width 208 < content left 520"
+    },
+    {
+      "name": "/settings/password marks exactly one current section",
+      "passed": true,
+      "detail": "密码"
+    },
+    {
+      "name": "/settings/password does not overflow horizontally",
+      "passed": true,
+      "detail": "scrollWidth 1440 / viewport 1440"
+    },
+    {
+      "name": "the content column keeps its reading measure at 1440",
+      "passed": true,
+      "detail": "content 648px (before: 640), shell 896px"
+    },
+    {
+      "name": "1024 keeps the sidebar",
+      "passed": true,
+      "detail": "{\"left\":64,\"top\":113,\"width\":208,\"bottom\":479}"
+    },
+    {
+      "name": "1024 does not overflow",
+      "passed": true,
+      "detail": "scrollWidth === innerWidth"
+    },
+    {
+      "name": "the sidebar stays visible while the page scrolls",
+      "passed": true,
+      "detail": "{\"scrollY\":260,\"pageShape\":{\"innerHeight\":500,\"scrollHeight\":970},\"afterScroll\":{\"left\":272,\"top\":80,\"width\":208,\"bottom\":446}}"
+    },
+    {
+      "name": "390 collapses the column into a disclosure",
+      "passed": true,
+      "detail": "{\"visibleNavs\":0,\"summaryVisible\":true}"
+    },
+    {
+      "name": "390 does not overflow",
+      "passed": true,
+      "detail": "scrollWidth === innerWidth"
+    },
+    {
+      "name": "opening the drawer shows the same nine links",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "a pointerdown outside closes the drawer",
+      "passed": true,
+      "detail": "closed"
+    },
+    {
+      "name": "Escape closes the drawer and returns focus to the summary",
+      "passed": true,
+      "detail": "{\"closed\":true,\"focus\":\"SUMMARY\"}"
+    },
+    {
+      "name": "a link inside the drawer closes it",
+      "passed": true,
+      "detail": "closed"
+    },
+    {
+      "name": "a route change starts the drawer closed",
+      "passed": true,
+      "detail": "closed on the next route"
+    }
+  ],
+  "screenshots": [
+    "sidebar-1440.png",
+    "sidebar-1024.png",
+    "sidebar-sticky.png",
+    "drawer-390-open.png",
+    "sidebar-390.png"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "base": "http://localhost:3005",
+  "checkedAt": "2026-10-21T11:42:52.677Z",
+  "checks": [
+    {
+      "name": "390px: no horizontal overflow with the column collapsed",
+      "passed": true,
+      "detail": "{\"equal\":true,\"scrollWidth\":390,\"summaryInside\":true,\"viewport\":390}"
+    },
+    {
+      "name": "390px: the open drawer keeps nine links inside the viewport",
+      "passed": true,
+      "detail": "{\"links\":9,\"open\":true,\"panelInside\":true,\"equal\":true,\"scrollWidth\":390,\"viewport\":390}"
+    },
+    {
+      "name": "360px: no horizontal overflow with the column collapsed",
+      "passed": true,
+      "detail": "{\"equal\":true,\"scrollWidth\":360,\"summaryInside\":true,\"viewport\":360}"
+    },
+    {
+      "name": "360px: the open drawer keeps nine links inside the viewport",
+      "passed": true,
+      "detail": "{\"links\":9,\"open\":true,\"panelInside\":true,\"equal\":true,\"scrollWidth\":360,\"viewport\":360}"
+    },
+    {
+      "name": "320px: no horizontal overflow with the column collapsed",
+      "passed": true,
+      "detail": "{\"equal\":true,\"scrollWidth\":320,\"summaryInside\":true,\"viewport\":320}"
+    },
+    {
+      "name": "320px: the open drawer keeps nine links inside the viewport",
+      "passed": true,
+      "detail": "{\"links\":9,\"open\":true,\"panelInside\":true,\"equal\":true,\"scrollWidth\":320,\"viewport\":320}"
+    },
+    {
+      "name": "195px: no horizontal overflow with the column collapsed",
+      "passed": false,
+      "detail": "{\"equal\":false,\"scrollWidth\":225,\"summaryInside\":true,\"viewport\":195}"
+    },
+    {
+      "name": "195px: the open drawer keeps nine links inside the viewport",
+      "passed": false,
+      "detail": "{\"links\":9,\"open\":true,\"panelInside\":true,\"equal\":false,\"scrollWidth\":225,\"viewport\":195}"
+    }
+  ],
+  "screenshots": [
+    "narrow-390.png",
+    "narrow-195.png"
+  ]
+}
