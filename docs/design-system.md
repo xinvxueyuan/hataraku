@@ -94,5 +94,6 @@ WCAG 的对比度判定用**计算色**（computed color），不是像素均值
 ## 7. 本地命令
 
     pnpm run check:design   # 三类规则；失败给文件:行号
+    pnpm run check:compat   # 兼容层边界（规则与流程见 docs/compatibility.md）
     vp check                # 格式 + lint + 类型
     pnpm run ready          # 完整门禁（共享工作树时按团队协作规则执行）

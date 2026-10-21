@@ -16,6 +16,7 @@
     "db:studio": "turbo run db:studio",
     "check": "vp check",
     "check:design": "node scripts/check-design.mjs",
+    "check:compat": "node scripts/check-compat.mjs",
     "test": "vp test",
     "knip": "knip",
     "ready": "turbo run typegen && vp check && knip && vp test && turbo run test:e2e && turbo run build",

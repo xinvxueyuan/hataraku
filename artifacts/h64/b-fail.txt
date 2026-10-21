@@ -1,0 +1,10 @@
+allow docs/ - documentation may explain a compatibility path
+allow artifacts/ - historical evidence, not source
+allow AGENTS.md - the rule itself
+allow CHANGELOG - release history
+allow packages/db/src/migrations/ - generated SQL keeps its historical naming
+allow apps/web/src/compat/ - the compatibility module itself
+allow packages/compat/ - the compatibility module itself
+allow packages/api/src/routers/admin-posts.ts:320 marker "legacy" - H62 removes the legacy posts.cover column; this clearing write and its comment leave with it
+apps/web/src/compat:1:1 compat: apps/web/src/compat exists without REMOVAL.md (and without an entry file header) — state the constraint and the removal condition
+compatibility check failed: 1 violation(s) in 171 source file(s)

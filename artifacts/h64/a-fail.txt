@@ -1,0 +1,11 @@
+allow docs/ - documentation may explain a compatibility path
+allow artifacts/ - historical evidence, not source
+allow AGENTS.md - the rule itself
+allow CHANGELOG - release history
+apps/web/src/components/h64-marker-fixture.ts:1:14 compat: marker "legacy" outside the compatibility module - move it into apps/web/src/compat or packages/compat, or delete the path
+allow packages/db/src/migrations/ - generated SQL keeps its historical naming
+allow apps/web/src/compat/ - the compatibility module itself
+allow packages/compat/ - the compatibility module itself
+allow no compatibility module — nothing to declare (add one only for a verified external constraint)
+allow packages/api/src/routers/admin-posts.ts:320 marker "legacy" - H62 removes the legacy posts.cover column; this clearing write and its comment leave with it
+compatibility check failed: 1 violation(s) in 172 source file(s)

@@ -82,6 +82,9 @@ jobs:
       - name: Check design-system guardrails
         run: pnpm run check:design
 
+      - name: Check compatibility boundaries
+        run: pnpm run check:compat
+
       - name: Look for unused code and dependencies
         run: pnpm exec knip
 
