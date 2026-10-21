@@ -1,0 +1,106 @@
+{
+  "label": "after",
+  "todos": {
+    "buttons": [
+      {
+        "fontSize": "14px",
+        "text": "Add"
+      },
+      {
+        "fontSize": "14px",
+        "text": ""
+      }
+    ],
+    "checkboxes": [
+      {
+        "borderRadius": "4px",
+        "height": "16px",
+        "width": "16px"
+      }
+    ]
+  },
+  "admin": {
+    "buttons": [
+      {
+        "fontSize": "12.8px",
+        "text": "发布"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "撤下"
+      },
+      {
+        "fontSize": "12.8px",
+        "text": "删除"
+      }
+    ]
+  }
+}

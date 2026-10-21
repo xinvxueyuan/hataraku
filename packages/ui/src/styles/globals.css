@@ -20,9 +20,10 @@
  *               fights.
  *   utilities   Tailwind's utilities, the only layer primitives and application code write in.
  *
- * Token contract: a component never names a raw colour. It uses a semantic token bridged into a
- * Tailwind namespace below (`--color-*` → `bg-*`/`text-*`/`border-*`, `--radius-*` → `rounded-*`,
- * `--font-*` → `font-*`). Re-skinning means editing the token values in this file, nothing else.
+ * Token contract: a component never names a raw colour or a raw size. It uses a semantic token
+ * bridged into a Tailwind namespace below (`--color-*` → `bg-*`/`text-*`/`border-*`,
+ * `--radius-*` → `rounded-*`, `--text-*` → `text-*`, `--font-*` → `font-*`). Re-skinning means
+ * editing the token values in this file, nothing else.
  *
  * Adding a token: add the value under `:root` and `.dark`, then add its bridge in `@theme inline`.
  * A token without a bridge is invisible to Tailwind; a utility without a token hardcodes a colour.
@@ -33,12 +34,22 @@
  *    so a light/dark swap needs no second bridge.
  * ---------------------------------------------------------------------------------------------- */
 @theme inline {
-  /* Typography */
+  /* Typography — the text scale exists as tokens so a primitive never writes a raw size. The
+     compact control size sits between `text-xs` and `text-sm` and pairs 12.8px with the 19.2px
+     leading those controls already inherited. */
   --font-heading: var(--font-sans);
   --font-sans: "Geist Variable", sans-serif;
+  --text-control: 0.8rem;
+  /* A text utility always writes a line-height; 1.5 is the leading the compact buttons already
+     inherited (12.8px × 1.5 = 19.2px), so making the pair explicit keeps every control where it
+     was instead of moving it by a pixel. */
+  --text-control--line-height: 1.5;
 
   /* Shape — the radius scale is derived from the one `--radius` token, so a re-skin changes every
-     rounded corner in one place. */
+     rounded corner in one place. `--radius-control` is the corner of a small square control (the
+     16px checkbox): it reuses the scale but is capped at 4px, because a larger theme radius must not
+     round a 16px box into a circle. */
+  --radius-control: min(var(--radius-md), 0.25rem);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);

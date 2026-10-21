@@ -13,7 +13,7 @@ import {
 } from "../lib/recipes.ts";
 
 const buttonVariants = cva(
-  `group/button ${focusRing} ${invalidState} inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all select-none active:not-aria-[haspopup]:translate-y-px ${disabledState} ${iconSizing}`,
+  `group/button ${focusRing} ${invalidState} inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding font-medium whitespace-nowrap transition-all select-none active:not-aria-[haspopup]:translate-y-px ${disabledState} ${iconSizing}`,
   {
     variants: {
       variant: {
@@ -29,14 +29,14 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: `${controlHeights.default} gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2`,
+        default: `${controlHeights.default} gap-1.5 px-2.5 text-sm has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2`,
         xs: `${controlHeights.xs} gap-1 ${cappedRadius.sm} px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3`,
-        sm: `${controlHeights.sm} gap-1 ${cappedRadius.md} px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5`,
-        lg: `${controlHeights.lg} gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2`,
-        icon: iconSizes.default,
-        "icon-xs": `${iconSizes.xs} ${cappedRadius.sm} in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3`,
-        "icon-sm": `${iconSizes.sm} ${cappedRadius.md} in-data-[slot=button-group]:rounded-lg`,
-        "icon-lg": iconSizes.lg,
+        sm: `${controlHeights.sm} gap-1 ${cappedRadius.md} text-control px-2.5 in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5`,
+        lg: `${controlHeights.lg} gap-1.5 px-2.5 text-sm has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2`,
+        icon: `${iconSizes.default} text-sm`,
+        "icon-xs": `${iconSizes.xs} ${cappedRadius.sm} text-sm in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3`,
+        "icon-sm": `${iconSizes.sm} ${cappedRadius.md} text-sm in-data-[slot=button-group]:rounded-lg`,
+        "icon-lg": `${iconSizes.lg} text-sm`,
       },
     },
     defaultVariants: {

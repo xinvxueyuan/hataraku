@@ -35,7 +35,14 @@ it goes there and is named `ui-*` so it is greppable.
 - _Feedback_ — `--destructive`, `--success`.
 - _Lines_ — `--border`, `--input`, `--ring`.
 - _Shape_ — `--radius`; the reachable scale (`--radius-sm` … `--radius-4xl`) is derived from it in
-  the theme bridge, so `rounded-lg` and friends follow a re-skin automatically.
+  the theme bridge, so `rounded-lg` and friends follow a re-skin automatically. `--radius-control` is
+  the corner of a small square control: it reuses `--radius-md` but is capped at `0.25rem`, because a
+  large theme radius must not round a 16px checkbox into a circle.
+- _Type scale_ — `--text-control`: the compact size a small button uses (`0.8rem`, `19.2px`
+  leading). It is a theme entry rather than a hardcoded `text-[0.8rem]`; the explicit leading keeps
+  the control on the same baseline the inherited value had. The button's size variants own their
+  font size (the base no longer sets one), because two `text-*` utilities on one element are
+  resolved by stylesheet order, not by the class list.
 
 **No reserved slots.** A token exists because something renders with it today. A chart palette or a
 sidebar palette is introduced by the component that needs it, in the same change: the component
@@ -46,7 +53,7 @@ The `--radius-*` entries are unused _by name_ but are not reserved slots: they a
 radius scale that `rounded-sm`/`rounded-lg`/`rounded-xl` resolve through.
 
 **Adding a token**: add the value under `:root` and `.dark`, then add its bridge in
-`@theme inline` (`--color-*` for colours, `--radius-*` for shape). A token without a bridge is
+`@theme inline` (`--color-*` for colours, `--radius-*` for shape, `--text-*` for the type scale). A token without a bridge is
 invisible to Tailwind; a utility without a token hardcodes a colour.
 
 ## CSS isolation

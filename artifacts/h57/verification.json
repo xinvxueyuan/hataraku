@@ -1,0 +1,48 @@
+{
+  "task": "H57",
+  "exceptions": {
+    "before": 24,
+    "after": 22,
+    "removed": [
+      "button.tsx text-[0.8rem]",
+      "checkbox.tsx rounded-[4px]"
+    ]
+  },
+  "tokens": {
+    "added": [
+      "--text-control: 0.8rem",
+      "--text-control--line-height: 1.5",
+      "--radius-control: min(var(--radius-md), 0.25rem)"
+    ],
+    "reused": [
+      "--radius-md (inside the control cap)"
+    ]
+  },
+  "targetedValues": {
+    "checkboxRadiusBefore": "4px",
+    "checkboxRadiusAfter": "4px",
+    "compactButtonFontBefore": "12.8px",
+    "compactButtonFontAfter": "12.8px",
+    "compactButtonLineHeightBefore": "19.2px",
+    "compactButtonLineHeightAfter": "19.2px",
+    "defaultButtonFontBefore": "14px",
+    "defaultButtonFontAfter": "14px"
+  },
+  "fingerprint": {
+    "pages": {
+      "home": 181,
+      "article": 232,
+      "admin": 186
+    },
+    "nodes": 599,
+    "rectDiffs": 0,
+    "styleDiffs": 0,
+    "verdict": "IDENTICAL"
+  },
+  "checks": {
+    "checkDesign": "EXIT=0 (22 allows)",
+    "vpCheck": "0 errors (220 files)",
+    "knip": "EXIT=0",
+    "build": "EXIT=0"
+  }
+}

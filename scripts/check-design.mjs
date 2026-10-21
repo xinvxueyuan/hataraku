@@ -91,16 +91,6 @@ const TOKEN_STYLE_DIRECTORY = "packages/ui/src/styles/";
 // entry names the file and the exact class, so a new hardcoded value nearby still fails.
 const VALUE_ALLOWLIST = [
   {
-    file: "packages/ui/src/components/button.tsx",
-    match: "text-[0.8rem]",
-    reason: "compact control type scale; H53 owns the token replacement",
-  },
-  {
-    file: "packages/ui/src/components/checkbox.tsx",
-    match: "rounded-[4px]",
-    reason: "checkbox corner geometry; H53 owns the token replacement",
-  },
-  {
     file: "packages/ui/src/components/dropdown-menu.tsx",
     match: "min-w-[96px]",
     reason: "menu minimum width geometry; H53 owns the token replacement",
