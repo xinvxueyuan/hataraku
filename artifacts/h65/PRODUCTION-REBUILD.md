@@ -162,6 +162,34 @@ select relname from pg_class where relname in ('posts_slug_key','albums_slug_key
 
 认证：`select md5(password) from account where provider_id='credential'`、`select md5(secret), md5(backup_codes), verified from two_factor` 与备份前一致；用原密码登录，确认 2FA 提示。彩排结果：verifyPassword true、Better Auth `signInEmail` 返回 `twoFactorRedirect:true`。
 
+### 6.1 地址回归（旧 UUID 必须 404，新整数必须 200）
+
+在 3.1 建映射后、删除映射前记录一对样本：
+
+```sql
+select old_id, new_id from h65_post_map order by new_id limit 1;
+select old_id, new_id from h65_album_map order by new_id limit 1;
+```
+
+把 old_id 记为 OLD_POST_UUID / OLD_ALBUM_UUID，new_id 记为 NEW_POST_ID / NEW_ALBUM_ID。切换后执行：
+
+```bash
+SITE='https://<production-origin>'
+
+# 新整数地址必须能打开
+curl -s -o /dev/null -w 'new post: %{http_code}\n' "$SITE/blog/$NEW_POST_ID"
+curl -s -o /dev/null -w 'new album: %{http_code}\n' "$SITE/albums/$NEW_ALBUM_ID"
+
+# 旧 UUID 地址必须 404；不要加 redirect/alias
+curl -s -o /dev/null -w 'old post uuid: %{http_code}\n' "$SITE/blog/$OLD_POST_UUID"
+curl -s -o /dev/null -w 'old album uuid: %{http_code}\n' "$SITE/albums/$OLD_ALBUM_UUID"
+
+# 清空后的旧 slug 也必须 404
+curl -s -o /dev/null -w 'old post slug: %{http_code}\n' "$SITE/blog/<old-slug>"
+```
+
+预期：新整数 200；旧 UUID 与旧 slug 404（页面的 404 状态，不是 200 的空壳）。若旧 UUID 返回 200，说明还有 slug/redirect 兼容路径，停止切换并按回滚处理。
+
 ## 7. 切换 / 回滚
 
 - 切换：`DATABASE_URL` 指向 `PROD_NEW`，重启 server，smoke 首页/文章/相册/搜索/登录/2FA。

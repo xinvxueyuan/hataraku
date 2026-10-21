@@ -30,7 +30,7 @@
 
 ## 测试
 
-- integration：194 passed（byRef 数字/slug/不存在/slugOnly 数字；slugOnly 无 slug DB 与 zod 双拒；多条 null slug；albums 数字/slugOnly；search 输出 id/slugOnly）。
+- integration：195 passed（byRef 数字/slug/不存在/旧 UUID/slugOnly 数字；slugOnly 无 slug DB 与 zod 双拒；多条 null slug；albums 数字/slugOnly；search 输出 id/slugOnly）。
 - unit：82 passed。
 - check:design / check:compat / knip：0。
 - `vp check packages/db/src packages/api/src packages/api/tests scripts/migrate-content.ts`：59 files formatted / lint+type 全绿；见 backend-check.txt。

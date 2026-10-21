@@ -134,6 +134,14 @@ describe("posts.byRef", () => {
     }
   );
 
+  it("answers NOT_FOUND for an old UUID segment (no compatibility alias)", async () => {
+    await expect(
+      client.posts.byRef({
+        segment: "2f5a1f73-b5cc-4a8a-a156-72f8d61c637d",
+      })
+    ).rejects.toMatchObject({ code: "NOT_FOUND" });
+  });
+
   it("hides a slug-only post from its numeric id but serves it by slug", async () => {
     const [post] = await db
       .insert(posts)
