@@ -1,0 +1,10 @@
+import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+const root = "C:/dev/dsh/projects/hataraku";
+const url = readFileSync(root + "/apps/server/.env", "utf8").split(/\r?\n/).find((line) => line.trim().startsWith("DATABASE_URL=")).split("=").slice(1).join("=").trim();
+const dbModule = await import(pathToFileURL(root + "/packages/db/src/index.ts").href);
+const db = dbModule.createDb(url);
+const [row] = await db.$client.unsafe("select body_md from posts where id = 30");
+const lines = (row.body_md ?? "").split("\n");
+for (let index = 8; index < 38; index += 1) console.log(String(index + 1).padStart(3), JSON.stringify(lines[index]));
+await db.$client.end();

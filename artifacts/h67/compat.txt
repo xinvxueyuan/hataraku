@@ -1,0 +1,10 @@
+$ node scripts/check-compat.mjs
+allow docs/ - documentation may explain a compatibility path
+allow artifacts/ - historical evidence, not source
+allow AGENTS.md - the rule itself
+allow CHANGELOG - release history
+allow packages/db/src/migrations/ - generated SQL keeps its historical naming
+allow apps/web/src/compat/ - the compatibility module itself
+allow packages/compat/ - the compatibility module itself
+allow no compatibility module — nothing to declare (add one only for a verified external constraint)
+compatibility check passed: 172 source file(s), no compatibility code outside the module.

@@ -46,6 +46,32 @@ describe(assertSafeMdx, () => {
     }).not.toThrow();
   });
 
+  it.each([
+    '```ts\nimport secret from "./secret.md"\n```',
+    '~~~js\nconst fs = require("node:fs");\n~~~',
+    '  ```\nimport x from "y"\n  ```',
+    '    ```\n    import x from "y"\n    ```',
+    '````md\n```\nimport inside from "y"\n```\n````',
+    '```md\n~~~\nimport inside from "y"\n~~~\n```',
+    'Use `require("node:fs")` as an example.',
+  ])("ignores module-looking code inside code: %j", (body) => {
+    expect(() => {
+      assertSafeMdx(body);
+    }).not.toThrow();
+  });
+
+  it("still rejects require outside code", () => {
+    expect(() => {
+      assertSafeMdx('require("node:fs")');
+    }).toThrow("require is not allowed");
+  });
+
+  it("still rejects a script tag outside code", () => {
+    expect(() => {
+      assertSafeMdx("<script>alert(1)</script>");
+    }).toThrow("script tags are not allowed");
+  });
+
   it("does not flag the word important mid-sentence", () => {
     expect(() => {
       assertSafeMdx("This is an important note.");

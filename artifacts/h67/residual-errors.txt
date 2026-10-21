@@ -1,0 +1,9 @@
+H67 residual page failures (local stack, same 38 published bodies, fixed guard)
+
+id 2  [next-mdx-remote] error compiling MDX: Could not parse expression with acorn
+id 7  [next-mdx-remote] error compiling MDX: Unexpected character "/" (U+002F) before local name, expected a character that can start a name (note: to create a link in MDX, use [text](url))
+id 30 UnsafeMdxError: require is not allowed
+      body line 19: "Node.js 采用的模块规范。require() 同步加载，module.exports 导出。..."
+      This is prose outside code, so the security boundary is correct; content needs backticks or a rephrase. Do not relax the guard.
+
+All other former 500s (8,13,14,16,20,22,23,24,36) now render 200; the code-fence/import false positives are fixed.

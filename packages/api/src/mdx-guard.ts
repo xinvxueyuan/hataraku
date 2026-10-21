@@ -1,14 +1,5 @@
 import { ORPCError } from "@orpc/server";
 
-/**
- * Policy for MDX coming from the editor.
- *
- * The rule lives here, in the package that owns the write path, so a body is checked before it is
- * stored and the renderer applies the same rule to what it reads back. Keeping one definition is
- * the point: two copies drift, and the weaker copy becomes the real boundary.
- */
-
-/** Syntax that has no place in an article body. */
 const FORBIDDEN: readonly { pattern: RegExp; reason: string }[] = [
   {
     pattern: /(?:^|\n)\s*import\s/u,
@@ -29,7 +20,114 @@ const FORBIDDEN: readonly { pattern: RegExp; reason: string }[] = [
   { pattern: /<script/iu, reason: "script tags are not allowed" },
 ];
 
-/** Thrown when a body carries syntax the renderer refuses to compile. */
+const CODE = String.fromCodePoint(96);
+
+const OPEN_FENCE =
+  /^(?<indent> {0,3})(?<marker>[\u0060]{3,}|~{3,})(?<rest>.*)$/u;
+
+const stripFencedCode = (source: string): string => {
+  const lines = source.split("\n");
+  const output: string[] = [];
+  let index = 0;
+
+  while (index < lines.length) {
+    const opening = OPEN_FENCE.exec(lines[index] ?? "");
+
+    if (opening === null) {
+      output.push(lines[index] ?? "");
+      index += 1;
+      continue;
+    }
+
+    const marker = opening.groups?.marker ?? "";
+    const markerChar = marker[0] ?? "";
+    const markerLength = marker.length;
+    output.push("");
+    index += 1;
+
+    while (index < lines.length) {
+      const line = lines[index] ?? "";
+      const trimmed = line.trimEnd().trimStart();
+
+      const closes =
+        trimmed.length >= markerLength &&
+        trimmed === markerChar.repeat(trimmed.length);
+
+      output.push("");
+      index += 1;
+
+      if (closes) {
+        break;
+      }
+    }
+  }
+
+  return output.join("\n");
+};
+
+const stripIndentedCode = (source: string): string =>
+  source
+    .split("\n")
+    .map((line) => (/^(?: {4}|\t)/u.test(line) ? "" : line))
+    .join("\n");
+
+const stripInlineCode = (source: string): string => {
+  let result = "";
+  let index = 0;
+
+  while (index < source.length) {
+    if (source[index] !== CODE) {
+      result += source[index];
+      index += 1;
+      continue;
+    }
+
+    let openingLength = 1;
+
+    while (source[index + openingLength] === CODE) {
+      openingLength += 1;
+    }
+
+    let cursor = index + openingLength;
+    let closing = -1;
+
+    while (cursor < source.length) {
+      if (source[cursor] !== CODE) {
+        cursor += 1;
+        continue;
+      }
+
+      let closingLength = 1;
+
+      while (source[cursor + closingLength] === CODE) {
+        closingLength += 1;
+      }
+
+      if (closingLength === openingLength) {
+        closing = cursor;
+        break;
+      }
+
+      cursor += closingLength;
+    }
+
+    if (closing === -1) {
+      result += source.slice(index, index + openingLength);
+      index += openingLength;
+      continue;
+    }
+
+    const span = source.slice(index + openingLength, closing);
+    result += span.replaceAll(/[^\n]/gu, " ");
+    index = closing + openingLength;
+  }
+
+  return result;
+};
+
+const stripCode = (source: string): string =>
+  stripInlineCode(stripIndentedCode(stripFencedCode(source)));
+
 export class UnsafeMdxError extends Error {
   readonly reason: string;
 
@@ -40,27 +138,16 @@ export class UnsafeMdxError extends Error {
   }
 }
 
-/**
- * Rejects a body that carries module syntax or a dynamic-evaluation escape.
- *
- * This is a deny-list, so it narrows the surface rather than proving safety. The guarantee lives in
- * the renderer: MDX resolves a capitalised tag against the components in scope, and that map holds
- * nothing that evaluates a string. The write path runs this before storing, so a body that could
- * never render is refused at the point the author can still fix it.
- */
 export const assertSafeMdx = (source: string): void => {
+  const code = stripCode(source);
+
   for (const { pattern, reason } of FORBIDDEN) {
-    if (pattern.test(source)) {
+    if (pattern.test(code)) {
       throw new UnsafeMdxError(reason);
     }
   }
 };
 
-/**
- * The write-path form of the same rule: a body the renderer would refuse is answered as a readable
- * `BAD_REQUEST` at the moment the author can still fix it, rather than surfacing as a 500. Every
- * procedure that stores a body calls this one function, so the message and the rule cannot drift.
- */
 export const assertStorableBody = (bodyMd: string): void => {
   try {
     assertSafeMdx(bodyMd);
