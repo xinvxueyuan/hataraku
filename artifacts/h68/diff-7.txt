@@ -1,0 +1,75 @@
+391:
+-             <code goes here>
++             `<code goes here>`
+
+399:
+-       <code goes here>
++       `<code goes here>`
+
+457:
+-         <div class="footer">
++         \<div class="footer">
+
+459:
+-         </div>
++         \</div>
+
+465:
+-     <div class="footer">
++     \<div class="footer">
+
+467:
+-     </div>
++     \</div>
+
+694:
+-     [foo]: <http://example.com/>  "Optional Title Here"
++     [foo]: \<http://example.com/>  "Optional Title Here"
+
+903:
+-     <http://example.com/>
++     \<http://example.com/>
+
+905:
+-     <address@example.com>
++     \<address@example.com>
+
+911:
+- <http://example.com/>
++ [http://example.com/](http://example.com/)
+
+913:
+- <address@example.com>
++ [address@example.com](mailto:address@example.com)
+
+978:
+-     <table>
++     \<table>
+
+979:
+-         <tr>
++         \<tr>
+
+980:
+-             <td>Foo</td>
++             \<td>Foo\</td>
+
+981:
+-         </tr>
++         \</tr>
+
+982:
+-     </table>
++     \</table>
+
+1009:
+-     <span>**Work**</span>
++     \<span>**Work**\</span>
+
+1011:
+-     <div>
++     \<div>
+
+1013:
+-     </div>
++     \</div>
