@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import type { Route } from "next";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { SubmitEvent } from "react";
@@ -279,6 +280,14 @@ export const AuthForm = ({
               type="password"
             />
           </div>
+          {mode === "sign-in" ? (
+            <Link
+              className="text-muted-foreground text-right text-sm underline-offset-4 hover:underline"
+              href="/forgot-password"
+            >
+              忘记密码？
+            </Link>
+          ) : null}
           {turnstileSiteKey === "" ? null : (
             <TurnstileWidget onToken={setCaptchaToken} />
           )}

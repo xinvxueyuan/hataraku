@@ -9,6 +9,8 @@ import type { Database } from "@hataraku/db";
 import * as schema from "@hataraku/db/schema/auth";
 
 import { createEmailAllowlist } from "./allowlist.ts";
+import { passwordResetMail, resendSender } from "./email.ts";
+import type { EmailSender } from "./email.ts";
 import { withLoginAttempts } from "./login-attempts.ts";
 
 /**
@@ -62,6 +64,18 @@ interface AuthOptions {
   turnstileSecretKey?: string | undefined;
   /** `ADMIN_EMAILS`: when set, only these addresses may create an account. */
   adminEmails?: string | undefined;
+  /**
+   * The `From` header for the password-reset mail, e.g. `夜行栈 <noreply@example.com>`. Deployment
+   * configuration; a blank value is treated as "mail is not configured".
+   */
+  emailFrom?: string | undefined;
+  /** Resend API key. Without it the reset callback throws a readable error instead of doing nothing. */
+  resendApiKey?: string | undefined;
+  /**
+   * The transport, for callers that own sending (tests capture here). Defaults to Resend when
+   * `resendApiKey` is set; otherwise the reset callback reports that mail is not configured.
+   */
+  sendEmail?: EmailSender | undefined;
 }
 
 export const createAuth = ({
@@ -71,11 +85,20 @@ export const createAuth = ({
   issuer = "hataraku",
   turnstileSecretKey,
   adminEmails,
+  emailFrom,
+  resendApiKey,
+  sendEmail,
 }: AuthOptions) => {
   const isAllowedEmail = createEmailAllowlist(adminEmails);
 
   const hasTurnstile =
     turnstileSecretKey !== undefined && turnstileSecretKey !== "";
+
+  const from = emailFrom?.trim() ?? "";
+
+  const transport =
+    sendEmail ??
+    (resendApiKey === undefined ? undefined : resendSender(resendApiKey));
 
   const auth = betterAuth({
     baseURL,
@@ -100,6 +123,27 @@ export const createAuth = ({
       enabled: true,
       maxPasswordLength: PASSWORD_MAX_LENGTH,
       minPasswordLength: PASSWORD_MIN_LENGTH,
+      /**
+       * The reset mail. `url` is built by Better Auth from `baseURL`, so the link points at the
+       * deployment that sent it; the token in it is stored in `verification` and consumed once.
+       *
+       * A missing configuration throws rather than returning quietly: the request endpoint answers
+       * the same "if this address exists" message either way (that is what keeps it from being an
+       * account oracle), and Better Auth logs the error, which is where an operator sees it.
+       */
+      sendResetPassword: async ({ url, user }) => {
+        if (transport === undefined || from === "") {
+          throw new Error(
+            "Password reset mail is not configured: set RESEND_API_KEY and EMAIL_FROM."
+          );
+        }
+
+        await transport({
+          ...passwordResetMail({ name: user.name, url }),
+          from,
+          to: user.email,
+        });
+      },
     },
     hooks: {
       before: createAuthMiddleware(async (ctx) => {

@@ -78,6 +78,8 @@ export const getAuth = (): Auth => {
       adminEmails: env.ADMIN_EMAILS,
       baseURL: env.BETTER_AUTH_URL,
       db: getDb(),
+      emailFrom: env.EMAIL_FROM,
+      resendApiKey: env.RESEND_API_KEY,
       secret: env.BETTER_AUTH_SECRET,
       turnstileSecretKey: env.TURNSTILE_SECRET_KEY,
     });

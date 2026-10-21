@@ -1,0 +1,55 @@
+{
+  "base": "http://localhost:3000",
+  "checkedAt": "2026-10-21T05:04:27.424Z",
+  "checks": [
+    {
+      "name": "the sign-in form links to the reset request",
+      "passed": true,
+      "detail": "/forgot-password"
+    },
+    {
+      "name": "an unknown address gets the neutral answer",
+      "passed": true,
+      "detail": "same message shown"
+    },
+    {
+      "name": "the emailed token sets a new password",
+      "passed": true,
+      "detail": "token from http://localhost:3000"
+    },
+    {
+      "name": "the new password signs in",
+      "passed": true,
+      "detail": "http://localhost:3000/todos"
+    },
+    {
+      "name": "the original password is restored",
+      "passed": true,
+      "detail": "http://localhost:3000/todos"
+    },
+    {
+      "name": "an unusable token renders a readable card with a way to ask again",
+      "passed": true,
+      "detail": "链接无法使用 + 忘记密码 link"
+    },
+    {
+      "name": "the callback's error redirect renders the same card",
+      "passed": true,
+      "detail": "?error=INVALID_TOKEN"
+    }
+  ],
+  "emailLink": {
+    "origin": "http://localhost:3000",
+    "path": "/api/auth/reset-password/<token>"
+  },
+  "productionEmail": {
+    "origin": "https://www.xinvstar.xyz",
+    "messageId": "01a15cd6-fc63-7248-9a02-e664c4dcb143"
+  },
+  "screenshots": [
+    "forgot-password.png",
+    "reset-done.png",
+    "signed-in-after-reset.png",
+    "invalid-token.png"
+  ]
+}
