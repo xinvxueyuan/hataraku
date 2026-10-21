@@ -10,7 +10,7 @@ coverage
 # GitNexus writes its skills here on every analyze; treat it as tool output.
 .claude/
 .velite
-.next-test-*
+.next-*
 next-env.d.ts
 .e2e
 
