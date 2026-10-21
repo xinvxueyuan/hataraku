@@ -86,7 +86,13 @@ psql "$PROD_OLD" -v ON_ERROR_STOP=1 -c "\copy (select analytics, author, avatar_
 
 ```bash
 psql "$PROD_OLD" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE hataraku_v2'
-DATABASE_URL="$PROD_NEW" pnpm run db:migrate
+
+# env.ts validates all required variables, even though the migration only uses DATABASE_URL.
+export DATABASE_URL="$PROD_NEW"
+export BETTER_AUTH_SECRET="<existing production value>"
+export BETTER_AUTH_URL="<existing production origin>"
+pnpm run db:migrate
+
 psql "$PROD_NEW" -v ON_ERROR_STOP=1 -c 'select name from drizzle.__drizzle_migrations order by id'
 ```
 
@@ -215,6 +221,7 @@ pg_restore --no-owner --no-privileges --dbname="$PROD_OLD" "hataraku-prod-$TS.du
 - 目标：新 `0000_init` 的 `hataraku_h62_dst`。
 - 导出：base data-only（含认证）+ 4 个列交集 CSV。
 - 恢复：先 4 个 CSV（albums/projects/posts/site_profile），再 base SQL；无 `session_replication_role`，退出码 0。
+- 认证：恢复后 `verifyPassword` 原密码 true、错误密码 false；Better Auth `signInEmail` 返回 `twoFactorRedirect: true`；2FA secret/backup codes md5 与源一致。彩排目标在登录前把 `two_factor_enabled` 置 true（生产由真实用户设置），登录 smoke 会多写一条 login_attempts，计数核对在登录前完成。
 - 计数对照（与 prod baseline 相同）：
 
 | 表 | 基线 | 源（裁剪后） | 目标 |

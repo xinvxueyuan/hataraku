@@ -13,7 +13,7 @@ const { db, remove } = await createTestDatabase();
 /** Shared with the fixture seeder, so a test file seeds the same database its client reads. */
 export { db };
 
-afterAll(remove);
+afterAll(remove, 30_000);
 
 const auth = createAuth({
   baseURL: "http://localhost",
