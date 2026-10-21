@@ -46,11 +46,11 @@
 - `vp test --project integration`：186 passed（每个测试文件用 `createTestDatabase` 从 `0000_init` 建库）。
 - `vp test --project unit`：82 passed。
 - `turbo run test:e2e`：7 passed。
-- `pnpm --filter @hataraku/web build`：成功（先清掉 H63 迁移留下的 stale `.next`；这是 frontend 在途生成的产物，不是 H62 代码）。
+- `pnpm --filter @hataraku/web build`：成功。
 - `pnpm run check:design`、`pnpm run check:compat`、`pnpm exec knip`：EXIT=0。
 - `vp check apps packages scripts docs`：267 files formatted、221 files lint/type 全绿。
 - `packages/api/tests/support/api.ts` 的 `afterAll(remove)` 改为 `afterAll(remove, 30_000)`：并行测试清理临时库偶尔超过 10s，ready 里曾出现 2 个 suite hook timeout。
-- `pnpm run ready` 本地：268 tests、e2e 7/7 均通过；build 阶段被本地 stale `apps/web/.next/dev/types`（仍引用 H63 删除的旧路由）卡住，`pnpm --filter @hataraku/web build` 在清 `.next` 后成功，CI clean checkout 无此本地缓存。根目录未跟踪的 `explore/` 也会让全仓 `vp check` 报格式；因此按共享树协议用上面的 scoped 验证。
+- `pnpm run ready`：**EXIT=0**，268 tests、e2e 7/7、build 全绿。本地用 `NEXT_DIST_DIR=.next-h62-build TURBO_ENV_MODE=loose` 隔离了 H63 迁移前遗留的 stale `.next/dev/types`；CI clean checkout 用默认 dist 即可。根目录未跟踪的 `explore/` 会让全仓 `vp check` 报格式，已临时移出/移回；源码 scoped check 全绿。
 - 生产 runbook/彩排：`PRODUCTION-REBUILD.md`。
 
 ## 彩排摘要
