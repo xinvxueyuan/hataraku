@@ -1,0 +1,9 @@
+       metric        | value 
+---------------------+-------
+ posts_total         | 39
+ published_non_draft | 38
+ posts_with_限流     | 1
+ posts_with_网关     | 0
+ posts_with_流网     | 0
+(5 rows)
+

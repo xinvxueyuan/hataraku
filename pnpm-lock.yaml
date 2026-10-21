@@ -191,6 +191,12 @@ catalogs:
     '@mdxeditor/editor':
       specifier: ^4.3.3
       version: 4.3.3
+    '@orama/orama':
+      specifier: 3.1.18
+      version: 3.1.18
+    '@orama/stopwords':
+      specifier: 3.1.18
+      version: 3.1.18
     '@orpc/client':
       specifier: ^1.15.7
       version: 1.15.7
@@ -727,6 +733,12 @@ importers:
       '@hataraku/db':
         specifier: workspace:*
         version: link:../db
+      '@orama/orama':
+        specifier: 'catalog:'
+        version: 3.1.18
+      '@orama/stopwords':
+        specifier: 'catalog:'
+        version: 3.1.18
       '@orpc/server':
         specifier: 'catalog:'
         version: 1.15.7(ws@8.22.0)
@@ -2787,6 +2799,14 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@orama/orama@3.1.18':
+    resolution: {integrity: sha512-a61ljmRVVyG5MC/698C8/FfFDw5a8LOIvyOLW5fztgUXqUpc1jOfQzOitSCbge657OgXXThmY3Tk8fpiDb4UcA==}
+    engines: {node: '>= 20.0.0'}
+
+  '@orama/stopwords@3.1.18':
+    resolution: {integrity: sha512-W8V7m7RnCme+99OmKl/xs5rf6OUhFpr0aPGVmPrXzTLSg4ZqSbRY2euS2S/lgjjYi/0NhEWqwoq8nDY6Ihx4EA==}
+    engines: {node: '>= 20.0.0'}
 
   '@orpc/client@1.15.7':
     resolution: {integrity: sha512-Lkqy8CpuNO+1Xq2Fv/a0Gurekwf8UPMoI7RnG/iqW998zZkQIitAwtqYjZ/3JmIckFHJudThdh42SjDB+eMxdg==}
@@ -11592,6 +11612,10 @@ snapshots:
 
   '@noxcturnal/noxcturnal-win32-x64-msvc@0.1.5':
     optional: true
+
+  '@orama/orama@3.1.18': {}
+
+  '@orama/stopwords@3.1.18': {}
 
   '@orpc/client@1.15.7':
     dependencies:

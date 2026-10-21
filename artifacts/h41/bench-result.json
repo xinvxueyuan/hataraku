@@ -1,0 +1,75 @@
+{
+  "buildMs": 643.73,
+  "coldMs": 574.24,
+  "docCount": 38,
+  "hotP50": 2.236,
+  "hotP95": 3.2,
+  "table": [
+    {
+      "count": 6,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "medianMs": 3.584,
+      "q": "Goo"
+    },
+    {
+      "count": 5,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "medianMs": 2.937,
+      "q": "goog"
+    },
+    {
+      "count": 5,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "medianMs": 2.284,
+      "q": "Google"
+    },
+    {
+      "count": 2,
+      "first": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+      "medianMs": 2.223,
+      "q": "google ai"
+    },
+    {
+      "count": 13,
+      "first": "CSS Grid 完全指南：告别 Flexbox 局限",
+      "medianMs": 2.37,
+      "q": "限"
+    },
+    {
+      "count": 1,
+      "first": "Nginx 反向代理与负载均衡实战",
+      "medianMs": 2.875,
+      "q": "限流"
+    },
+    {
+      "count": 0,
+      "first": "-",
+      "medianMs": 4.863,
+      "q": "限流网关"
+    },
+    {
+      "count": 13,
+      "first": "一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议",
+      "medianMs": 2.276,
+      "q": "网"
+    },
+    {
+      "count": 0,
+      "first": "-",
+      "medianMs": 2.512,
+      "q": "网关"
+    },
+    {
+      "count": 0,
+      "first": "-",
+      "medianMs": 2.408,
+      "q": "不存在的词xyz"
+    },
+    {
+      "count": 30,
+      "first": "Markdown Mermaid 图表",
+      "medianMs": 3.188,
+      "q": "a&b"
+    }
+  ]
+}

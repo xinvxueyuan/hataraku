@@ -4,8 +4,8 @@ import Link from "next/link";
 import { serverCall } from "#src/server/query.ts";
 
 /**
- * Search. The ranking, the CJK n-grams and the AND-then-OR fallback all live in the procedure, so
- * this page only renders what came back — filtering again here would fight the ranking.
+ * Search. Ranking, prefix matching and the Chinese tokenizer live in the procedure (the in-process
+ * Orama index), so this page only renders what came back — filtering again here would fight it.
  */
 
 export const metadata: Metadata = { title: "搜索" };
@@ -61,7 +61,6 @@ const SearchPage = async ({ searchParams }: PageProps) => {
         <>
           <p className="text-muted-foreground text-sm">
             找到 {result.total} 条结果
-            {result.fallback ? "（已放宽为任意词匹配）" : null}
           </p>
 
           {result.items.length === 0 ? (

@@ -264,8 +264,6 @@ export const searchInput = z.object({
 });
 
 export const searchResultSchema = paginatedSchema(searchHitSchema).extend({
-  /** True when the AND query found nothing and the OR fallback was used. */
-  fallback: z.boolean(),
   query: z.string(),
 });
 
