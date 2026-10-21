@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@hataraku/ui/components/card";
 
+import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
 import { serverCall } from "#src/server/query.ts";
 
@@ -73,14 +74,11 @@ const SecurityPage = async () => {
   }
 
   return (
-    <section className="grid gap-6">
-      <header className="grid gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">安全概览</h1>
-        <p className="text-muted-foreground text-sm">
-          当前账号：<span className="font-mono">{session.user.email}</span>
-        </p>
-      </header>
-
+    <AdminPageShell
+      current="/settings/security"
+      description={`当前账号：${session.user.email}`}
+      title="安全概览"
+    >
       <Card>
         <CardHeader>
           <CardTitle>活跃会话</CardTitle>
@@ -186,7 +184,7 @@ const SecurityPage = async () => {
           </div>
         </CardContent>
       </Card>
-    </section>
+    </AdminPageShell>
   );
 };
 

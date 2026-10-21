@@ -1,0 +1,156 @@
+{
+  "base": "http://localhost:3000",
+  "checkedAt": "2026-10-21T05:20:23.596Z",
+  "checks": [
+    {
+      "name": "/settings/admin shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin marks 当前页",
+      "passed": true,
+      "detail": "总览"
+    },
+    {
+      "name": "/settings/admin keeps its heading",
+      "passed": true,
+      "detail": "写作后台"
+    },
+    {
+      "name": "/settings/admin/posts shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin/posts marks 当前页",
+      "passed": true,
+      "detail": "文章"
+    },
+    {
+      "name": "/settings/admin/posts keeps its heading",
+      "passed": true,
+      "detail": "文章"
+    },
+    {
+      "name": "/settings/admin/micro shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin/micro marks 当前页",
+      "passed": true,
+      "detail": "微言"
+    },
+    {
+      "name": "/settings/admin/micro keeps its heading",
+      "passed": true,
+      "detail": "微言"
+    },
+    {
+      "name": "/settings/admin/projects shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin/projects marks 当前页",
+      "passed": true,
+      "detail": "项目"
+    },
+    {
+      "name": "/settings/admin/projects keeps its heading",
+      "passed": true,
+      "detail": "项目"
+    },
+    {
+      "name": "/settings/admin/changelog shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin/changelog marks 当前页",
+      "passed": true,
+      "detail": "更新日志"
+    },
+    {
+      "name": "/settings/admin/changelog keeps its heading",
+      "passed": true,
+      "detail": "更新日志"
+    },
+    {
+      "name": "/settings/admin/profile shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/admin/profile marks 当前页",
+      "passed": true,
+      "detail": "站点"
+    },
+    {
+      "name": "/settings/admin/profile keeps its heading",
+      "passed": true,
+      "detail": "站点资料"
+    },
+    {
+      "name": "/settings/security shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/security marks 当前页",
+      "passed": true,
+      "detail": "安全"
+    },
+    {
+      "name": "/settings/security keeps its heading",
+      "passed": true,
+      "detail": "安全概览"
+    },
+    {
+      "name": "/settings/two-factor shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/two-factor marks 当前页",
+      "passed": true,
+      "detail": "两步验证"
+    },
+    {
+      "name": "/settings/two-factor keeps its heading",
+      "passed": true,
+      "detail": "Two-factor authentication"
+    },
+    {
+      "name": "/settings/password shows the settings navigation",
+      "passed": true,
+      "detail": "9 links"
+    },
+    {
+      "name": "/settings/password marks 当前页",
+      "passed": true,
+      "detail": "密码"
+    },
+    {
+      "name": "/settings/password keeps its heading",
+      "passed": true,
+      "detail": "修改密码"
+    },
+    {
+      "name": "the 390px navigation wraps inside the viewport",
+      "passed": true,
+      "detail": "{\"current\":\"安全\",\"navOverflow\":false,\"pageOverflow\":false,\"outside\":0,\"rows\":2}"
+    },
+    {
+      "name": "the 390px page still marks the current section",
+      "passed": true,
+      "detail": "安全"
+    }
+  ],
+  "screenshots": [
+    "security-with-nav.png",
+    "two-factor-with-nav.png",
+    "security-390.png"
+  ]
+}

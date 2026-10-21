@@ -9,7 +9,8 @@ export type AdminPath =
   | "/settings/admin/profile"
   | "/settings/admin/projects"
   | "/settings/password"
-  | "/settings/security";
+  | "/settings/security"
+  | "/settings/two-factor";
 
 const SECTIONS: readonly { href: AdminPath; label: string }[] = [
   { href: "/settings/admin", label: "总览" },
@@ -19,6 +20,8 @@ const SECTIONS: readonly { href: AdminPath; label: string }[] = [
   { href: "/settings/admin/changelog", label: "更新日志" },
   { href: "/settings/admin/profile", label: "站点" },
   { href: "/settings/security", label: "安全" },
+  // Next to 安全 because both are account protection; the order matches how a reader meets them.
+  { href: "/settings/two-factor", label: "两步验证" },
   { href: "/settings/password", label: "密码" },
 ] as const;
 
