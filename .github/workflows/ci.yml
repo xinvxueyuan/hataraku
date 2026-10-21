@@ -79,6 +79,9 @@ jobs:
       - name: Format, lint and type check
         run: pnpm exec vp check
 
+      - name: Check design-system guardrails
+        run: pnpm run check:design
+
       - name: Look for unused code and dependencies
         run: pnpm exec knip
 

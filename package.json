@@ -2,6 +2,7 @@
   "name": "hataraku",
   "version": "0.0.0",
   "private": true,
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "dev": "turbo run dev",
@@ -14,6 +15,7 @@
     "db:migrate": "turbo run db:migrate",
     "db:studio": "turbo run db:studio",
     "check": "vp check",
+    "check:design": "node scripts/check-design.mjs",
     "test": "vp test",
     "knip": "knip",
     "ready": "turbo run typegen && vp check && knip && vp test && turbo run test:e2e && turbo run build",

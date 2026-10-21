@@ -1,0 +1,27 @@
+allow packages/ui/src/components/button.tsx:24 bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] - token-derived expression
+allow packages/ui/src/components/button.tsx:34 text-[0.8rem] - compact control type scale; H53 owns the token replacement
+allow packages/ui/src/components/card.tsx:27 grid-cols-[1fr_auto] - layout geometry, not a theme value
+allow packages/ui/src/components/card.tsx:27 grid-rows-[auto_auto] - layout geometry, not a theme value
+allow packages/ui/src/components/checkbox.tsx:14 rounded-[4px] - checkbox corner geometry; H53 owns the token replacement
+allow packages/ui/src/components/dropdown-menu.tsx:143 min-w-[96px] - menu minimum width geometry; H53 owns the token replacement
+allow packages/ui/src/lib/recipes.ts:57 rounded-[min(var(--radius-md),12px)] - token-derived expression
+allow packages/ui/src/lib/recipes.ts:59 rounded-[min(var(--radius-md),10px)] - token-derived expression
+allow packages/ui/src/styles/globals.css - raw colours are declared here
+allow apps/web/src/app/about/page.tsx:224 left-[31px] - layout geometry, not a theme value
+allow apps/web/src/app/albums/page.tsx:71 aspect-[16/9] - layout geometry, not a theme value
+allow apps/web/src/app/albums/[slug]/page.tsx:143 scale-[1.01] - layout geometry, not a theme value
+allow apps/web/src/app/api/og/route.tsx - raw colours are declared here
+allow apps/web/src/app/micro/page.tsx:164 min-h-[45vh] - layout geometry, not a theme value
+allow apps/web/src/app/posts/[slug]/page.tsx:95 aspect-[2/1] - layout geometry, not a theme value
+allow apps/web/src/app/toolbox/page.tsx:193 grid-cols-[auto_1fr] - layout geometry, not a theme value
+allow apps/web/src/components/admin-nav.tsx:122 max-h-[70vh] - layout geometry, not a theme value
+allow apps/web/src/components/admin-nav.tsx:122 max-w-[calc(100vw-2rem)] - responsive drawer width is layout geometry, not a theme value
+allow apps/web/src/components/admin-page-shell.tsx:30 w-[min(56rem,calc(100vw-2rem))] - responsive shell width is layout geometry, not a theme value
+allow apps/web/src/components/admin-page-shell.tsx:33 grid-cols-[13rem_minmax(0,1fr)] - layout geometry, not a theme value
+allow apps/web/src/components/docs-sidebar.tsx:84 max-h-[70vh] - layout geometry, not a theme value
+allow apps/web/src/components/markdown-editor.tsx:82 min-h-[22rem] - layout geometry, not a theme value
+allow apps/web/src/components/sheet.tsx:29 h-[420px] - fixed Univer canvas height is structural
+skip: packages/components is not present yet; its dependency and CSS-entry checks run once the package lands.
+allow apps/web/src/app/layout.tsx:1 - the single application stylesheet entry
+apps/web/src/components/__design-hard-probe.tsx:1:23 hardcoded design value text-[13px] - use a token utility or add an explicit exception to scripts/check-design.mjs
+design check failed: 1 violation(s)

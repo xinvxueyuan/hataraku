@@ -1,4 +1,8 @@
 {
   "extends": "@hataraku/config/typescript/node.json",
-  "include": ["**/*.ts"]
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["**/*.ts", "**/*.mjs"]
 }
