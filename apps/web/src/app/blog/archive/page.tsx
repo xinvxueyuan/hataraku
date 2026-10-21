@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Badge } from "@hataraku/ui/components/badge";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { serverCall } from "#src/server/query.ts";
 
 /**
@@ -79,7 +80,7 @@ const loadArchive = async () => {
   );
 
   // A migration can insert between two page reads; a row repeated by a shifted boundary is kept once.
-  const byId = new Map<string, ArchivePost>();
+  const byId = new Map<number, ArchivePost>();
 
   for (const page of [first, ...rest]) {
     for (const post of page.items) {
@@ -155,7 +156,7 @@ const ArchiveEntry = ({ post }: { post: ArchivePost }) => {
         <h4 className="text-base leading-snug font-medium">
           <Link
             className={`${focusRing} hover:underline`}
-            href={`/blog/${post.slug}`}
+            href={contentPath("/blog", post)}
           >
             {post.title}
           </Link>

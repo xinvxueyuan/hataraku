@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ArticleToc, ArticleTocMobile } from "#src/components/article-toc.tsx";
+import { contentPath } from "#src/components/content-path.ts";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { absoluteUrl, dateOnly, siteOrigin } from "#src/components/site.ts";
 import { renderMdxWithToc } from "#src/server/mdx.ts";
@@ -13,7 +14,7 @@ import { getQueryClient, serverApi } from "#src/server/query.ts";
  */
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ segment: string }>;
 }
 
 /**
@@ -70,9 +71,9 @@ const prepareBody = (bodyMd: string, title: string): string => {
  * The procedure is public, so its only failure for a detail read is NOT_FOUND; anything else is a
  * real fault and is left to Next to report rather than being flattened into a 404.
  */
-const loadPost = async (slug: string) => {
+const loadPost = async (segment: string) => {
   const queryClient = getQueryClient();
-  const options = serverApi.posts.bySlug.queryOptions({ input: { slug } });
+  const options = serverApi.posts.byRef.queryOptions({ input: { segment } });
 
   await queryClient.query(options).catch(() => {
     notFound();
@@ -90,8 +91,8 @@ const loadPost = async (slug: string) => {
 export const generateMetadata = async ({
   params,
 }: PageProps): Promise<Metadata> => {
-  const { slug } = await params;
-  const post = await loadPost(slug);
+  const { segment } = await params;
+  const post = await loadPost(segment);
   const origin = await siteOrigin();
 
   const published =
@@ -114,6 +115,7 @@ export const generateMetadata = async ({
   const image = absoluteUrl(origin, `/api/og?${card.toString()}`);
 
   return {
+    alternates: { canonical: contentPath("/blog", post) },
     description: post.description ?? undefined,
     openGraph: {
       description: post.description ?? undefined,
@@ -127,15 +129,15 @@ export const generateMetadata = async ({
       ],
       title: post.title,
       type: "article",
-      url: `/blog/${post.slug}`,
+      url: contentPath("/blog", post),
     },
     title: post.title,
   };
 };
 
 const PostPage = async ({ params }: PageProps) => {
-  const { slug } = await params;
-  const post = await loadPost(slug);
+  const { segment } = await params;
+  const post = await loadPost(segment);
 
   const prepared =
     post.bodyMd === null ? null : prepareBody(post.bodyMd, post.title);

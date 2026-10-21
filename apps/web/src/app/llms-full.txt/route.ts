@@ -1,3 +1,4 @@
+import { contentPath, contentSegment } from "#src/components/content-path.ts";
 import {
   describeSite,
   loadAllPosts,
@@ -41,7 +42,7 @@ const postLines = (post: SitePost, body: string, origin: string): string[] => {
   const lines = [
     `## ${post.title}`,
     "",
-    `- URL: ${absoluteUrl(origin, `/blog/${post.slug}`)}`,
+    `- URL: ${absoluteUrl(origin, contentPath("/blog", post))}`,
   ];
 
   if (post.publishedAt !== null) {
@@ -148,7 +149,11 @@ const GET = async (): Promise<Response> => {
   const bodies = new Map(
     await Promise.all(
       latest.map(
-        async (post) => [post.slug, await loadPostBody(post.slug)] as const
+        async (post) =>
+          [
+            contentSegment(post),
+            await loadPostBody(contentSegment(post)),
+          ] as const
       )
     )
   );
@@ -176,7 +181,9 @@ const GET = async (): Promise<Response> => {
   }
 
   for (const post of latest) {
-    lines.push(...postLines(post, bodies.get(post.slug)?.trim() ?? "", origin));
+    lines.push(
+      ...postLines(post, bodies.get(contentSegment(post))?.trim() ?? "", origin)
+    );
   }
 
   for (const entry of micro.slice(0, MICRO_LIMIT)) {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -124,7 +125,7 @@ const ArticlePage = async ({ searchParams }: PageProps) => {
                   <div className="flex min-w-0 flex-col gap-1">
                     <Link
                       className={`${isLead ? "text-2xl leading-normal font-semibold tracking-tight" : "text-lg font-medium"} hover:underline`}
-                      href={`/blog/${post.slug}`}
+                      href={contentPath("/blog", post)}
                     >
                       {post.title}
                     </Link>

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { highlightMatches } from "@hataraku/components/highlight";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { SearchForm } from "#src/components/search-form.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -109,7 +110,11 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                 <li key={hit.slug}>
                   <Link
                     className="text-lg font-medium hover:underline"
-                    href={`/blog/${hit.slug}`}
+                    href={contentPath("/blog", {
+                      id: hit.id,
+                      slug: hit.slug,
+                      slugOnly: hit.slugOnly,
+                    })}
                   >
                     {highlightMatches(hit.title, query)}
                   </Link>

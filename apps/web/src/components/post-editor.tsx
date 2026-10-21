@@ -11,6 +11,7 @@ import { Input } from "@hataraku/ui/components/input";
 import { Label } from "@hataraku/ui/components/label";
 
 import { fromDateInput, toDateInput } from "#src/components/admin-dates.ts";
+import { contentPath } from "#src/components/content-path.ts";
 import { ImageUploader } from "#src/components/image-uploader.tsx";
 import { api } from "#src/lib/api.ts";
 
@@ -35,9 +36,10 @@ export interface EditablePost {
   coverKey: string | null;
   description: string | null;
   featured: boolean;
-  id: string;
+  id: number;
   publishedAt: Date | null;
-  slug: string;
+  slug: string | null;
+  slugOnly: boolean;
   status: "draft" | "published";
   tagSlugs: string[];
   title: string;
@@ -57,21 +59,42 @@ interface PostForm {
   featured: boolean;
   publishedAt: string;
   slug: string;
+  slugOnly: boolean;
   tags: string;
   title: string;
 }
 
-const initialForm = (post: EditablePost | null): PostForm => ({
-  bodyMd: post?.bodyMd ?? "",
-  categorySlug: post?.categorySlug ?? "",
-  coverKey: post?.coverKey ?? "",
-  description: post?.description ?? "",
-  featured: post?.featured ?? false,
-  publishedAt: toDateInput(post?.publishedAt ?? null),
-  slug: post?.slug ?? "",
-  tags: (post?.tagSlugs ?? []).join(", "),
-  title: post?.title ?? "",
-});
+const emptyForm: PostForm = {
+  bodyMd: "",
+  categorySlug: "",
+  coverKey: "",
+  description: "",
+  featured: false,
+  publishedAt: toDateInput(null),
+  slug: "",
+  slugOnly: false,
+  tags: "",
+  title: "",
+};
+
+const initialForm = (post: EditablePost | null): PostForm => {
+  if (post === null) {
+    return emptyForm;
+  }
+
+  return {
+    bodyMd: post.bodyMd,
+    categorySlug: post.categorySlug ?? "",
+    coverKey: post.coverKey ?? "",
+    description: post.description ?? "",
+    featured: post.featured,
+    publishedAt: toDateInput(post.publishedAt),
+    slug: post.slug ?? "",
+    slugOnly: post.slugOnly,
+    tags: post.tagSlugs.join(", "),
+    title: post.title,
+  };
+};
 
 /** An empty box means "no value", not an empty string, for every optional field. */
 const orNull = (value: string): string | null =>
@@ -91,7 +114,8 @@ const toPayload = (form: PostForm) => ({
   description: orNull(form.description),
   featured: form.featured,
   publishedAt: fromDateInput(form.publishedAt),
-  slug: form.slug,
+  slug: orNull(form.slug),
+  slugOnly: form.slugOnly,
   tagSlugs: splitTags(form.tags),
   title: form.title,
 });
@@ -177,6 +201,17 @@ export const PostEditor = ({
     update.mutate({ ...toPayload(form), id: post.id });
   };
 
+  const slug = orNull(form.slug);
+
+  const finalPath =
+    post === null && slug === null
+      ? "保存后按数字 id 生成"
+      : contentPath("/blog", {
+          id: post?.id ?? 0,
+          slug,
+          slugOnly: form.slugOnly,
+        });
+
   const isPublished = (post?.status ?? "draft") === "published";
   const busy = create.isPending || update.isPending;
 
@@ -236,19 +271,48 @@ export const PostEditor = ({
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="post-slug">Slug</Label>
+          <Label htmlFor="post-slug">别名（可选）</Label>
           <Input
             id="post-slug"
             onChange={(event) => {
-              patch({ slug: event.target.value });
+              const { value } = event.target;
+
+              patch(
+                value.trim() === ""
+                  ? { slug: value, slugOnly: false }
+                  : { slug: value }
+              );
             }}
             pattern="[a-z0-9]+(-[a-z0-9]+)*"
-            placeholder="lowercase-words-with-dashes"
-            required
+            placeholder="留空则使用数字 id"
             value={form.slug}
           />
           <p className="text-muted-foreground text-xs">
-            文章地址是 /blog/&lt;slug&gt;：小写字母、数字与连字符。
+            留空时地址是 /blog/&lt;id&gt;；填写后优先使用别名。
+          </p>
+          <label
+            className="flex items-center gap-2 text-sm"
+            htmlFor="post-slug-only"
+          >
+            <input
+              checked={form.slugOnly}
+              className="size-4"
+              disabled={slug === null}
+              id="post-slug-only"
+              onChange={(event) => {
+                patch({ slugOnly: event.target.checked });
+              }}
+              type="checkbox"
+            />
+            仅别名可访问
+          </label>
+          <p className="text-muted-foreground text-xs">
+            {slug === null
+              ? "先填写别名，数字地址才会停止对外可见。"
+              : "开启后只能通过别名访问，数字 id 返回 404。"}
+          </p>
+          <p className="text-muted-foreground text-xs">
+            最终地址：<code className="text-foreground">{finalPath}</code>
           </p>
         </div>
 

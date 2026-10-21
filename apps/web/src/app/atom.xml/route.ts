@@ -1,3 +1,4 @@
+import { contentPath, contentSegment } from "#src/components/content-path.ts";
 import {
   describeSite,
   loadDatedPosts,
@@ -42,7 +43,11 @@ const GET = async (): Promise<Response> => {
   const bodies = new Map(
     await Promise.all(
       latest.map(
-        async (post) => [post.slug, await loadPostBody(post.slug)] as const
+        async (post) =>
+          [
+            contentSegment(post),
+            await loadPostBody(contentSegment(post)),
+          ] as const
       )
     )
   );
@@ -77,9 +82,9 @@ const GET = async (): Promise<Response> => {
   );
 
   for (const post of latest) {
-    const link = absoluteUrl(origin, `/blog/${post.slug}`);
+    const link = absoluteUrl(origin, contentPath("/blog", post));
     const updated = post.updatedAt ?? post.publishedAt;
-    const body = bodies.get(post.slug)?.trim() ?? "";
+    const body = bodies.get(contentSegment(post))?.trim() ?? "";
 
     const summary =
       post.description ?? (body === "" ? "" : excerptOf(body, 240));

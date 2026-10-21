@@ -1,0 +1,887 @@
+$ velite && next build
+[32m[VELITE][0m build finished in 67.50ms
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 44ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 18.1s
+  Running TypeScript ...
+  Finished TypeScript in 4.5s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/35) ...
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (8/35) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (17/35) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+  Generating static pages using 7 workers (26/35) 
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+❌ Invalid environment variables: [
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_SECRET' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'BETTER_AUTH_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  },
+  {
+    expected: 'string',
+    code: 'invalid_type',
+    path: [ 'DATABASE_URL' ],
+    message: 'Invalid input: expected string, received undefined'
+  }
+]
+✓ Generating static pages using 7 workers (35/35) in 1419ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /albums
+├ ƒ /albums/[segment]
+├ ƒ /api/[[...rest]]
+├ ƒ /api/og
+├ ƒ /atom.xml
+├ ƒ /blog
+├ ƒ /blog/[segment]
+├ ƒ /blog/archive
+├ ƒ /blog/taxonomy
+├ ƒ /blog/taxonomy/[type]/[slug]
+├ ƒ /changelog
+├ ƒ /docs
+├ ƒ /docs/[slug]
+├ ƒ /forgot-password
+├ ƒ /llms-full.txt
+├ ƒ /llms.txt
+├ ƒ /login
+├ ƒ /notes
+├ ƒ /projects
+├ ƒ /reset-password
+├ ○ /robots.txt
+├ ƒ /rpc/[[...rest]]
+├ ƒ /rss.xml
+├ ƒ /search
+├ ƒ /settings/admin
+├ ƒ /settings/admin/changelog
+├ ƒ /settings/admin/changelog/[id]
+├ ƒ /settings/admin/micro
+├ ƒ /settings/admin/micro/[id]
+├ ƒ /settings/admin/posts
+├ ƒ /settings/admin/posts/[id]
+├ ƒ /settings/admin/profile
+├ ƒ /settings/admin/projects
+├ ƒ /settings/admin/projects/[id]
+├ ƒ /settings/password
+├ ƒ /settings/security
+├ ƒ /settings/two-factor
+├ ƒ /sitemap.xml
+├ ƒ /todos
+└ ƒ /toolbox
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -94,7 +95,7 @@ const HomePage = async () => {
                 <li key={post.id}>
                   <Link
                     className="hover:bg-accent flex gap-4 rounded-lg border p-4 transition-colors"
-                    href={`/blog/${post.slug}`}
+                    href={contentPath("/blog", post)}
                   >
                     <PostCover
                       className={`hidden shrink-0 sm:block ${isLead ? "sm:w-56" : "sm:w-40"}`}

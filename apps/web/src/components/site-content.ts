@@ -89,7 +89,7 @@ export const loadAllPosts = async (): Promise<SitePost[]> => {
     )
   );
 
-  const byId = new Map<string, SitePost>();
+  const byId = new Map<number, SitePost>();
 
   for (const page of [first, ...rest]) {
     for (const post of page.items) {
@@ -143,7 +143,7 @@ export const loadAlbums = async (): Promise<SiteAlbum[]> => {
     )
   );
 
-  const byId = new Map<string, SiteAlbum>();
+  const byId = new Map<number, SiteAlbum>();
 
   for (const page of [first, ...rest]) {
     for (const album of page.items) {
@@ -199,10 +199,10 @@ export const loadSiteIdentity = cache(async (): Promise<SiteIdentity> =>
   describeSite(await loadSiteProfile())
 );
 
-/** The article body for an `llms-full` excerpt; a slug deleted mid-read is simply absent. */
-export const loadPostBody = async (slug: string): Promise<string | null> => {
+/** The article body for an `llms-full` excerpt; a segment deleted mid-read is simply absent. */
+export const loadPostBody = async (segment: string): Promise<string | null> => {
   try {
-    const post = await serverCall.posts.bySlug({ slug });
+    const post = await serverCall.posts.byRef({ segment });
 
     return post.bodyMd;
   } catch (error) {

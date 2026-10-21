@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Button } from "@hataraku/ui/components/button";
 import { Card } from "@hataraku/ui/components/card";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { api } from "#src/lib/api.ts";
 
 /** The list's input, taken from the client's own contract so the page cannot pass a wrong shape. */
@@ -89,7 +90,8 @@ export const AdminPostList = ({
                 {post.title}
               </Link>
               <span className="text-muted-foreground truncate text-xs">
-                /blog/{post.slug} · 更新于 {formatDate(post.updatedAt)}
+                {contentPath("/blog", post)} · 更新于{" "}
+                {formatDate(post.updatedAt)}
               </span>
             </div>
 

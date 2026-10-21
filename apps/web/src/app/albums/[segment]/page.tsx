@@ -7,6 +7,7 @@ import { cache } from "react";
 import { Badge } from "@hataraku/ui/components/badge";
 
 import { assetUrl } from "#src/components/asset-url.ts";
+import { contentPath } from "#src/components/content-path.ts";
 import { MediaImage } from "#src/components/media-image.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -24,9 +25,9 @@ const dateFormatter = new Intl.DateTimeFormat("zh-CN", {
 
 const formatDate = (date: Date): string => dateFormatter.format(date);
 
-const loadAlbum = cache(async (slug: string) => {
+const loadAlbum = cache(async (segment: string) => {
   try {
-    return await serverCall.media.albums.bySlug({ slug });
+    return await serverCall.media.albums.byRef({ segment });
   } catch (error) {
     if (error instanceof ORPCError && error.code === "NOT_FOUND") {
       notFound();
@@ -37,16 +38,17 @@ const loadAlbum = cache(async (slug: string) => {
 });
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ segment: string }>;
 }
 
 export const generateMetadata = async ({
   params,
 }: PageProps): Promise<Metadata> => {
-  const { slug } = await params;
-  const album = await loadAlbum(slug);
+  const { segment } = await params;
+  const album = await loadAlbum(segment);
 
   return {
+    alternates: { canonical: contentPath("/albums", album) },
     description: album.description ?? undefined,
     title: album.title,
   };
@@ -67,8 +69,8 @@ const focusRing =
   "rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none";
 
 const AlbumPage = async ({ params }: PageProps) => {
-  const { slug } = await params;
-  const album = await loadAlbum(slug);
+  const { segment } = await params;
+  const album = await loadAlbum(segment);
 
   const photos = album.photos.flatMap((photo): GalleryPhoto[] => {
     const full = assetUrl(photo.imageKey);

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Pager } from "@hataraku/components/pager";
 import { Badge } from "@hataraku/ui/components/badge";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { MediaImage } from "#src/components/media-image.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -65,7 +66,7 @@ const AlbumCard = ({ album }: { album: Album }) => {
   return (
     <Link
       className={`${focusRing} hover:bg-accent flex h-full flex-col overflow-hidden border transition-colors`}
-      href={`/albums/${album.slug}`}
+      href={contentPath("/albums", album)}
     >
       <span className="bg-muted relative block aspect-[16/9] overflow-hidden">
         <MediaImage

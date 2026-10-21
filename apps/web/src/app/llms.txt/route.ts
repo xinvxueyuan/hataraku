@@ -1,3 +1,4 @@
+import { contentPath } from "#src/components/content-path.ts";
 import {
   describeSite,
   loadAlbums,
@@ -157,7 +158,7 @@ const albumRows = (origin: string, albums: AlbumRow[]): string[] =>
       album.description === null ? null : excerptOf(album.description, 120),
     ].filter((part) => part !== null);
 
-    return `- [${album.title}](${absoluteUrl(origin, `/albums/${album.slug}`)})${
+    return `- [${album.title}](${absoluteUrl(origin, contentPath("/albums", album))})${
       meta.length === 0 ? "" : `: ${meta.join(" — ")}`
     }`;
   });
@@ -230,7 +231,7 @@ const postRows = (origin: string, posts: SitePost[]): string[] =>
       post.description === null ? null : excerptOf(post.description, 160),
     ].filter((part) => part !== null);
 
-    return `- [${post.title}](${absoluteUrl(origin, `/blog/${post.slug}`)})${
+    return `- [${post.title}](${absoluteUrl(origin, contentPath("/blog", post))})${
       meta.length === 0 ? "" : `: ${meta.join(" — ")}`
     }`;
   });

@@ -6,6 +6,7 @@ import { cache } from "react";
 import { Pager } from "@hataraku/components/pager";
 import { Badge } from "@hataraku/ui/components/badge";
 
+import { contentPath } from "#src/components/content-path.ts";
 import { PostCover } from "#src/components/post-cover.tsx";
 import { serverCall } from "#src/server/query.ts";
 
@@ -244,7 +245,7 @@ const TaxonomyDetailPage = async ({ params, searchParams }: PageProps) => {
                   <h2 className="text-lg leading-snug font-medium">
                     <Link
                       className={`${focusRing} hover:underline`}
-                      href={`/blog/${post.slug}`}
+                      href={contentPath("/blog", post)}
                     >
                       {post.title}
                     </Link>

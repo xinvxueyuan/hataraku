@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { assetUrl } from "#src/components/asset-url.ts";
+import { contentPath } from "#src/components/content-path.ts";
 import {
   loadAlbums,
   loadAllPosts,
@@ -72,7 +73,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       changeFrequency: "monthly",
       lastModified: post.updatedAt ?? post.publishedAt ?? siteUpdated,
       priority: 0.8,
-      url: absoluteUrl(origin, `/blog/${post.slug}`),
+      url: absoluteUrl(origin, contentPath("/blog", post)),
     });
   }
 
@@ -107,7 +108,7 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
       images: cover === null ? undefined : [cover],
       lastModified,
       priority: 0.5,
-      url: absoluteUrl(origin, `/albums/${album.slug}`),
+      url: absoluteUrl(origin, contentPath("/albums", album)),
     });
   }
 

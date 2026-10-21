@@ -53,11 +53,17 @@ const AdminPostPage = async ({
     );
   }
 
+  const postId = Number(id);
+
+  if (!Number.isSafeInteger(postId) || postId <= 0) {
+    notFound();
+  }
+
   let forbidden = false;
   let post: LoadedPost | null = null;
 
   try {
-    post = await serverCall.posts.byId({ id });
+    post = await serverCall.posts.byId({ id: postId });
   } catch (error) {
     if (isForbidden(error)) {
       forbidden = true;

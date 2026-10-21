@@ -1,0 +1,41 @@
+H66 — id-or-slug 寻址证据
+时间: 2026-10-22 (Asia/Shanghai)
+
+== 三组夹具（插入 posts 40/41/42，测完删除） ==
+id=40  slug=NULL              slug_only=false → /blog/40 200
+id=41  slug=h66-alias-fixture slug_only=false → /blog/41 200；/blog/h66-alias-fixture 200
+id=42  slug=h66-only-fixture  slug_only=true  → /blog/42 404；/blog/h66-only-fixture 200
+
+== 后台保存后 ==
+id=40 填别名 h66-editor-alias：/blog/40 200，/blog/h66-editor-alias 200；预览 /blog/h66-editor-alias
+id=41 打开「仅别名可访问」：/blog/41 404，/blog/h66-alias-fixture 200；预览 /blog/h66-alias-fixture
+
+== 后台控件（Playwright） ==
+id=41 初始：slug 已填、checkbox 未选且 enabled、预览 /blog/h66-alias-fixture
+id=40 初始：slug 空、checkbox disabled=true、预览 /blog/40
+填 h66-editor-alias 后：checkbox disabled=false，预览 /blog/h66-editor-alias
+勾选后保存：预览保持 /blog/h66-editor-alias；slug 落库
+id=41 勾选后保存：预览 /blog/h66-alias-fixture；slug_only=true
+别名为空时提示「先填写别名，数字地址才会停止对外可见。」；有别名时提示数字 id 404。
+
+== 全站链接样例 ==
+首页：/blog/39（现有文章 slug 为空 → 数字 id）
+/blog：/blog/39、/blog/38…；/albums：/albums/1
+sitemap：/blog/39、/albums/1、/blog/h66-editor-alias（测试期）
+rss：/blog/h66-editor-alias、/blog/h66-alias-fixture、/blog/h66-only-fixture（测试期）
+atom：同上；llms：/blog/h66-editor-alias；llms-full：/blog/39
+OG/canonical：/blog/40 → http://localhost:3000/blog/h66-editor-alias；/albums/1 → /albums/1
+唯一地址计算：apps/web/src/components/content-path.ts 的 contentPath/contentSegment；源码中 `/blog/${`、`/albums/${` 模板 = 0。
+
+== 清理 ==
+delete posts 40,41,42；posts 回到 39；/blog/40、/blog/41、/blog/42、测试别名均 404，/blog/39 200。
+
+== 门禁 ==
+pnpm run check:design EXIT=0
+pnpm run check:compat EXIT=0（172 files）
+vp check apps/web/src → 109 files 0 errors
+pnpm exec knip EXIT=0
+pnpm exec e2e run → 7/7
+pnpm --filter @hataraku/web build EXIT=0；路由表 /blog/[segment]、/albums/[segment]
+
+注：本站没有相册后台写接口/编辑器，故只实现文章编辑器；相册前台已用 contentPath 与 byRef。
