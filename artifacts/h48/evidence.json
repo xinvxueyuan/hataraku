@@ -1,0 +1,65 @@
+{
+  "checks": {
+    "freshHasTable": true,
+    "freshHasUserColumn": true,
+    "freshHasBothIndexes": true,
+    "freshHasForeignKey": true,
+    "existingDatabaseUnaffected": true,
+    "brokenHadNoTable": true,
+    "repairRestoredTable": true,
+    "repairRestoredUserColumn": true,
+    "repairRestoredForeignKey": true,
+    "generateEmitsNothing": true
+  },
+  "results": {
+    "freshMigrate": {
+      "ok": true,
+      "stderr": ""
+    },
+    "fresh": {
+      "table_exists": true,
+      "column_count": "9",
+      "user_column": "1",
+      "index_count": "3",
+      "fk_count": "1",
+      "applied": "6"
+    },
+    "existingMigrate": {
+      "ok": true,
+      "stderr": ""
+    },
+    "existing": {
+      "table_exists": true,
+      "column_count": "9",
+      "user_column": "1",
+      "index_count": "3",
+      "fk_count": "1",
+      "applied": "6"
+    },
+    "brokenBefore": {
+      "table_exists": false,
+      "column_count": "0",
+      "user_column": "0",
+      "index_count": "0",
+      "fk_count": "0",
+      "applied": "5"
+    },
+    "repairMigrate": {
+      "ok": true,
+      "stderr": ""
+    },
+    "brokenAfter": {
+      "table_exists": true,
+      "column_count": "9",
+      "user_column": "1",
+      "index_count": "3",
+      "fk_count": "1",
+      "applied": "6"
+    },
+    "generate": {
+      "exitCode": 0,
+      "newFolders": [],
+      "output": "No schema changes, nothing to migrate 😴 | $ drizzle-kit generate"
+    }
+  }
+}
