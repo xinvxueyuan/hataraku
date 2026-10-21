@@ -121,19 +121,17 @@ The check itself belongs to another task (H55). Proposal:
   (`style={{ "--x": "var(--radius)" }}`), SVG `fill="#fff"` in components that must render an icon,
   third-party class names containing a colour word, and the `<style>` satori emits.
 
-## Knip entry for the icon module
+## Icon entry point
 
-`icons.ts` is a public entry point of the design system, and its consumers (the components
-package) do not exist yet, so Knip reports every icon as an unused export. Following the repo rule
-("add a Knip config entry only when a plugin cannot see a real reference"), `knip.json` gains one
-workspace entry:
+`packages/ui/package.json` gains one export:
 
 ```json
-"packages/ui": { "entry": ["src/icons.ts"] }
+"./icons": "./src/icons.ts"
 ```
 
-That is the only file changed outside `packages/ui` and `artifacts/h53`; it is declared in the
-report so the captain can review it.
+so a consumer writes `import { Info } from "@hataraku/ui/icons"`. With that export in place Knip
+sees the module as a package entry point and no `knip.json` entry is needed (the first attempt did
+add one; Knip reported it as redundant once the export existed, and it was removed).
 
 ## Verification environment
 

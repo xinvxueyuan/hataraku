@@ -102,7 +102,7 @@
   "gate": {
     "scopedFormat": "packages/ui clean (16 files)",
     "checkNoFmt": "EXIT=0 (220 files)",
-    "knip": "EXIT=0 after declaring packages/ui/src/icons.ts an entry (knip.json)",
+    "knip": "EXIT=0 with no config entry; the ./icons export makes the module a package entry point",
     "unitAndIntegration": "262/262 passed (24 files)",
     "build": "EXIT=0 (2 tasks)",
     "repoReady": "blocked by docs/design-system.md (another member's unformatted doc) — packages/ui formatted; CI is authoritative"
