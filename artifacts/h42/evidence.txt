@@ -1,0 +1,43 @@
+H42 — 搜索输入即搜 / 空结果建议 / 高亮 实测证据
+时间: 2026-10-21 (Asia/Shanghai)　实例: http://localhost:3000
+
+== 1. 输入即搜（debounce） ==
+在 /search 依次键入 G → Go → Goo（键间隔约 60ms）：
+  键事件: G@154ms, Go@302ms, Goo@436ms
+  网络请求（仅 RSC 导航）: 1 条 @665ms → /search?q=Goo&_rsc=…
+  最终 URL: /search?q=Goo；输入框: Goo（保持焦点，未重置）
+→ 三次按键只发一次请求，debounce 280ms 生效；router.replace 不压历史。
+
+== 2. 中文输入法组合 ==
+compositionstart + input('liu') 后等待 700ms：request 数 = 0，输入框 = liu，URL 仍为 /search?q=Google。
+compositionend + input('限流') 后 1200ms：request = /search?q=%E9%99%90%E6%B5%81&_rsc=…，输入框 = 限流。
+
+== 3. 空结果建议 ==
+q=zzzznotfound：找到 0 条结果；文案「没有找到与「zzzznotfound」匹配的文章。它可能还没被写过，或者用了别的说法。试试更短的词，或者 去看全部文章。」
+q=36 个汉字的长词：找到 0 条结果；文案「这个关键词有点长（36 个字），很少会整段出现在文章里。试试更短的词，或者 去看全部文章。」
+短查询（1 字）有独立文案分支（长度 ≤1 时提示换更具体的词）。
+
+== 4. 高亮 ==
+q=Goo：4 个 <mark>（标题与摘要），m[0] 标题片段：
+  一步步用 <mark class="bg-primary/15 text-foreground rounded-sm px-0.5">Goo</mark>gle AI Studio 做出并部署自己的 Android 应用
+大小写不敏感（Google/goog 同样命中）；前缀命中高亮命中的那段。
+特殊字符 a.b：HTTP 200，找到 30 条结果，无异常。
+grep dangerouslySetInnerHTML apps/web/src → 0 处。
+对比度（mark 前景 vs 合成背景）：light 13.94；dark 13.84（均 ≥4.5）。
+
+== 5. SSR 分享链接 ==
+直接请求 /search?q=限流：200，HTML 内 data-slot=search-results 与「找到」计数均存在（首屏即结果）。
+
+== 6. URL 唯一真源 / 前进后退 ==
+/search?q=Google → 点击首条进入文章 → goBack：URL /search?q=Google、输入框 Google、结果 5 条；goForward：回到文章。
+清空输入：URL /search，输入框空，焦点仍在 #search-input。
+
+== 7. 无 JS 回退 ==
+渲染表单 <form action="/search" method="get"> + input name="q"；直接打开 /search?q=… 由服务端渲染结果，不依赖 JS。
+pending 反馈：data-slot=search-pending（aria-live），空闲时为空字符串，输入框 aria-busy 随 transition 变化。
+
+== 截图 ==
+search-goo-1440.png（light）、search-goo-390.png（dark）、search-empty-390.png（light）。
+
+== e2e / 门禁 ==
+见 evidence-e2e.txt / evidence-ready.txt。
