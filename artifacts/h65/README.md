@@ -33,7 +33,8 @@
 - integration：194 passed（byRef 数字/slug/不存在/slugOnly 数字；slugOnly 无 slug DB 与 zod 双拒；多条 null slug；albums 数字/slugOnly；search 输出 id/slugOnly）。
 - unit：82 passed。
 - check:design / check:compat / knip：0。
-- `vp check packages scripts docs`：全绿（见 gate 文件）。
+- `vp check packages/db/src packages/api/src packages/api/tests scripts/migrate-content.ts`：59 files formatted / lint+type 全绿；见 backend-check.txt。
+- `pnpm run db:migrate` 二次执行幂等。
 - `pnpm run ready`：H66 尚未落地，web 仍调用 `posts.bySlug` / `media.albums.bySlug`，因此本任务范围内只能验证 backend/API；H66 完成后重跑 ready。
 
 ## 彩排

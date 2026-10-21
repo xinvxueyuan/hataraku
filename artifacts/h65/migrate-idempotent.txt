@@ -1,0 +1,14 @@
+$ turbo run db:migrate
+
+   • turbo 2.11.9
+   • Packages in scope: @hataraku/api, @hataraku/auth, @hataraku/components, @hataraku/config, @hataraku/db, @hataraku/mobile, @hataraku/server, @hataraku/ui, @hataraku/web
+   • Running db:migrate in 9 packages
+   • Remote caching disabled
+
+@hataraku/server:db:migrate: cache bypass, force executing 4966ca7db922db55
+@hataraku/server:db:migrate: $ node --env-file-if-exists=.env src/migrate.ts
+
+ Tasks:    1 successful, 1 total
+Cached:    0 cached, 1 total
+  Time:    1.558s 
+
