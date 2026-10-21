@@ -1,0 +1,26 @@
+H71 — 门户首页精修实测
+时间: 2026-10-22 (Asia/Shanghai)
+
+== 文案 / 语义 ==  
+portal main 内站点名出现：改前 2（海报 hero.title + 右侧 h1）→ 改后 1（仅 h1）。
+`PORTAL` 字样：改前 1（Night Stack · Portal 眉标）→ 改后 0。
+海报统计文案：改前「篇写作 · 6 篇文档」→ 改后「38 篇文章 · 6 篇文档」；项目 2 个 / 相册 1 本 同屏列出，口径与瓦片一致。
+海报角标：改前显示 hero.meta「已更新 38 篇 · 每周二推送」→ 改后「写作 · 2026年10月17日」。
+
+== 海报垂直空间（DOM 实测） ==
+改前：海报 386px（被 grid 拉伸），中段块 217px（含 py-10 共 80px 纵向内边距），站点名到「最新写作」约 40px 空白。
+改后：海报 344px（items-start，按内容结束），Stats 底到「最新写作」顶 20px；无弹性留白。
+主数字：改前 72px（text-7xl）→ 改后桌面 36px（text-4xl）/ 移动 30px（text-3xl）；右侧 h1 桌面 48px / 移动 36px，h1 成为唯一主锚。
+
+== 移动端 ==
+390 视口：clientWidth=scrollWidth=373；海报与身份上下堆叠，瓦片单列；主数字 30px < h1 36px。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（见 evidence-ready.txt；包含 289 tests、e2e 7/7、build）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+e2e 7/7（Connected / Toggle theme / Dark / 用户菜单保留）
+
+== 截图 ==
+h71-before-1440.png / h71-before-390.png（与 artifacts/h69/live-home-* 同状态）
+h71-after-1440.png / h71-after-390.png

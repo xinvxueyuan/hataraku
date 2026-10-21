@@ -4,27 +4,92 @@ import type { PortalModule } from "#src/server/portal.ts";
 /**
  * The portal's poster and identity block.
  *
- * The poster is an editorial surface, not a card: a token-driven colour field, the writing count
- * and the newest line. The identity next to it is the only h1 on the page and gives writing and
- * docs equal billing in the two calls to action. Business copy lives here, not in the shared tile.
+ * The identity is the page's only h1. The poster carries what the identity does not: the four
+ * content counts, the newest writing date, and the author's own description of the archive. It is
+ * deliberately not stretched to the identity's height: a fixed frame around shifting copy leaves a
+ * hole, while a poster that ends where its content ends stays balanced.
  */
 const hasText = (value: string | null | undefined): value is string =>
   value !== null && value !== undefined && value !== "";
 
-const Poster = ({
+const moduleCount = (
+  modules: readonly PortalModule[],
+  key: PortalModule["key"]
+): PortalModule | undefined => modules.find((module) => module.key === key);
+
+const countOf = (
+  modules: readonly PortalModule[],
+  key: PortalModule["key"]
+): number => moduleCount(modules, key)?.count ?? 0;
+
+const Stats = ({
+  albums,
+  description,
   docs,
-  profile,
+  projects,
   writing,
 }: {
-  docs: PortalModule | undefined;
+  albums: number;
+  description: string | undefined;
+  docs: number;
+  projects: number;
+  writing: number;
+}) => (
+  <div className="relative flex flex-col gap-3">
+    <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+      <span className="text-3xl leading-none font-semibold tracking-tight tabular-nums sm:text-4xl">
+        {writing}
+      </span>
+      <span className="text-sm font-medium">篇文章</span>
+      <span className="text-muted-foreground text-sm">· {docs} 篇文档</span>
+    </p>
+    <dl className="border-border/70 grid grid-cols-2 gap-x-5 gap-y-2 border-t pt-3 text-sm">
+      <div className="flex items-baseline justify-between gap-2">
+        <dt className="text-muted-foreground">项目</dt>
+        <dd className="font-medium">{projects} 个</dd>
+      </div>
+      <div className="flex items-baseline justify-between gap-2">
+        <dt className="text-muted-foreground">相册</dt>
+        <dd className="font-medium">{albums} 本</dd>
+      </div>
+    </dl>
+    {hasText(description) ? (
+      <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
+        {description}
+      </p>
+    ) : null}
+  </div>
+);
+
+const Latest = ({ latest }: { latest: PortalModule["latest"] }) => (
+  <div className="border-border/70 relative border-t pt-3">
+    <p className="text-muted-foreground text-xs">最新写作</p>
+    {latest === null ? (
+      <p className="mt-1 text-sm">还没有发布文章</p>
+    ) : (
+      <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
+        <span className="line-clamp-1 font-medium">{latest.title}</span>
+        {latest.date === null ? null : (
+          <span className="text-muted-foreground text-xs">{latest.date}</span>
+        )}
+      </p>
+    )}
+  </div>
+);
+
+const Poster = ({
+  modules,
+  profile,
+}: {
+  modules: readonly PortalModule[];
   profile: SiteProfile | null;
-  writing: PortalModule | undefined;
 }) => {
   const hero = profile?.hero;
+  const writing = moduleCount(modules, "writing");
   const latest = writing?.latest ?? null;
 
   return (
-    <div className="from-primary/15 via-muted/40 to-background relative flex min-h-80 flex-col justify-between overflow-hidden rounded-2xl border bg-gradient-to-br p-8">
+    <div className="from-primary/15 via-muted/40 to-background relative flex flex-col gap-5 overflow-hidden rounded-2xl border bg-gradient-to-br p-8">
       <div
         aria-hidden="true"
         className="bg-primary/10 absolute -top-20 -right-20 size-64 rounded-full blur-3xl"
@@ -40,40 +105,20 @@ const Poster = ({
         </span>
         <span className="text-muted-foreground text-xs">
           {latest?.date === null || latest?.date === undefined
-            ? "写作"
+            ? "最新写作"
             : `写作 · ${latest.date}`}
         </span>
       </div>
 
-      <div className="relative flex flex-col gap-1 py-10">
-        <span className="text-7xl leading-none font-semibold tracking-tight tabular-nums">
-          {String(writing?.count ?? 0).padStart(2, "0")}
-        </span>
-        <span className="text-muted-foreground text-sm">
-          篇写作 · {docs?.count ?? 0} 篇文档
-        </span>
-        {hero?.title === undefined ? null : (
-          <p className="mt-3 max-w-sm text-lg leading-snug font-medium">
-            {hero.title}
-          </p>
-        )}
-      </div>
+      <Stats
+        albums={countOf(modules, "albums")}
+        description={hero?.description}
+        docs={countOf(modules, "docs")}
+        projects={countOf(modules, "projects")}
+        writing={countOf(modules, "writing")}
+      />
 
-      <div className="border-border/70 relative border-t pt-4">
-        <p className="text-muted-foreground text-xs">最新写作</p>
-        {latest === null ? (
-          <p className="mt-1 text-sm">还没有发布文章</p>
-        ) : (
-          <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
-            <span className="line-clamp-1 font-medium">{latest.title}</span>
-            {latest.date === null ? null : (
-              <span className="text-muted-foreground text-xs">
-                {latest.date}
-              </span>
-            )}
-          </p>
-        )}
-      </div>
+      <Latest latest={latest} />
     </div>
   );
 };
@@ -120,9 +165,6 @@ const Identity = ({
 
   return (
     <div className="flex flex-col justify-center gap-5 px-2 py-4 lg:px-4">
-      <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
-        Night Stack · Portal
-      </p>
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
           {name}
@@ -165,12 +207,12 @@ export const PortalHero = ({
   modules: readonly PortalModule[];
   profile: SiteProfile | null;
 }) => {
-  const writing = modules.find((module) => module.key === "writing");
-  const docs = modules.find((module) => module.key === "docs");
+  const writing = moduleCount(modules, "writing");
+  const docs = moduleCount(modules, "docs");
 
   return (
-    <section className="grid gap-6 lg:grid-cols-[minmax(0,520px)_1fr]">
-      <Poster docs={docs} profile={profile} writing={writing} />
+    <section className="grid items-start gap-6 lg:grid-cols-[minmax(0,520px)_1fr]">
+      <Poster modules={modules} profile={profile} />
       <Identity
         docsLatest={docs?.latest ?? null}
         fallbackDocs={docs?.href ?? "/docs"}
