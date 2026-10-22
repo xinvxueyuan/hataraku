@@ -71,7 +71,7 @@ node scripts/check-design.mjs（CI 里是 pnpm run check:design）检查三类�
 
 - 每个包最多导出一个 .css entry；@hataraku/ui 的 entry 是 ./globals.css，令牌文件只能放在 src/styles/。
 - 包内组件不得零散 import .css；应用只在 apps/web/src/app/layout.tsx 导入一次 @hataraku/ui/globals.css。
-- 第三方样式（@mdxeditor/editor/style.css、@univerjs/.../index.css）属于应用运行时依赖，不在包入口规则内。
+- 第三方样式（@mdxeditor/editor/style.css）属于应用运行时依赖，不在包入口规则内。
 
 ## 5. 换整套外观
 

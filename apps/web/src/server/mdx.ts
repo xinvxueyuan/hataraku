@@ -10,7 +10,6 @@ import { assertSafeMdx } from "@hataraku/api/mdx-guard";
 import { Admonition } from "@hataraku/components/admonition";
 import { CodeBlock } from "@hataraku/components/code-block";
 
-import { Sheet } from "#src/components/sheet.tsx";
 import { expandAdmonitions } from "#src/lib/markdown/admonitions.ts";
 import { collectHeadings } from "#src/lib/markdown/headings.ts";
 import type { TocHeading } from "#src/lib/markdown/headings.ts";
@@ -38,17 +37,14 @@ import type { TocHeading } from "#src/lib/markdown/headings.ts";
  * React belong here. A component added later must render props only and never evaluate a string, or
  * it reopens the boundary this map exists to hold.
  *
- * `Sheet` reads the markdown table in its body into a read-only Univer canvas. `Admonition` is the
- * target of the `:::note` family and renders only its type, title, and children. `pre` wraps a
- * highlighted code block so it can offer copy-to-clipboard; it renders the element it is given and
- * never interprets its text.
+ * `Admonition` is the target of the `:::note` family and renders only its type, title, and
+ * children. `pre` wraps a highlighted code block so it can offer copy-to-clipboard; it renders the
+ * element it is given and never interprets its text.
  *
- * Note that the compiler runs with expressions blocked, which strips `rows={[…]}` attribute values
- * without a warning, so a component here takes its data from children or string attributes, never
- * from an expression. The editor itself arrives through `next/dynamic` with `ssr: false`, which keeps
- * the engine out of the server render and out of the first bundle.
+ * The compiler runs with expressions blocked, so a component here takes its data from children or
+ * string attributes, never from an expression.
  */
-const ALLOWED_COMPONENTS = { Admonition, Sheet, pre: CodeBlock };
+const ALLOWED_COMPONENTS = { Admonition, pre: CodeBlock };
 
 /** Shiki themes that follow the light and dark token sets in the UI package. */
 const SHIKI_THEMES = {

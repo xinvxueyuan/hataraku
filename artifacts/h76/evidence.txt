@@ -1,0 +1,34 @@
+H76 — 移除 Univer 嵌入表格，正文表格回归 GFM（实测证据）
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 决策：选 B（保留 URL，改写为 Markdown 表格教程） ==
+原 `/docs/embedded-sheet` 只讲 `<Sheet>` + Univer 的只读快照，功能删除后整篇内容即失效；但文档站需要一篇讲表格的文档。已改写为 GFM 语法、对齐、窄屏换行与本站约定，URL 保持 200。
+
+== 依赖体积 ==
+删除前：node_modules/.pnpm 下 22 个 @univerjs 目录，合计 122.2MB（engine-formula 38.8 / engine-render 27.1 / ui 24.1 / sheets-ui 8.5 …）。
+删除后：@univerjs 目录 0；pnpm install 移除 57 个包（含传递依赖）；package.json / pnpm-workspace.yaml / pnpm-lock.yaml 无 univer 引用。
+
+== 浏览器 JS（performance.getEntriesByType('resource')，只计 .js，transferSize || encodedBodySize） ==
+改前（本地 dev，/docs/embedded-sheet）：58 个 JS，3,076,231 B；最大 chunk 547,966 B；对照 lead 的生产数 1,867 KB。
+改后（生产 next start，HTTP 200）：13 个 JS，250,969 B（245 KB）；最大 chunk 71,927 B。
+红线 ≤400 KB：通过；canvas 2→0，univer 节点 23→0。
+
+== 页面/表格 ==
+/docs/embedded-sheet：200，title「在正文里写表格」；普通表格 0→3。
+/docs/authoring：普通表格 1→1，无 canvas。
+/blog/8：普通表格 1→1，无 canvas。
+/blog/7：删除前 table=1；当前 500（MDX 正文编译错误，如 `<http://example.com/>`），与 H76/表格样式无关，改用 /blog/8 做博客侧同 `.prose` 证据。
+
+== grep / 包 ==
+`grep -ri univer`（排除 node_modules/pnpm-lock/artifacts/.turbo）：0；@univerjs 包目录 0；锁文件 0。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（typegen + vp check + knip + tests + e2e 7/7 + build；evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+
+== 截图 ==
+h76-before-docs_embedded-sheet-{1440,390}.png（Univer 版）
+h76-after-docs_embedded-sheet-{1440,390}.png（Markdown 版）
+h76-before/after-docs_authoring-{1440,390}.png

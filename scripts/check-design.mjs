@@ -106,11 +106,6 @@ const VALUE_ALLOWLIST = [
     reason: "responsive shell width is layout geometry, not a theme value",
   },
   {
-    file: "apps/web/src/components/sheet.tsx",
-    match: "h-[420px]",
-    reason: "fixed Univer canvas height is structural",
-  },
-  {
     file: "packages/ui/src/components/badge.tsx",
     match: "ring-[3px]",
     reason: "focus-ring width; H53 owns the token replacement",
