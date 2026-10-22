@@ -135,14 +135,44 @@ const SearchPage = async ({ searchParams }: PageProps) => {
                       )}
                     </p>
                   )}
-                  {hit.publishedAt === null ? null : (
-                    <time
-                      className="text-muted-foreground text-xs"
-                      dateTime={hit.publishedAt.toISOString()}
-                    >
-                      {dateFormatter.format(hit.publishedAt)}
-                    </time>
-                  )}
+                  <div
+                    className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs"
+                    data-slot="search-meta"
+                  >
+                    {hit.categorySlug === null ? null : (
+                      <Link
+                        className="shrink-0 hover:underline"
+                        href={`/blog?category=${encodeURIComponent(hit.categorySlug)}`}
+                      >
+                        分类：{hit.categorySlug}
+                      </Link>
+                    )}
+                    {hit.publishedAt === null ? null : (
+                      <time
+                        className="shrink-0"
+                        dateTime={hit.publishedAt.toISOString()}
+                      >
+                        {dateFormatter.format(hit.publishedAt)}
+                      </time>
+                    )}
+                    {hit.readingMinutes === null ? null : (
+                      <span className="shrink-0">
+                        {hit.readingMinutes} 分钟阅读
+                      </span>
+                    )}
+                    {hit.tags.slice(0, 3).map((tag) => (
+                      <Link
+                        className="shrink-0 hover:underline"
+                        href={`/blog?tag=${encodeURIComponent(tag)}`}
+                        key={tag}
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                    {hit.tags.length > 4 ? (
+                      <span className="shrink-0">+{hit.tags.length - 3}</span>
+                    ) : null}
+                  </div>
                 </li>
               ))}
             </ul>

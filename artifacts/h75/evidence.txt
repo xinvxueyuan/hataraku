@@ -1,0 +1,30 @@
+H75 — 搜索页元信息实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 呈现 ==
+改前：标题 + 摘要/片段 + 日期（text-xs），没有分类、标签、阅读时长。
+改后：标题（text-lg，不变）+ 摘要/片段（text-sm muted）+ 元信息行（text-xs muted，与 /blog 列表同字号/同色阶）：
+  分类：<categorySlug>（链接 /blog?category=…） · 日期 · N 分钟阅读 · #tag ×3 + 剩余数（链接 /blog?tag=…）。
+标签只用小号分隔文本，不做彩色 chip；无新增请求，字段随 H73 的结果返回。
+
+== 数量 ==
+q=Goo：6 条；q=限流：1 条；q=Markdown：6 条（与 H73 查询结果一致）。
+
+== 抽样逐字段核对 H73 artifacts/h73/queries-after.txt ==
+1) Goo #39：《一步步用 Google AI Studio 做出并部署自己的 Android 应用》→ 分类 ai / 2026-10-17 / 12 分钟 / tags android, google-ai-studio, google-play（+2）。
+2) 限流 #15：《Nginx 反向代理与负载均衡实战》→ 分类 devops / 2025-11-09 / 5 分钟 / tags load-balancing, nginx, proxy。
+3) Markdown #7：《Markdown 教程》→ 分类 examples / 2025-01-20 / 11 分钟 / tags blogging, markdown。
+三项均与 h73 的 category/tags/readingMinutes/publishedAt 列一致。
+
+== 390 ==
+q=Goo / q=限流 / q=Markdown 三组：scrollWidth=clientWidth（373/373、390/390、373/373），元信息换行整齐、无横向溢出。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（含 tests、e2e 7/7、build；evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+
+== 截图 ==
+h75-before-{Goo,限流,Markdown}-{1440,390}.png
+h75-after-{Goo,限流,Markdown}-{1440,390}.png
