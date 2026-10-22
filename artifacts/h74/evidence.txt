@@ -1,0 +1,33 @@
+H74 — 首页发现路径实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 模块区标题行 ==
+改前：模块 + 「只列出已有内容的模块」说明文字。
+改后：模块 + 「全部内容 →」链接（/blog），不再显示那句说明；两者不同时出现。
+
+== 首页链接（改后） ==
+全部内容 → /blog
+微言 → /notes（短句与碎片）
+更新日志 → /changelog（版本与变更）
+工具箱 → /toolbox（设备与技能）
+归档 → /blog/archive（按月份翻文章）
+分类 → /blog/taxonomy（按主题找文章）
+瓦片：/blog、/docs、/projects、/albums；头部/页脚链接保持不变。
+
+== 移动端 ==
+390：document.documentElement scrollWidth=373、clientWidth=373；更多入口 5 项单列，无横向溢出。
+
+== TTFB / 查询 ==
+改前（6 次中位）：306ms（374/288/264/306/291/347）
+改后（6 次中位）：319ms（622/359/319/250/264/255）——同一 dev 服务噪声范围，查询未增加。
+查询次数：portal 6 + site.profile = 7，改前改后一致；入口文案/图标纯静态，无新增 procedure。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（含 289 tests、e2e 7/7、build）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+
+== 截图 ==
+h74-before-1440.png / h74-before-390.png
+h74-after-1440.png / h74-after-390.png

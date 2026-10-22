@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { focusRing } from "@hataraku/components/focus-ring";
 import { ModuleTile } from "@hataraku/components/module-tile";
+import { ChevronRight } from "@hataraku/ui/icons";
 
 import { PortalHero } from "#src/components/portal-hero.tsx";
 import { loadSiteProfile } from "#src/components/site-content.ts";
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
 };
 
 const OTHER_LINKS = [
-  { href: "/notes", label: "微言" },
-  { href: "/changelog", label: "更新日志" },
-  { href: "/toolbox", label: "工具箱" },
-  { href: "/blog/archive", label: "归档" },
-  { href: "/blog/taxonomy", label: "分类" },
+  { description: "短句与碎片", href: "/notes", label: "微言" },
+  { description: "版本与变更", href: "/changelog", label: "更新日志" },
+  { description: "设备与技能", href: "/toolbox", label: "工具箱" },
+  { description: "按月份翻文章", href: "/blog/archive", label: "归档" },
+  { description: "按主题找文章", href: "/blog/taxonomy", label: "分类" },
 ] as const;
 
 const HomePage = async () => {
@@ -50,9 +51,13 @@ const HomePage = async () => {
           >
             模块
           </h2>
-          <span className="text-muted-foreground text-xs">
-            只列出已有内容的模块
-          </span>
+          <Link
+            className={`${focusRing} text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm hover:underline`}
+            href="/blog"
+          >
+            全部内容
+            <ChevronRight aria-hidden="true" className="size-3.5" />
+          </Link>
         </div>
 
         <div className="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -76,18 +81,29 @@ const HomePage = async () => {
         >
           其余入口
         </h2>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-          {OTHER_LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                className={`${focusRing} text-muted-foreground hover:text-foreground underline-offset-4 hover:underline`}
-                href={link.href}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <nav aria-label="更多入口">
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {OTHER_LINKS.map((link) => (
+              <li className="min-w-0" key={link.href}>
+                <Link
+                  className={`${focusRing} hover:bg-accent flex min-w-0 items-start gap-3 rounded-lg border p-4 transition-colors`}
+                  href={link.href}
+                >
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="font-medium">{link.label}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {link.description}
+                    </span>
+                  </span>
+                  <ChevronRight
+                    aria-hidden="true"
+                    className="text-muted-foreground mt-0.5 ml-auto size-4 shrink-0"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </section>
     </div>
   );
