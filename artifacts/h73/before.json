@@ -1,0 +1,202 @@
+{
+  "build": {
+    "max": 961.628,
+    "median": 853.379,
+    "min": 711.373,
+    "p95": 949.009
+  },
+  "hot": {
+    "max": 69.873,
+    "median": 4.589,
+    "min": 3.166,
+    "p95": 6.585
+  },
+  "documentCount": 38,
+  "rows": [
+    {
+      "q": "Goo",
+      "total": 6,
+      "items": [
+        {
+          "id": 39,
+          "title": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+          "categorySlug": "ai",
+          "publishedAt": "2026-10-17T00:00:00.000Z",
+          "rank": 12.961668547711657
+        },
+        {
+          "id": 32,
+          "title": "Web 性能优化全景指南：从 Core Web Vitals 到实战",
+          "categorySlug": "frontend",
+          "publishedAt": "2026-03-08T00:00:00.000Z",
+          "rank": 4.771284029519971
+        },
+        {
+          "id": 7,
+          "title": "Markdown 教程",
+          "categorySlug": "examples",
+          "publishedAt": "2025-01-20T00:00:00.000Z",
+          "rank": 1.114586567941968
+        },
+        {
+          "id": 38,
+          "title": "2026年开源安全威胁态势全景报告",
+          "categorySlug": "安全",
+          "publishedAt": "2026-07-07T00:00:00.000Z",
+          "rank": 0.7772743548256044
+        },
+        {
+          "id": 37,
+          "title": "一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议",
+          "categorySlug": "technology",
+          "publishedAt": "2026-07-05T00:00:00.000Z",
+          "rank": 0.5888193377547994
+        },
+        {
+          "id": 13,
+          "title": "Python 异步编程完全指南：async/await 深入剖析",
+          "categorySlug": "technology",
+          "publishedAt": "2025-10-27T00:00:00.000Z",
+          "rank": 3.1021813748728135
+        }
+      ]
+    },
+    {
+      "q": "限流",
+      "total": 1,
+      "items": [
+        {
+          "id": 15,
+          "title": "Nginx 反向代理与负载均衡实战",
+          "categorySlug": "devops",
+          "publishedAt": "2025-11-09T00:00:00.000Z",
+          "rank": 17.386398681469224
+        }
+      ]
+    },
+    {
+      "q": "Markdown",
+      "total": 6,
+      "items": [
+        {
+          "id": 7,
+          "title": "Markdown 教程",
+          "categorySlug": "examples",
+          "publishedAt": "2025-01-20T00:00:00.000Z",
+          "rank": 24.818574803147996
+        },
+        {
+          "id": 3,
+          "title": "Markdown Mermaid 图表",
+          "categorySlug": "examples",
+          "publishedAt": "2023-10-01T00:00:00.000Z",
+          "rank": 22.988860921911815
+        },
+        {
+          "id": 6,
+          "title": "Markdown 扩展功能",
+          "categorySlug": "examples",
+          "publishedAt": "2024-05-01T00:00:00.000Z",
+          "rank": 23.738935021960973
+        },
+        {
+          "id": 5,
+          "title": "xinStar 简易指南",
+          "categorySlug": "guides",
+          "publishedAt": "2024-04-01T00:00:00.000Z",
+          "rank": 2.4578213726431404
+        },
+        {
+          "id": 4,
+          "title": "加密文章",
+          "categorySlug": "technology",
+          "publishedAt": "2024-01-15T00:00:00.000Z",
+          "rank": 1.4391721828106772
+        },
+        {
+          "id": 38,
+          "title": "2026年开源安全威胁态势全景报告",
+          "categorySlug": "安全",
+          "publishedAt": "2026-07-07T00:00:00.000Z",
+          "rank": 0.7109858325619101
+        }
+      ]
+    },
+    {
+      "q": "安全",
+      "total": 10,
+      "items": [
+        {
+          "id": 38,
+          "title": "2026年开源安全威胁态势全景报告",
+          "categorySlug": "安全",
+          "publishedAt": "2026-07-07T00:00:00.000Z",
+          "rank": 62.402696225164476
+        },
+        {
+          "id": 12,
+          "title": "Linux 服务器安全加固指南：15 个必做配置",
+          "categorySlug": "devops",
+          "publishedAt": "2025-10-20T00:00:00.000Z",
+          "rank": 44.02105350506531
+        },
+        {
+          "id": 36,
+          "title": "深度源码解析：Claude Code 隐藏的反向代理检测与隐写标记机制",
+          "categorySlug": "technology",
+          "publishedAt": "2026-07-04T00:00:00.000Z",
+          "rank": 9.783834175845254
+        },
+        {
+          "id": 11,
+          "title": "TypeScript 高级类型体操：你真的会用泛型吗？",
+          "categorySlug": "frontend",
+          "publishedAt": "2025-10-12T00:00:00.000Z",
+          "rank": 11.487821201215187
+        },
+        {
+          "id": 10,
+          "title": "Docker 容器化最佳实践：从开发到生产",
+          "categorySlug": "devops",
+          "publishedAt": "2025-10-05T00:00:00.000Z",
+          "rank": 14.462492072064315
+        },
+        {
+          "id": 9,
+          "title": "Rust 所有权系统详解：从入门到实践",
+          "categorySlug": "technology",
+          "publishedAt": "2025-09-28T00:00:00.000Z",
+          "rank": 7.0665415758674435
+        },
+        {
+          "id": 34,
+          "title": "CI/CD 实战：GitHub Actions 自动化工作流",
+          "categorySlug": "devops",
+          "publishedAt": "2026-03-22T00:00:00.000Z",
+          "rank": 17.866953322170545
+        },
+        {
+          "id": 15,
+          "title": "Nginx 反向代理与负载均衡实战",
+          "categorySlug": "devops",
+          "publishedAt": "2025-11-09T00:00:00.000Z",
+          "rank": 6.766288428320178
+        },
+        {
+          "id": 39,
+          "title": "一步步用 Google AI Studio 做出并部署自己的 Android 应用",
+          "categorySlug": "ai",
+          "publishedAt": "2026-10-17T00:00:00.000Z",
+          "rank": 6.099365743652928
+        },
+        {
+          "id": 37,
+          "title": "一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议",
+          "categorySlug": "technology",
+          "publishedAt": "2026-07-05T00:00:00.000Z",
+          "rank": 2.8861176280252163
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+# H73 query field evidence
+
+## Before (current HEAD before changes)
+
+id | query | categorySlug | tags | readingMinutes | publishedAt
+---: | --- | --- | --- | --- | ---
+39 | Goo | ai | MISSING | MISSING | 2026/10/17 0:00:00
+32 | Goo | frontend | MISSING | MISSING | 2026/3/8 0:00:00
+7 | Goo | examples | MISSING | MISSING | 2025/1/20 0:00:00
+38 | Goo | 安全 | MISSING | MISSING | 2026/7/7 0:00:00
+37 | Goo | technology | MISSING | MISSING | 2026/7/5 0:00:00
+13 | Goo | technology | MISSING | MISSING | 2025/10/27 0:00:00
+15 | 限流 | devops | MISSING | MISSING | 2025/11/9 0:00:00
+7 | Markdown | examples | MISSING | MISSING | 2025/1/20 0:00:00
+3 | Markdown | examples | MISSING | MISSING | 2023/10/1 0:00:00
+6 | Markdown | examples | MISSING | MISSING | 2024/5/1 0:00:00
+5 | Markdown | guides | MISSING | MISSING | 2024/4/1 0:00:00
+4 | Markdown | technology | MISSING | MISSING | 2024/1/15 0:00:00
+38 | Markdown | 安全 | MISSING | MISSING | 2026/7/7 0:00:00
+38 | 安全 | 安全 | MISSING | MISSING | 2026/7/7 0:00:00
+12 | 安全 | devops | MISSING | MISSING | 2025/10/20 0:00:00
+36 | 安全 | technology | MISSING | MISSING | 2026/7/4 0:00:00
+11 | 安全 | frontend | MISSING | MISSING | 2025/10/12 0:00:00
+10 | 安全 | devops | MISSING | MISSING | 2025/10/5 0:00:00
+9 | 安全 | technology | MISSING | MISSING | 2025/9/28 0:00:00
+34 | 安全 | devops | MISSING | MISSING | 2026/3/22 0:00:00
+15 | 安全 | devops | MISSING | MISSING | 2025/11/9 0:00:00
+39 | 安全 | ai | MISSING | MISSING | 2026/10/17 0:00:00
+37 | 安全 | technology | MISSING | MISSING | 2026/7/5 0:00:00
+
+## After (new index + response schema)
+
+id | query | category | tags | readingMinutes | publishedAt | title
+---: | --- | --- | --- | ---: | --- | ---
+39 | Goo | ai | android, google-ai-studio, google-play, jetpack-compose, kotlin | 12 | 2026/10/17 0:00:00 | 一步步用 Google AI Studio 做出并部署自己的 Android 应用
+32 | Goo | frontend | optimization, performance, web | 2 | 2026/3/8 0:00:00 | Web 性能优化全景指南：从 Core Web Vitals 到实战
+7 | Goo | examples | blogging, markdown | 11 | 2025/1/20 0:00:00 | Markdown 教程
+38 | Goo | 安全 | ai安全, 供应链攻击, 安全报告, 开源安全, 漏洞分析 | 7 | 2026/7/7 0:00:00 | 2026年开源安全威胁态势全景报告
+37 | Goo | technology | claude, email-tracking, privacy, security, tracking-pixel | 12 | 2026/7/5 0:00:00 | 一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议
+13 | Goo | technology | async, asyncio, python | 5 | 2025/10/27 0:00:00 | Python 异步编程完全指南：async/await 深入剖析
+15 | 限流 | devops | load-balancing, nginx, proxy | 5 | 2025/11/9 0:00:00 | Nginx 反向代理与负载均衡实战
+7 | Markdown | examples | blogging, markdown | 11 | 2025/1/20 0:00:00 | Markdown 教程
+3 | Markdown | examples | blogging, markdown, mermaid | 4 | 2023/10/1 0:00:00 | Markdown Mermaid 图表
+6 | Markdown | examples | demo, example, markdown, xinstar | 2 | 2024/5/1 0:00:00 | Markdown 扩展功能
+5 | Markdown | guides | blogging, customization, xinstar | 2 | 2024/4/1 0:00:00 | xinStar 简易指南
+4 | Markdown | technology | encryption, test | 3 | 2024/1/15 0:00:00 | 加密文章
+38 | Markdown | 安全 | ai安全, 供应链攻击, 安全报告, 开源安全, 漏洞分析 | 7 | 2026/7/7 0:00:00 | 2026年开源安全威胁态势全景报告
+38 | 安全 | 安全 | ai安全, 供应链攻击, 安全报告, 开源安全, 漏洞分析 | 7 | 2026/7/7 0:00:00 | 2026年开源安全威胁态势全景报告
+12 | 安全 | devops | linux, security, server | 5 | 2025/10/20 0:00:00 | Linux 服务器安全加固指南：15 个必做配置
+36 | 安全 | technology | claude-code, privacy, security, source-analysis | 16 | 2026/7/4 0:00:00 | 深度源码解析：Claude Code 隐藏的反向代理检测与隐写标记机制
+11 | 安全 | frontend | generics, types, typescript | 5 | 2025/10/12 0:00:00 | TypeScript 高级类型体操：你真的会用泛型吗？
+10 | 安全 | devops | container, devops, docker | 3 | 2025/10/5 0:00:00 | Docker 容器化最佳实践：从开发到生产
+9 | 安全 | technology | memory, ownership, rust | 5 | 2025/9/28 0:00:00 | Rust 所有权系统详解：从入门到实践
+34 | 安全 | devops | automation, cicd, github-actions | 2 | 2026/3/22 0:00:00 | CI/CD 实战：GitHub Actions 自动化工作流
+15 | 安全 | devops | load-balancing, nginx, proxy | 5 | 2025/11/9 0:00:00 | Nginx 反向代理与负载均衡实战
+39 | 安全 | ai | android, google-ai-studio, google-play, jetpack-compose, kotlin | 12 | 2026/10/17 0:00:00 | 一步步用 Google AI Studio 做出并部署自己的 Android 应用
+37 | 安全 | technology | claude, email-tracking, privacy, security, tracking-pixel | 12 | 2026/7/5 0:00:00 | 一封封号邮件里的 1×1 像素：Claude 邮件追踪器技术分析与争议

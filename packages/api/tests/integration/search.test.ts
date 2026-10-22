@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { describe, expect, it } from "vite-plus/test";
 
 import { posts } from "@hataraku/db/schema/posts";
@@ -91,6 +91,63 @@ describe("search.query", () => {
     const result = await client.search.query({ q: "限流" });
 
     expect(result.items[0]?.slug).toBe("rsc");
+  });
+
+  it("returns the article-list context with each hit", async () => {
+    const hit = await rscHit("React");
+
+    expect(hit).toMatchObject({ categorySlug: "frontend", slug: "rsc" });
+    expect(hit?.tags).toContain("react");
+    expect(hit?.readingMinutes).toBeTypeOf("number");
+  });
+
+  it("breaks a relevance tie by publish date, newest first", async () => {
+    const token = `tiebreak${Date.now()}`;
+
+    const common = {
+      bodyMd: token,
+      description: token,
+      published: true,
+      title: "Tie break probe",
+    };
+
+    const rows = await db
+      .insert(posts)
+      .values([
+        {
+          ...common,
+          publishedAt: new Date("2020-01-01T00:00:00.000Z"),
+          slug: `tie-old-${token}`,
+        },
+        {
+          ...common,
+          publishedAt: new Date("2021-01-01T00:00:00.000Z"),
+          slug: `tie-new-${token}`,
+        },
+      ])
+      .returning({ id: posts.id, slug: posts.slug });
+
+    try {
+      const result = await client.search.query({ q: token });
+
+      const hits = result.items.filter((item) =>
+        rows.some((row) => row.id === item.id)
+      );
+
+      expect(hits).toHaveLength(2);
+      expect(hits[0]?.rank).toBe(hits[1]?.rank);
+      expect(hits.map((hit) => hit.slug)).toStrictEqual([
+        rows[1]?.slug,
+        rows[0]?.slug,
+      ]);
+    } finally {
+      await db.delete(posts).where(
+        inArray(
+          posts.id,
+          rows.map((row) => row.id)
+        )
+      );
+    }
   });
 
   it("treats a blank query as no query at all", async () => {

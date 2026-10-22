@@ -120,6 +120,7 @@ const searchSchema = {
   id: "string",
   postId: "number",
   publishedAt: "number",
+  readingMinutes: "number",
   slug: "string",
   slugOnly: "boolean",
   tags: "string[]",
@@ -136,6 +137,7 @@ interface SearchDocument {
   id: string;
   postId: number;
   publishedAt: number;
+  readingMinutes: number;
   slug: string;
   slugOnly: boolean;
   tags: string[];
@@ -215,6 +217,7 @@ export const createSearchIndex = async (
       description: posts.description,
       id: posts.id,
       publishedAt: posts.publishedAt,
+      readingMinutes: posts.readingMinutes,
       slug: posts.slug,
       slugOnly: posts.slugOnly,
       title: posts.title,
@@ -245,6 +248,7 @@ export const createSearchIndex = async (
         id: String(row.id),
         postId: row.id,
         publishedAt: row.publishedAt?.getTime() ?? 0,
+        readingMinutes: row.readingMinutes ?? 0,
         slug: row.slug ?? "",
         slugOnly: row.slugOnly,
         tags: tagsOfRow,
@@ -315,8 +319,10 @@ interface SearchHit {
   publishedAt: Date | null;
   rank: number;
   id: number;
+  readingMinutes: number | null;
   slug: string | null;
   slugOnly: boolean;
+  tags: string[];
   /** Body evidence for a hit whose title and summary do not contain the query; null otherwise. */
   snippet: SearchSnippet | null;
   title: string;
@@ -545,11 +551,33 @@ const toHit = (
   publishedAt:
     document.publishedAt === 0 ? null : new Date(document.publishedAt),
   rank: score,
+  readingMinutes:
+    document.readingMinutes === 0 ? null : document.readingMinutes,
   slug: document.slug === "" ? null : document.slug,
   slugOnly: document.slugOnly,
   snippet,
+  tags: document.tags,
   title: document.title,
 });
+
+/**
+ * Relevance first: exact phrase evidence, then Orama's BM25 score. Publish time is only the
+ * tie-breaker when both are equal — a close but different score stays relevance-ordered.
+ */
+const compareRanked = (
+  left: { exact: number; hit: { document: SearchDocument; score: number } },
+  right: { exact: number; hit: { document: SearchDocument; score: number } }
+): number => {
+  if (right.exact !== left.exact) {
+    return right.exact - left.exact;
+  }
+
+  if (right.hit.score !== left.hit.score) {
+    return right.hit.score - left.hit.score;
+  }
+
+  return right.hit.document.publishedAt - left.hit.document.publishedAt;
+};
 
 const countOccurrences = (haystack: string, needle: string): number => {
   if (needle === "") {
@@ -637,17 +665,7 @@ export const searchPosts = async (
 
   const ranked = matches
     .map((hit) => ({ exact: exactScore(hit.document, needle), hit }))
-    .toSorted((left, right) => {
-      if (right.exact !== left.exact) {
-        return right.exact - left.exact;
-      }
-
-      if (right.hit.score !== left.hit.score) {
-        return right.hit.score - left.hit.score;
-      }
-
-      return right.hit.document.publishedAt - left.hit.document.publishedAt;
-    });
+    .toSorted(compareRanked);
 
   const start = (input.page - 1) * input.pageSize;
 

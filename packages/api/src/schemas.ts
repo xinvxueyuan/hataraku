@@ -300,10 +300,12 @@ const searchHitSchema = z.object({
   id: z.int(),
   publishedAt: z.date().nullable(),
   rank: z.number(),
+  readingMinutes: z.int().nullable(),
   slug: z.string().nullable(),
   slugOnly: z.boolean(),
   /** Body evidence when neither title nor summary carries the query; null otherwise. */
   snippet: searchSnippetSchema.nullable(),
+  tags: z.array(z.string()),
   title: z.string(),
 });
 
