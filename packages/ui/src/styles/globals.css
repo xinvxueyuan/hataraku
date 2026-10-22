@@ -183,3 +183,65 @@
  * ---------------------------------------------------------------------------------------------- */
 @layer components {
 }
+
+/*
+ * Prose tables — unlayered on purpose.
+ *
+ * @tailwindcss/typography emits its rules outside Tailwind's layers, so a rule inside
+ * `@layer components` loses every conflict (padding, borders) no matter how specific it is.
+ * This block is the one exception to the layer contract: it sits beside the preset at the same
+ * cascade level, uses only semantic tokens, and is limited to `.prose` tables in article/docs
+ * bodies. Everything else stays in the layers above.
+ */
+/*
+   * Prose tables.
+   *
+   * The typography preset gives a table a hairline and nothing else, so a header reads as another
+   * row. A header is a different kind of surface: it gets the muted wash, the stronger weight and
+   * the foreground ink, while data cells stay on the page surface with a consistent rhythm. The
+   * table is also a wrapping layout, not a horizontal scroller: a narrow screen must be able to read
+   * every cell, and a page-level horizontal scrollbar is never acceptable.
+   */
+.prose table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+.prose table thead th {
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-size: var(--text-control);
+  font-weight: 600;
+  padding-block: 0.625rem;
+  padding-inline: 0.75rem;
+  text-align: left;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--border);
+}
+.prose table tbody td {
+  background-color: var(--background);
+  color: var(--muted-foreground);
+  font-weight: 400;
+  padding-block: 0.625rem;
+  padding-inline: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.prose table thead th:first-child,
+.prose table tbody td:first-child {
+  padding-inline-start: 0.75rem;
+}
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+.prose thead th,
+.prose tbody td {
+  overflow-wrap: anywhere;
+}
+.prose tbody td:first-child,
+.prose thead th:first-child {
+  white-space: nowrap;
+}

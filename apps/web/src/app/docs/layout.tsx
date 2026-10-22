@@ -12,9 +12,9 @@ import { docs } from "#src/server/docs.ts";
  * the table of contents stays a single column on a phone.
  */
 const DocsLayout = ({ children }: { children: ReactNode }) => (
-  // The docs canvas is wider than the blog's reading column: the root layout centres children in
-  // `max-w-2xl`, so this section breaks out to the viewport and centres its own `max-w-6xl` row.
-  <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip px-6 py-10">
+  // The root layout widens its `main` for this marker, so the docs canvas stays inside the
+  // viewport: no viewport-unit breakout means no horizontal scrollbar on a narrow screen.
+  <div className="mx-auto w-full max-w-6xl px-6 py-10" data-slot="docs">
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 lg:flex-row lg:gap-12">
       <aside className="hidden w-56 shrink-0 lg:block">
         <div className="sticky top-24">
