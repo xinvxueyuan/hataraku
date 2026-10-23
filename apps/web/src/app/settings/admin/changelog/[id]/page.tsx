@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
 import {
   AdminBackLink,
-  AdminPageShell,
+  SettingsPageHeader,
 } from "#src/components/admin-page-shell.tsx";
 import { ChangelogEditor } from "#src/components/changelog-editor.tsx";
 import {
@@ -32,13 +32,14 @@ const AdminChangelogEditorPage = async ({
 
   if (id === "new") {
     return (
-      <AdminPageShell
-        description="填好字段，保存后会跳到它的编辑页。"
-        title="新建更新日志"
-      >
+      <div className="grid gap-6" data-slot="settings-page">
+        <SettingsPageHeader
+          description="填好字段，保存后会跳到它的编辑页。"
+          title="新建更新日志"
+        />
         <AdminBackLink href={PATH} />
         <ChangelogEditor entry={null} />
-      </AdminPageShell>
+      </div>
     );
   }
 
@@ -62,13 +63,14 @@ const AdminChangelogEditorPage = async ({
   }
 
   return (
-    <AdminPageShell
-      description="改一条版本记录的条目与正文。"
-      title="编辑更新日志"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="改一条版本记录的条目与正文。"
+        title="编辑更新日志"
+      />
       <AdminBackLink href={PATH} />
       <ChangelogEditor entry={row} />
-    </AdminPageShell>
+    </div>
   );
 };
 

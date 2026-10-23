@@ -10,7 +10,7 @@ import {
   readAdminQuery,
 } from "#src/components/admin-list-query.ts";
 import { AdminListToolbar } from "#src/components/admin-list-toolbar.tsx";
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { ChangelogList } from "#src/components/changelog-list.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
 import { getQueryClient, serverApi, serverCall } from "#src/server/query.ts";
@@ -65,18 +65,19 @@ const AdminChangelogPage = async ({
   );
 
   return (
-    <AdminPageShell
-      action={
-        <Link
-          className="bg-primary text-primary-foreground inline-flex h-9 items-center rounded-md px-4 text-sm font-medium"
-          href={`${PATH}/new`}
-        >
-          新建
-        </Link>
-      }
-      description="每次发版记一条，读者能看懂改了什么。"
-      title="更新日志"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        action={
+          <Link
+            className="bg-primary text-primary-foreground inline-flex h-9 items-center rounded-md px-4 text-sm font-medium"
+            href={`${PATH}/new`}
+          >
+            新建
+          </Link>
+        }
+        description="每次发版记一条，读者能看懂改了什么。"
+        title="更新日志"
+      />
       <AdminListToolbar
         fields={[
           {
@@ -123,7 +124,7 @@ const AdminChangelogPage = async ({
           input={input}
         />
       </HydrationBoundary>
-    </AdminPageShell>
+    </div>
   );
 };
 

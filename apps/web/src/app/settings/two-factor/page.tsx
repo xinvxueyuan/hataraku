@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { TwoFactorSetup } from "#src/components/two-factor-setup.tsx";
 import { getSession } from "#src/server/session.ts";
 
@@ -22,12 +22,13 @@ const TwoFactorPage = async () => {
   }
 
   return (
-    <AdminPageShell
-      description="Protect your account with a code from an authenticator app."
-      title="Two-factor authentication"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="Protect your account with a code from an authenticator app."
+        title="Two-factor authentication"
+      />
       <TwoFactorSetup enabled={isTwoFactorEnabled(session.user)} />
-    </AdminPageShell>
+    </div>
   );
 };
 

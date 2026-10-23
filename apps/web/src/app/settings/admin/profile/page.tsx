@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { loadSiteProfile } from "#src/components/site-content.ts";
 import { SiteProfileForm } from "#src/components/site-profile-form.tsx";
 import { requireSession } from "#src/server/admin.ts";
@@ -21,12 +21,13 @@ const SiteProfilePage = async () => {
   const profile = await loadSiteProfile();
 
   return (
-    <AdminPageShell
-      description="站点名称、简介、社交链接与首页 Hero；保存后首页、页脚与关于页立即生效。"
-      title="站点资料"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="站点名称、简介、社交链接与首页 Hero；保存后首页、页脚与关于页立即生效。"
+        title="站点资料"
+      />
       <SiteProfileForm profile={profile} />
-    </AdminPageShell>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
 import {
   AdminBackLink,
-  AdminPageShell,
+  SettingsPageHeader,
 } from "#src/components/admin-page-shell.tsx";
 import { MicroPostEditor } from "#src/components/micro-post-editor.tsx";
 import {
@@ -32,13 +32,14 @@ const AdminMicroEditorPage = async ({
 
   if (id === "new") {
     return (
-      <AdminPageShell
-        description="填好字段，保存后会跳到它的编辑页。"
-        title="新建微言"
-      >
+      <div className="grid gap-6" data-slot="settings-page">
+        <SettingsPageHeader
+          description="填好字段，保存后会跳到它的编辑页。"
+          title="新建微言"
+        />
         <AdminBackLink href={PATH} />
         <MicroPostEditor post={null} />
-      </AdminPageShell>
+      </div>
     );
   }
 
@@ -62,10 +63,14 @@ const AdminMicroEditorPage = async ({
   }
 
   return (
-    <AdminPageShell description="改一条已经写下的短句。" title="编辑微言">
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="改一条已经写下的短句。"
+        title="编辑微言"
+      />
       <AdminBackLink href={PATH} />
       <MicroPostEditor post={row} />
-    </AdminPageShell>
+    </div>
   );
 };
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
 import {
   AdminBackLink,
-  AdminPageShell,
+  SettingsPageHeader,
 } from "#src/components/admin-page-shell.tsx";
 import { ProjectEditor } from "#src/components/project-editor.tsx";
 import {
@@ -32,13 +32,14 @@ const AdminProjectEditorPage = async ({
 
   if (id === "new") {
     return (
-      <AdminPageShell
-        description="填好字段，保存后会跳到它的编辑页。"
-        title="新建项目"
-      >
+      <div className="grid gap-6" data-slot="settings-page">
+        <SettingsPageHeader
+          description="填好字段，保存后会跳到它的编辑页。"
+          title="新建项目"
+        />
         <AdminBackLink href={PATH} />
         <ProjectEditor project={null} />
-      </AdminPageShell>
+      </div>
     );
   }
 
@@ -62,13 +63,14 @@ const AdminProjectEditorPage = async ({
   }
 
   return (
-    <AdminPageShell
-      description="改一个项目的状态、封面与详情。"
-      title="编辑项目"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="改一个项目的状态、封面与详情。"
+        title="编辑项目"
+      />
       <AdminBackLink href={PATH} />
       <ProjectEditor project={row} />
-    </AdminPageShell>
+    </div>
   );
 };
 

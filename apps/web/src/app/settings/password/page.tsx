@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { PASSWORD_MIN_LENGTH } from "@hataraku/auth";
 
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { ChangePasswordForm } from "#src/components/change-password-form.tsx";
 import { requireSession } from "#src/server/admin.ts";
 
@@ -21,12 +21,13 @@ const PasswordPage = async () => {
   const session = await requireSession("/settings/password");
 
   return (
-    <AdminPageShell
-      description={`当前账号：${session.user.email}`}
-      title="修改密码"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description={`当前账号：${session.user.email}`}
+        title="修改密码"
+      />
       <ChangePasswordForm minLength={PASSWORD_MIN_LENGTH} />
-    </AdminPageShell>
+    </div>
   );
 };
 

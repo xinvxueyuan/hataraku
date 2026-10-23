@@ -1,0 +1,30 @@
+H82b — settings 去壳实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 页面迁移 ==
+迁移的页面：admin/{posts,projects,micro,changelog,profile}、对应 [id]/new 分支、password/security/two-factor；admin/page 与 posts/[id] 已在 H80 使用共享内容结构。
+grep -rn "AdminPageShell" apps/web/src/app = 0；components/admin-page-shell.tsx 中该组件也已删除（只保留 SettingsPageHeader / AdminBackLink）。
+迁移前后 /settings/password 截图逐字节相同（81461 B / 62836 B），h1、侧栏、表单文案一致；shell 数 1。
+
+== 鉴权 ==
+12 条 settings 路由（含 new 分支）登录态均 200。
+未登录：/settings/password → 307 /login?redirect=%2Fsettings%2Fpassword；/settings/admin → 307 /login?redirect=%2Fsettings%2Fadmin；/settings/api → 307 /login?redirect=%2Fsettings%2Fapi；API 详情也回 API 基址。
+为让共享 layout 在 loading 边界之上做鉴权且保留正确 redirect，新增 apps/web/src/proxy.ts 只把请求 pathname 放进 x-pathname header（matcher /settings/:path*）；页面内的 requireSession/isForbidden 全部保留。
+
+== SPA / loading ==
+/settings/admin 设置 window.__spa=1 → 点「密码」→ 点「总览」→ 仍为 1；URL 回 /settings/admin；shell 数 1。
+新增 app/settings/loading.tsx：左侧导航占位 + 内容标题/卡片骨架；导航请求延迟时截到 h82b-loading-1440.png。
+
+== 390 ==
+迁移后 /settings/password 390：scrollWidth=clientWidth=390；迁移前同值。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+e2e 7/7（ready 内）。
+
+== 截图 ==
+h82b-password-before-{1440,390}.png / h82b-password-after-{1440,390}.png（逐字节相同）
+h82b-loading-1440.png

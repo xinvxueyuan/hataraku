@@ -10,7 +10,7 @@ import {
   readAdminQuery,
 } from "#src/components/admin-list-query.ts";
 import { AdminListToolbar } from "#src/components/admin-list-toolbar.tsx";
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { AdminPostList } from "#src/components/admin-post-list.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
 import { getQueryClient, serverApi, serverCall } from "#src/server/query.ts";
@@ -67,18 +67,19 @@ const AdminPostsPage = async ({
   queryClient.setQueryData(serverApi.posts.adminList.queryKey({ input }), list);
 
   return (
-    <AdminPageShell
-      action={
-        <Link
-          className="bg-primary text-primary-foreground inline-flex h-9 items-center rounded-md px-4 text-sm font-medium"
-          href="/settings/admin/posts/new"
-        >
-          新建文章
-        </Link>
-      }
-      description="文章存在 Postgres 里，正文是 MDX；保存和发布都走 API。"
-      title="文章"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        action={
+          <Link
+            className="bg-primary text-primary-foreground inline-flex h-9 items-center rounded-md px-4 text-sm font-medium"
+            href="/settings/admin/posts/new"
+          >
+            新建文章
+          </Link>
+        }
+        description="文章存在 Postgres 里，正文是 MDX；保存和发布都走 API。"
+        title="文章"
+      />
       <AdminListToolbar
         fields={[
           {
@@ -121,7 +122,7 @@ const AdminPostsPage = async ({
           input={input}
         />
       </HydrationBoundary>
-    </AdminPageShell>
+    </div>
   );
 };
 

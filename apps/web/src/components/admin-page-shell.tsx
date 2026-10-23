@@ -26,27 +26,6 @@ export const SettingsPageHeader = ({
   </div>
 );
 
-export const AdminPageShell = ({
-  action,
-  children,
-  description,
-  title,
-}: {
-  action?: ReactNode;
-  children: ReactNode;
-  description: string;
-  title: string;
-}) => (
-  <div className="grid gap-6">
-    <SettingsPageHeader
-      action={action}
-      description={description}
-      title={title}
-    />
-    {children}
-  </div>
-);
-
 /** The way back from an editor to its index. */
 export const AdminBackLink = ({ href }: { href: AdminPath }) => (
   <nav className="text-sm">
