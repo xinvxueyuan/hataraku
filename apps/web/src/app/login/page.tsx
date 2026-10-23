@@ -12,6 +12,7 @@ const redirectTargets: Route[] = [
   "/settings/admin",
   "/settings/admin/posts",
   "/settings/admin/profile",
+  "/settings/api",
   "/settings/password",
   "/settings/security",
   "/settings/two-factor",

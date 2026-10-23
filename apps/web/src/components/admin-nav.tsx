@@ -14,6 +14,7 @@ export type AdminPath =
   | "/settings/admin/posts"
   | "/settings/admin/profile"
   | "/settings/admin/projects"
+  | "/settings/api"
   | "/settings/password"
   | "/settings/security"
   | "/settings/two-factor";
@@ -49,6 +50,10 @@ const GROUPS: readonly { items: readonly AdminSection[]; label: string }[] = [
       { href: "/settings/password", label: "密码" },
     ],
     label: "账号",
+  },
+  {
+    items: [{ href: "/settings/api", label: "API 令牌" }],
+    label: "集成",
   },
 ] as const;
 
