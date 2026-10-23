@@ -146,7 +146,10 @@ const PostPage = async ({ params }: PageProps) => {
   const headings = rendered?.headings ?? [];
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-12 xl:flex-row xl:items-start xl:gap-10">
+    <div
+      className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-12 xl:flex-row xl:items-start xl:gap-10"
+      data-slot="post"
+    >
       <div className="xl:hidden">
         <ArticleTocMobile headings={headings} />
       </div>
@@ -172,7 +175,7 @@ const PostPage = async ({ params }: PageProps) => {
           <p className="text-muted-foreground">这篇文章还没有正文。</p>
         ) : (
           <div
-            className="prose prose-neutral dark:prose-invert max-w-none"
+            className="prose prose-neutral dark:prose-invert max-w-prose"
             data-slot="post-body"
           >
             {rendered.content}

@@ -82,7 +82,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => (
           </a>
           <Header />
           <main
-            className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 has-[[data-slot=admin-shell]]:max-w-4xl has-[[data-slot=docs]]:max-w-6xl has-[[data-slot=portal]]:max-w-6xl sm:py-14"
+            className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 has-[[data-slot=admin-shell]]:max-w-4xl has-[[data-slot=docs]]:max-w-6xl has-[[data-slot=portal]]:max-w-6xl has-[[data-slot=post]]:max-w-6xl sm:py-14"
             id="content"
           >
             {children}
