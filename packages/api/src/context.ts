@@ -1,7 +1,11 @@
 import type { Session } from "@hataraku/auth";
 import type { Database } from "@hataraku/db";
 
+import type { ApiTokenPrincipal } from "#src/tokens.ts";
+
 export interface Context {
+  /** Present only for an authenticated, unrevoked, unexpired Bearer token. */
+  apiToken?: ApiTokenPrincipal | null;
   db: Database;
   session: Session | null;
   /**

@@ -21,9 +21,13 @@ import type {
 } from "@hataraku/db/schema/content";
 
 import { assertStorableBody } from "#src/mdx-guard.ts";
-import { publicRoute } from "#src/openapi-public.ts";
+import { publicRoute, writeRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
-import { adminProcedure, publicProcedure } from "#src/procedures.ts";
+import {
+  adminProcedure,
+  publicProcedure,
+  writeProcedure,
+} from "#src/procedures.ts";
 import {
   adminChangelogListInput,
   adminMicroListInput,
@@ -258,7 +262,8 @@ const projectsRouter = {
       return row;
     }),
 
-  create: adminProcedure
+  create: writeProcedure("projects:write")
+    .route(writeRoute("content.projects.create"))
     .input(createProjectInput)
     .output(projectSchema)
     .handler(async ({ context, input }) => {
@@ -349,7 +354,8 @@ const projectsRouter = {
       return row;
     }),
 
-  update: adminProcedure
+  update: writeProcedure("projects:write")
+    .route(writeRoute("content.projects.update"))
     .input(updateProjectInput)
     .output(projectSchema)
     .handler(async ({ context, input }) => {
@@ -450,7 +456,8 @@ const microRouter = {
       async ({ context, input }) => await findMicroPost(context.db, input.id)
     ),
 
-  create: adminProcedure
+  create: writeProcedure("notes:write")
+    .route(writeRoute("content.micro.create"))
     .input(createMicroPostInput)
     .output(microPostSchema)
     .handler(async ({ context, input }) => {
@@ -573,7 +580,8 @@ const microRouter = {
       return row;
     }),
 
-  update: adminProcedure
+  update: writeProcedure("notes:write")
+    .route(writeRoute("content.micro.update"))
     .input(updateMicroPostInput)
     .output(microPostSchema)
     .handler(async ({ context, input }) => {
@@ -672,7 +680,8 @@ const changelogRouter = {
         await findChangelogEntry(context.db, input.id)
     ),
 
-  create: adminProcedure
+  create: writeProcedure("changelog:write")
+    .route(writeRoute("content.changelog.create"))
     .input(createChangelogEntryInput)
     .output(changelogEntrySchema)
     .handler(async ({ context, input }) => {
@@ -755,7 +764,7 @@ const changelogRouter = {
       return row;
     }),
 
-  update: adminProcedure
+  update: writeProcedure("changelog:write")
     .input(updateChangelogEntryInput)
     .output(changelogEntrySchema)
     .handler(async ({ context, input }) => {

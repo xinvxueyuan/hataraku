@@ -1,0 +1,11 @@
+packages\api\tests\integration\api-tokens.test.ts:52:    expect(row).not.toHaveProperty("tokenHash");
+packages\api\tests\integration\api-tokens.test.ts:127:      tokenHash: hashToken(generated.token),
+packages\db\src\schema\api-tokens.ts:23:  tokenHash: text().notNull().unique(),
+packages\db\src\migrations\0001_api_tokens\snapshot.json:265:      "name": "token_hash",
+packages\db\src\migrations\0001_api_tokens\snapshot.json:4929:        "token_hash"
+packages\db\src\migrations\0001_api_tokens\snapshot.json:4932:      "name": "api_tokens_token_hash_key",
+packages\db\src\migrations\0001_api_tokens\migration.sql:10:	"token_hash" text NOT NULL UNIQUE
+packages\api\src\tokens.ts:92:        eq(apiTokens.tokenHash, hashToken(plain)),
+packages\api\src\routers\api-tokens.ts:87: * nowhere else: the list/revoke reads use toRecord, which never selects tokenHash.
+packages\api\src\routers\api-tokens.ts:108:          tokenHash: hashToken(generated.token),
+

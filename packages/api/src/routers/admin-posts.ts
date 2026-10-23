@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/server";
 import { and, desc, eq, ilike, inArray, ne, or, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
+import { z } from "zod";
 
 import type { Database } from "@hataraku/db";
 import { posts } from "@hataraku/db/schema/posts";
@@ -8,8 +9,9 @@ import type { NewPost, Post } from "@hataraku/db/schema/posts";
 import { categories, postTags, tags } from "@hataraku/db/schema/taxonomy";
 
 import { assertStorableBody } from "#src/mdx-guard.ts";
+import { writeRoute } from "#src/openapi-public.ts";
 import { paginate } from "#src/pagination.ts";
-import { adminProcedure } from "#src/procedures.ts";
+import { adminProcedure, writeProcedure } from "#src/procedures.ts";
 import {
   adminPostDetailSchema,
   adminPostStatsSchema,
@@ -20,6 +22,21 @@ import {
   postIdInput,
   updatePostInput,
 } from "#src/schemas.ts";
+
+/** Path ids arrive as strings over HTTP; RPC callers pass numbers. Normalize both at the write edge. */
+const writePostIdInput = z.object({ id: z.coerce.number().int() });
+
+const writeUpdatePostInput = z
+  .object({ ...updatePostInput.shape, id: z.coerce.number().int() })
+  .superRefine((value, context) => {
+    if (value.slugOnly === true && value.slug === null) {
+      context.addIssue({
+        code: "custom",
+        message: "slugOnly requires a slug",
+        path: ["slug"],
+      });
+    }
+  });
 
 /** The three tables the write path touches. A transaction handle answers the same subset. */
 type Writer = Pick<Database, "delete" | "insert" | "select" | "update">;
@@ -308,7 +325,8 @@ export const adminPostsRouter = {
       return toAdminDetail(row, slugs);
     }),
 
-  create: adminProcedure
+  create: writeProcedure("posts:write")
+    .route(writeRoute("posts.create"))
     .input(createPostInput)
     .output(adminPostDetailSchema)
     .handler(async ({ context, input }) => {
@@ -360,8 +378,9 @@ export const adminPostsRouter = {
     }),
 
   /** Publishing is its own action, so the index can toggle it without loading the body. */
-  publish: adminProcedure
-    .input(postIdInput)
+  publish: writeProcedure("posts:write")
+    .route(writeRoute("posts.publish"))
+    .input(writePostIdInput)
     .output(adminPostSummarySchema)
     .handler(async ({ context, input }) => {
       const existing = await findPost(context.db, input.id);
@@ -410,8 +429,9 @@ export const adminPostsRouter = {
       return toAdminSummary(row);
     }),
 
-  unpublish: adminProcedure
-    .input(postIdInput)
+  unpublish: writeProcedure("posts:write")
+    .route(writeRoute("posts.unpublish"))
+    .input(writePostIdInput)
     .output(adminPostSummarySchema)
     .handler(async ({ context, input }) => {
       const existing = await findPost(context.db, input.id);
@@ -432,8 +452,9 @@ export const adminPostsRouter = {
       return toAdminSummary(row);
     }),
 
-  update: adminProcedure
-    .input(updatePostInput)
+  update: writeProcedure("posts:write")
+    .route(writeRoute("posts.update"))
+    .input(writeUpdatePostInput)
     .output(adminPostDetailSchema)
     .handler(async ({ context, input }) => {
       const {

@@ -10,6 +10,9 @@ import {
   isPublicApiProcedure,
   PUBLIC_API_TAGS,
   publicApiCorsHeaders,
+  resolveApiToken,
+  WRITE_API_ROUTES,
+  WRITE_API_SECURITY,
 } from "@hataraku/api";
 import type { Context } from "@hataraku/api";
 import { createAuth } from "@hataraku/auth";
@@ -80,8 +83,17 @@ type OpenApiDocument = Awaited<ReturnType<OpenAPIGenerator["generate"]>>;
  */
 const documents = new Map<string, Promise<OpenApiDocument>>();
 
-const buildDocument = async (origin: string): Promise<OpenApiDocument> =>
-  await openApiGenerator.generate(appRouter, {
+const buildDocument = async (origin: string): Promise<OpenApiDocument> => {
+  const document = await openApiGenerator.generate(appRouter, {
+    components: {
+      securitySchemes: {
+        bearerToken: {
+          bearerFormat: "hkr_...",
+          scheme: "bearer",
+          type: "http",
+        },
+      },
+    },
     externalDocs: {
       description: "API 使用指南",
       url: new URL("/docs/api", origin).toString(),
@@ -90,11 +102,11 @@ const buildDocument = async (origin: string): Promise<OpenApiDocument> =>
     info: {
       contact: { email: SITE_EMAIL, name: SITE_AUTHOR },
       description:
-        "夜行栈的公开只读 API：文章、分类标签、微言、项目、更新日志、站点资料、时间线、友链、相册与搜索。无需鉴权；跨域请求只允许 GET、HEAD 与预检。",
+        "夜行栈 API：公开只读接口与 Bearer 令牌写入。读取无需鉴权；写入使用带作用域的 API 令牌。跨域请求仍只允许公开 GET、HEAD 与预检。",
       // The repository ships no LICENSE file, so the contract does not claim an open licence.
       license: { name: "All rights reserved" },
       title: "夜行栈 API",
-      version: "0.0.0",
+      version: "1.0.0",
     },
     servers: [
       {
@@ -104,6 +116,20 @@ const buildDocument = async (origin: string): Promise<OpenApiDocument> =>
     ],
     tags: [...PUBLIC_API_TAGS],
   });
+
+  for (const route of WRITE_API_ROUTES) {
+    const pathItem = document.paths?.[route.path];
+
+    const operation =
+      route.method === "POST" ? pathItem?.post : pathItem?.patch;
+
+    if (operation !== undefined) {
+      operation.security = [...WRITE_API_SECURITY];
+    }
+  }
+
+  return document;
+};
 
 const openApiDocument = async (origin: string): Promise<OpenApiDocument> => {
   const cached = documents.get(origin);
@@ -289,10 +315,20 @@ export const handleApiRequest = async (
     return await getAuth().handler(request);
   }
 
+  const db = getDb();
+
+  const session = await getAuth().api.getSession({
+    headers: request.headers,
+  });
+
   const context: Context = {
     adminEmails: readEnv().ADMIN_EMAILS,
-    db: getDb(),
-    session: await getAuth().api.getSession({ headers: request.headers }),
+    apiToken:
+      session === null
+        ? await resolveApiToken(db, request.headers.get("authorization"))
+        : null,
+    db,
+    session,
   };
 
   if (prefix === "/rpc") {

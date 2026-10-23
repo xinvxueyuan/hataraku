@@ -1,3 +1,5 @@
+import type { ApiScope } from "#src/tokens.ts";
+
 /**
  * The public HTTP contract.
  *
@@ -154,6 +156,117 @@ export const PUBLIC_API_ROUTES = [
   },
 ] as const satisfies readonly PublicApiRouteDefinition[];
 
+interface WriteApiRouteDefinition {
+  readonly key: string;
+  readonly method: "PATCH" | "POST";
+  readonly path: `/${string}`;
+  readonly scope: ApiScope;
+  readonly summary: string;
+  readonly tag: string;
+}
+
+/**
+ * The token-write surface. It is separate from PUBLIC_API_ROUTES because CORS is deliberately
+ * read-only: a write is documented and callable over HTTP, but a browser never gets a wildcard
+ * grant for it.
+ */
+export const WRITE_API_ROUTES = [
+  {
+    key: "posts.create",
+    method: "POST",
+    path: "/posts",
+    scope: "posts:write",
+    summary: "创建文章（令牌）",
+    tag: "文章",
+  },
+  {
+    key: "posts.update",
+    method: "PATCH",
+    path: "/posts/{id}",
+    scope: "posts:write",
+    summary: "更新文章（令牌）",
+    tag: "文章",
+  },
+  {
+    key: "posts.publish",
+    method: "POST",
+    path: "/posts/{id}/publish",
+    scope: "posts:write",
+    summary: "发布文章（令牌）",
+    tag: "文章",
+  },
+  {
+    key: "posts.unpublish",
+    method: "POST",
+    path: "/posts/{id}/unpublish",
+    scope: "posts:write",
+    summary: "撤回文章（令牌）",
+    tag: "文章",
+  },
+  {
+    key: "content.micro.create",
+    method: "POST",
+    path: "/notes",
+    scope: "notes:write",
+    summary: "创建微言（令牌）",
+    tag: "微言",
+  },
+  {
+    key: "content.micro.update",
+    method: "PATCH",
+    path: "/notes/{id}",
+    scope: "notes:write",
+    summary: "更新微言（令牌）",
+    tag: "微言",
+  },
+  {
+    key: "content.projects.create",
+    method: "POST",
+    path: "/projects",
+    scope: "projects:write",
+    summary: "创建项目（令牌）",
+    tag: "项目",
+  },
+  {
+    key: "content.projects.update",
+    method: "PATCH",
+    path: "/projects/{id}",
+    scope: "projects:write",
+    summary: "更新项目（令牌）",
+    tag: "项目",
+  },
+  {
+    key: "content.changelog.create",
+    method: "POST",
+    path: "/changelog",
+    scope: "changelog:write",
+    summary: "创建更新日志（令牌）",
+    tag: "更新日志",
+  },
+] as const satisfies readonly WriteApiRouteDefinition[];
+
+const WRITE_ROUTES_BY_KEY = new Map<string, (typeof WRITE_API_ROUTES)[number]>(
+  WRITE_API_ROUTES.map((route) => [route.key, route])
+);
+
+export const WRITE_API_SECURITY = [{ bearerToken: [] }];
+
+/** Route metadata for one documented write. */
+export const writeRoute = (key: string) => {
+  const route = WRITE_ROUTES_BY_KEY.get(key);
+
+  if (route === undefined) {
+    throw new Error(`Unknown write API route: ${key}`);
+  }
+
+  return {
+    method: route.method,
+    path: route.path,
+    summary: route.summary,
+    tags: [route.tag],
+  };
+};
+
 const TAG_DESCRIPTIONS = {
   健康检查: "服务存活检查",
   分类与标签: "分类、标签及已发布文章计数",
@@ -192,7 +305,7 @@ const ROUTES_BY_KEY = new Map<string, PublicApiRouteDefinition>(
 );
 
 const PUBLIC_PROCEDURE_KEYS = new Set<string>(
-  PUBLIC_API_ROUTES.map((route) => route.key)
+  [...PUBLIC_API_ROUTES, ...WRITE_API_ROUTES].map((route) => route.key)
 );
 
 /**

@@ -1,0 +1,13 @@
+H77 local HTTP verification (token values redacted; local DB restored after)
+
+POST /api/posts (Bearer, posts:write)
+  status 200; body id=42, status=draft
+POST /api/posts/42/publish
+  status 200; status=published
+PATCH /api/posts/42
+  status 200; title="H77 HTTP token updated 3"
+POST /api/notes (same posts:write token)
+  status 403; message="This token does not allow notes:write."
+
+Cleanup: exact id 42 deleted, api_tokens name h77-http deleted; posts=39, tokens=0.
+Integration coverage also exercises revoked/expired tokens -> resolve null -> UNAUTHORIZED, malformed/expired, wrong scope, remove session-only.

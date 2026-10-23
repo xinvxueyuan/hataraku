@@ -7,26 +7,24 @@ import {
   PUBLIC_API_TAGS,
   publicApiCorsHeaders,
   publicRoute,
+  WRITE_API_ROUTES,
+  writeRoute,
 } from "#src/openapi-public.ts";
 
 const EXCLUDED_KEYS = [
+  "apiTokens.create",
+  "apiTokens.list",
+  "apiTokens.revoke",
   "posts.adminList",
   "posts.adminStats",
   "posts.byId",
-  "posts.create",
-  "posts.publish",
   "posts.remove",
-  "posts.unpublish",
-  "posts.update",
   "content.changelog.adminList",
-  "content.changelog.create",
   "content.changelog.remove",
   "content.micro.adminList",
-  "content.micro.create",
   "content.micro.publish",
   "content.projects.adminList",
   "content.projects.byId",
-  "content.projects.create",
   "media.uploads.policy",
   "media.uploads.presign",
   "security.attempts",
@@ -125,6 +123,37 @@ describe("public API contract", () => {
 
   it.each(GET_CORS)("CORS for %s %s", (method, path, expected) => {
     expect(publicApiCorsHeaders(method, path)).toStrictEqual(expected);
+  });
+
+  it("documents exactly the token-write procedures", () => {
+    expect(WRITE_API_ROUTES).toHaveLength(9);
+    expect(new Set(WRITE_API_ROUTES.map((route) => route.key)).size).toBe(9);
+    expect(new Set(WRITE_API_ROUTES.map((route) => route.path)).size).toBe(9);
+
+    for (const route of WRITE_API_ROUTES) {
+      expect(isPublicApiProcedure(route.key.split("."))).toBeTruthy();
+
+      const metadata = writeRoute(route.key);
+
+      expect(metadata).toMatchObject({
+        method: route.method,
+        path: route.path,
+        summary: route.summary,
+        tags: [route.tag],
+      });
+    }
+  });
+
+  it("rejects an unknown write route key", () => {
+    expect(() => writeRoute("posts.missing")).toThrow(
+      "Unknown write API route: posts.missing"
+    );
+  });
+
+  it("does not grant write CORS", () => {
+    expect(publicApiCorsHeaders("POST", "/notes")).toBeNull();
+    expect(publicApiCorsHeaders("POST", "/posts/1/publish")).toBeNull();
+    expect(publicApiCorsHeaders("OPTIONS", "/notes", "POST")).toBeNull();
   });
 
   it("answers a GET preflight on a public path", () => {

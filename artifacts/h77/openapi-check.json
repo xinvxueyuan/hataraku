@@ -1,0 +1,306 @@
+{
+  "count": 31,
+  "securitySchemes": {
+    "bearerToken": {
+      "bearerFormat": "hkr_...",
+      "scheme": "bearer",
+      "type": "http"
+    }
+  },
+  "operations": [
+    {
+      "method": "get",
+      "path": "/changelog",
+      "security": null,
+      "params": [
+        "highlightOnly",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/changelog",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/friends",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "post",
+      "path": "/notes",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/micro",
+      "security": null,
+      "params": [
+        "type",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "patch",
+      "path": "/notes/{id}",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/projects/{slug}",
+      "security": null,
+      "params": [
+        "slug"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/projects",
+      "security": null,
+      "params": [
+        "featuredOnly",
+        "status",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/projects",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": []
+    },
+    {
+      "method": "patch",
+      "path": "/projects/{id}",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/skills",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/tools",
+      "security": null,
+      "params": [
+        "category",
+        "featuredOnly",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/health",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/albums/{segment}",
+      "security": null,
+      "params": [
+        "segment"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/albums",
+      "security": null,
+      "params": [
+        "tag",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/devices",
+      "security": null,
+      "params": [
+        "category",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/diary",
+      "security": null,
+      "params": [
+        "from",
+        "tag",
+        "to",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/timeline",
+      "security": null,
+      "params": [
+        "category",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/posts",
+      "security": null,
+      "params": [
+        "categorySlug",
+        "direction",
+        "featuredOnly",
+        "orderBy",
+        "tagSlugs",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/posts",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": []
+    },
+    {
+      "method": "post",
+      "path": "/posts/{id}/publish",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "post",
+      "path": "/posts/{id}/unpublish",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "patch",
+      "path": "/posts/{id}",
+      "security": [
+        {
+          "bearerToken": []
+        }
+      ],
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/posts/{segment}/adjacent",
+      "security": null,
+      "params": [
+        "segment"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/posts/{segment}",
+      "security": null,
+      "params": [
+        "segment"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/posts/{segment}/related",
+      "security": null,
+      "params": [
+        "segment",
+        "limit"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/search",
+      "security": null,
+      "params": [
+        "q",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "method": "get",
+      "path": "/site",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/taxonomy/categories",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/taxonomy",
+      "security": null,
+      "params": []
+    },
+    {
+      "method": "get",
+      "path": "/taxonomy/tags",
+      "security": null,
+      "params": [
+        "minCount",
+        "orderBy"
+      ]
+    }
+  ]
+}
