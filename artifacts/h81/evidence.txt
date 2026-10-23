@@ -1,0 +1,30 @@
+H81 — 新建令牌五步向导实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 步骤 / URL ==
+/settings/api/new?step=1..5；步骤状态走 history.replaceState，避免整页刷新；刷新/直达按 searchParams 恢复步骤。
+SPA 探针：window.__spa=1 → step1→step2→step3→回 step1 仍为 1；shell 不重绘。
+步骤指示器：当前 step 有 aria-current=step；已完成步骤可点回退；未来步骤 disabled。
+
+== 校验 / 交互 ==
+step1 空名称：下一步 disabled（实测 true）；step2 0 作用域：下一步 disabled（实测 true）；step3 默认 30 天。
+step4 才调用 apiTokens.create（确认创建）；提交中按钮禁用并显示「创建中…」；错误显示在复核区。
+step5 明文为等宽块 + 复制按钮（accessible name「复制令牌」）；离开（完成，返回列表）弹 role=alertdialog「离开后无法再次查看该令牌」，确认后回列表。
+step5 刷新：明文消失，页面显示「令牌已创建 / 刷新后无法再次查看明文。请回列表确认……」而不是空块。
+
+== 创建结果 ==
+全流程创建 H81 截图令牌（prefix hkr_Wvrn）；列表可见该名称、prefix 与「有效」状态；测试令牌已清理，api_tokens=0。
+安全：URL 不含 token；localStorage/sessionStorage 均不含 token（独立检查 hkr__bQY）。第 5 步之外没有 token 展示。
+
+== 390 ==
+step1-4：scrollWidth=clientWidth=373；step5：390/390；五步均无横向溢出。
+
+== 截图 ==
+h81-step{1..5}-1440.png / h81-step{1..5}-390.png；step5 截图中的明文为占位符（真实 token 未写入仓库）。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+e2e 7/7（ready 内）。
