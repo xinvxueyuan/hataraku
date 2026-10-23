@@ -3,11 +3,9 @@ import Link from "next/link";
 import { Card } from "@hataraku/ui/components/card";
 
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
 import { serverCall } from "#src/server/query.ts";
-
-const PATH = "/settings/admin";
 
 /**
  * The writing desk: every admin surface, one line about what it is for, and the counts that matter
@@ -17,7 +15,7 @@ const PATH = "/settings/admin";
  * page it opens.
  */
 const AdminIndexPage = async () => {
-  await requireSession(PATH);
+  await requireSession("/settings/admin");
 
   let forbidden = false;
 
@@ -108,11 +106,11 @@ const AdminIndexPage = async () => {
   ] as const;
 
   return (
-    <AdminPageShell
-      current={PATH}
-      description="写作、站点资料与账号设置，全部入口都在这里。"
-      title="写作后台"
-    >
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        description="写作、站点资料与账号设置，全部入口都在这里。"
+        title="写作后台"
+      />
       <ul className="grid gap-4 sm:grid-cols-2" data-slot="admin-index">
         {spaces.map((space) => (
           <li key={space.href}>
@@ -137,7 +135,7 @@ const AdminIndexPage = async () => {
           </li>
         ))}
       </ul>
-    </AdminPageShell>
+    </div>
   );
 };
 

@@ -74,7 +74,6 @@ const AdminChangelogPage = async ({
           新建
         </Link>
       }
-      current={PATH}
       description="每次发版记一条，读者能看懂改了什么。"
       title="更新日志"
     >

@@ -23,7 +23,6 @@ const TwoFactorPage = async () => {
 
   return (
     <AdminPageShell
-      current="/settings/two-factor"
       description="Protect your account with a code from an authenticator app."
       title="Two-factor authentication"
     >

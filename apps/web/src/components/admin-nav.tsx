@@ -57,6 +57,11 @@ const GROUPS: readonly { items: readonly AdminSection[]; label: string }[] = [
   },
 ] as const;
 
+/** Every settings path, flattened once for the pathname-aware layout. */
+const ADMIN_PATHS: readonly AdminPath[] = GROUPS.flatMap((group) =>
+  group.items.map((item) => item.href)
+);
+
 const linkClass = (active: boolean) =>
   active
     ? "bg-accent text-accent-foreground block rounded-md px-2.5 py-1.5 font-medium"
@@ -93,6 +98,7 @@ const AdminNavList = ({
                 className={linkClass(section.href === current)}
                 href={section.href}
                 onClick={onNavigate}
+                prefetch={section.href === "/settings/api" ? false : undefined}
               >
                 {section.label}
               </Link>
@@ -105,7 +111,7 @@ const AdminNavList = ({
 );
 
 /** The desktop sidebar column. The shell keeps it sticky; the list itself owns no positioning. */
-export const AdminNav = ({ current }: { current: AdminPath }) => (
+const AdminNav = ({ current }: { current: AdminPath }) => (
   <AdminNavList current={current} />
 );
 
@@ -138,8 +144,29 @@ const MobileDrawer = ({ current }: { current: AdminPath }) => {
  * activation and a route change all close it the same way the header menus do; keying it on the path
  * is what makes a route change start closed.
  */
-export const AdminMobileNav = ({ current }: { current: AdminPath }) => {
+const AdminMobileNav = ({ current }: { current: AdminPath }) => {
   const pathname = usePathname();
 
   return <MobileDrawer current={current} key={pathname} />;
+};
+
+/** The sidebar resolves the active path itself so the server layout can render it once. */
+export const SettingsSidebar = () => {
+  const pathname = usePathname();
+
+  const current =
+    ADMIN_PATHS.toSorted((left, right) => right.length - left.length).find(
+      (path) => pathname === path || pathname.startsWith(`${path}/`)
+    ) ?? "/settings/admin";
+
+  return (
+    <>
+      <div className="lg:hidden">
+        <AdminMobileNav current={current} />
+      </div>
+      <div className="hidden lg:block">
+        <AdminNav current={current} />
+      </div>
+    </>
+  );
 };

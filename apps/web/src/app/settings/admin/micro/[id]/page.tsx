@@ -33,7 +33,6 @@ const AdminMicroEditorPage = async ({
   if (id === "new") {
     return (
       <AdminPageShell
-        current={PATH}
         description="填好字段，保存后会跳到它的编辑页。"
         title="新建微言"
       >
@@ -63,11 +62,7 @@ const AdminMicroEditorPage = async ({
   }
 
   return (
-    <AdminPageShell
-      current={PATH}
-      description="改一条已经写下的短句。"
-      title="编辑微言"
-    >
+    <AdminPageShell description="改一条已经写下的短句。" title="编辑微言">
       <AdminBackLink href={PATH} />
       <MicroPostEditor post={row} />
     </AdminPageShell>

@@ -75,7 +75,6 @@ const SecurityPage = async () => {
 
   return (
     <AdminPageShell
-      current="/settings/security"
       description={`当前账号：${session.user.email}`}
       title="安全概览"
     >

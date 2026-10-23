@@ -78,7 +78,6 @@ const AdminMicroPage = async ({
           新建
         </Link>
       }
-      current={PATH}
       description="短句与碎片，前台在 /notes。"
       title="微言"
     >

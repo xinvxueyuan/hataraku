@@ -33,7 +33,6 @@ const AdminChangelogEditorPage = async ({
   if (id === "new") {
     return (
       <AdminPageShell
-        current={PATH}
         description="填好字段，保存后会跳到它的编辑页。"
         title="新建更新日志"
       >
@@ -64,7 +63,6 @@ const AdminChangelogEditorPage = async ({
 
   return (
     <AdminPageShell
-      current={PATH}
       description="改一条版本记录的条目与正文。"
       title="编辑更新日志"
     >

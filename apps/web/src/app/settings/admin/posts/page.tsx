@@ -76,7 +76,6 @@ const AdminPostsPage = async ({
           新建文章
         </Link>
       }
-      current={PATH}
       description="文章存在 Postgres 里，正文是 MDX；保存和发布都走 API。"
       title="文章"
     >

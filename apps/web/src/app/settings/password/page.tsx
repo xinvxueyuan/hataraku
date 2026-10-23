@@ -22,7 +22,6 @@ const PasswordPage = async () => {
 
   return (
     <AdminPageShell
-      current="/settings/password"
       description={`当前账号：${session.user.email}`}
       title="修改密码"
     >

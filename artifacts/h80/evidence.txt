@@ -1,0 +1,37 @@
+H80 — settings SPA 基础 + API 令牌列表/详情实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 共享 layout ==
+新增 apps/web/src/app/settings/layout.tsx（服务端 shell：SettingsSidebar + 内容区），所有 settings 子页只渲染页面内容；本页已提前把 12 个 settings 页面的 AdminPageShell 外壳职责移到 layout（页面里的 AdminPageShell 现在只输出标题/内容，H82b 可继续删）。
+Shell 数量：/settings/api 与 /settings/security 均 1 个 [data-slot=admin-shell]，h1 均 1 个。
+宽度：settings layout 使用 w-full max-w-4xl；root layout 加 has-[[data-slot=admin-shell]]:max-w-4xl（替代原来的任意宽度类，check:design 0，无 allowlist 变更）。
+
+== SPA 探针 ==
+打开 /settings/api → window.__spa=1 → 点击左侧「总览」→ 点击「API 令牌」→ window.__spa=1，location=/settings/api，shell 数 1。
+loading：settings/api/loading.tsx；在导航请求延迟 1.5s 时截到 h80-loading-1440.png（骨架可见）。
+
+== 列表 / 详情 ==
+列表只做选择：标题 + 新建令牌 + 表格；列 = 名称/prefix/作用域/创建/最近使用/状态/操作（查看详情）；吊销/用法已移出列表。
+空态：只显示「还没有令牌」+「新建令牌」；1440 scrollWidth=clientWidth=1440，390=390。
+种子数据实测：发布助手（写作·微言，有效）、旧脚本（项目，已吊销）、临时令牌（更新日志，已过期）；1440 表格 3 行。
+详情 /settings/api/<id>：名称、prefix、作用域、创建、最近使用、过期时间、状态；两条 curl（$HATARAKU_TOKEN 占位）+ /docs/api；危险区吊销二次确认（role=alertdialog）。
+吊销后回到 /settings/api，发布助手状态变为已吊销。
+390 列表/详情 scrollWidth=clientWidth=373；列表移动端 3 张卡片。
+/settings/api/new 直达 200（H81 将替换为步骤向导）。
+
+== 鉴权 ==
+无 cookie /settings/api → 307 /login?redirect=%2Fsettings%2Fapi；/settings/api/<id> → 307 /login?redirect=%2Fsettings%2Fapi（API 段 layout 在 loading 边界之上做 requireSession）。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+e2e 7/7（ready 内）。
+
+== 截图 ==
+h80-list-{1440,390}.png（有数据列表）
+h80-list-empty-{1440,390}.png（空态）
+h80-detail-{1440,390}.png（详情）
+h80-list-revoked-1440.png
+h80-loading-1440.png（导航骨架）

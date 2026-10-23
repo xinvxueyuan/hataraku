@@ -33,7 +33,6 @@ const AdminProjectEditorPage = async ({
   if (id === "new") {
     return (
       <AdminPageShell
-        current={PATH}
         description="填好字段，保存后会跳到它的编辑页。"
         title="新建项目"
       >
@@ -64,7 +63,6 @@ const AdminProjectEditorPage = async ({
 
   return (
     <AdminPageShell
-      current={PATH}
       description="改一个项目的状态、封面与详情。"
       title="编辑项目"
     >

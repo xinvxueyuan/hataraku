@@ -22,7 +22,6 @@ const SiteProfilePage = async () => {
 
   return (
     <AdminPageShell
-      current="/settings/admin/profile"
       description="站点名称、简介、社交链接与首页 Hero；保存后首页、页脚与关于页立即生效。"
       title="站点资料"
     >

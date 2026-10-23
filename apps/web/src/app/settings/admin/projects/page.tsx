@@ -78,7 +78,6 @@ const AdminProjectsPage = async ({
           新建
         </Link>
       }
-      current={PATH}
       description="做过的项目与实验，含状态、排序与封面。"
       title="项目"
     >

@@ -1,25 +1,43 @@
-import type { Metadata } from "next";
+import Link from "next/link";
+
+import { Button } from "@hataraku/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@hataraku/ui/components/card";
 
 import { AdminForbidden } from "#src/components/admin-forbidden.tsx";
-import { AdminPageShell } from "#src/components/admin-page-shell.tsx";
-import { ApiTokenCreate } from "#src/components/api-token-create.tsx";
+import { SettingsPageHeader } from "#src/components/admin-page-shell.tsx";
 import { ApiTokenList } from "#src/components/api-token-list.tsx";
-import { ApiTokenUsage } from "#src/components/api-token-usage.tsx";
 import { isForbidden, requireSession } from "#src/server/admin.ts";
 import { serverCall } from "#src/server/query.ts";
 
 const PATH = "/settings/api";
 
-export const metadata: Metadata = {
-  description: "为外部请求创建带作用域的 API 令牌。",
-  robots: { follow: false, index: false },
-  title: "API 令牌",
-};
+const NewTokenButton = () => (
+  <Button render={<Link href="/settings/api/new" />}>新建令牌</Button>
+);
+
+const EmptyTokens = () => (
+  <Card data-slot="api-token-empty">
+    <CardHeader>
+      <CardTitle>还没有令牌</CardTitle>
+      <CardDescription>
+        创建一枚带作用域的令牌，就可以从外部写入文章、微言、项目或更新日志。
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <NewTokenButton />
+    </CardContent>
+  </Card>
+);
 
 /**
- * Token management for the owner. The token plaintext exists only in the create response, so this
- * page keeps the list and the create form separate: the list reads names and prefixes, while the
- * form holds the one-time value in client state until the owner dismisses it.
+ * The token chooser. Creation and usage live on their own pages: this page answers "which token?"
+ * and nothing else.
  */
 const ApiSettingsPage = async () => {
   await requireSession(PATH);
@@ -40,15 +58,14 @@ const ApiSettingsPage = async () => {
   }
 
   return (
-    <AdminPageShell
-      current={PATH}
-      description="创建和管理用于外部写作请求的令牌；令牌只显示一次，作用域只有四个写入范围。"
-      title="API 令牌"
-    >
-      <ApiTokenList tokens={tokens} />
-      <ApiTokenCreate />
-      <ApiTokenUsage />
-    </AdminPageShell>
+    <div className="grid gap-6" data-slot="settings-page">
+      <SettingsPageHeader
+        action={tokens.length === 0 ? undefined : <NewTokenButton />}
+        description="选择一枚令牌查看详情，或创建一枚新的写入令牌。"
+        title="API 令牌"
+      />
+      {tokens.length === 0 ? <EmptyTokens /> : <ApiTokenList tokens={tokens} />}
+    </div>
   );
 };
 
