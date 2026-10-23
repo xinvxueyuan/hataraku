@@ -1,0 +1,368 @@
+{
+  "routes": [
+    {
+      "key": "blog",
+      "route": "/blog",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "blog-segment",
+      "route": "/blog/39",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "blog-archive",
+      "route": "/blog/archive",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "blog-taxonomy",
+      "route": "/blog/taxonomy",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "docs",
+      "route": "/docs",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "docs-slug",
+      "route": "/docs/api",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "notes",
+      "route": "/notes",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "projects",
+      "route": "/projects",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "albums",
+      "route": "/albums",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "albums-segment",
+      "route": "/albums/1",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "changelog",
+      "route": "/changelog",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "toolbox",
+      "route": "/toolbox",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "about",
+      "route": "/about",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    },
+    {
+      "key": "search",
+      "route": "/search",
+      "status": 200,
+      "wide": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "bodyScrollWidth": 1440
+      },
+      "narrow": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "bodyScrollWidth": 390
+      }
+    }
+  ],
+  "layouts": [
+    {
+      "key": "blog",
+      "route": "/blog",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/blog"
+    },
+    {
+      "key": "archive",
+      "route": "/blog/archive",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/blog/archive"
+    },
+    {
+      "key": "taxonomy",
+      "route": "/blog/taxonomy",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/blog/taxonomy"
+    },
+    {
+      "key": "docs",
+      "route": "/docs",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/docs"
+    },
+    {
+      "key": "notes",
+      "route": "/notes",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/notes"
+    },
+    {
+      "key": "projects",
+      "route": "/projects",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/projects"
+    },
+    {
+      "key": "albums",
+      "route": "/albums",
+      "sawSkeleton": false,
+      "screenshot": null,
+      "at": "http://127.0.0.1:3000/albums"
+    }
+  ],
+  "consoleErrors": [
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Nmtb0oKrC4YxuIZp_J-QC' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Nmtb0oKrC4YxuIZp_J-QC' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Nmtb0oKrC4YxuIZp_J-QC' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Zz82687SNGCfjxqaJRxa_' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Zz82687SNGCfjxqaJRxa_' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Zz82687SNGCfjxqaJRxa_' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=rBUkyyTFxBrbHMe3BzHrr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=rBUkyyTFxBrbHMe3BzHrr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=rBUkyyTFxBrbHMe3BzHrr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=rBUkyyTFxBrbHMe3BzHrr' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=kmHeJImQ-xUMM72JRXopq' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=kmHeJImQ-xUMM72JRXopq' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=A_bdZzGaeYzC9VA72Xynn' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=A_bdZzGaeYzC9VA72Xynn' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=A_bdZzGaeYzC9VA72Xynn' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=_fa2-Bf1RM7N440utjm0J' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=HJmgHE7dVA6ujErO0MbiF' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=HJmgHE7dVA6ujErO0MbiF' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=56QyE_IkFNSp0_CNsFAVV' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=56QyE_IkFNSp0_CNsFAVV' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=56QyE_IkFNSp0_CNsFAVV' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=56QyE_IkFNSp0_CNsFAVV' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=56QyE_IkFNSp0_CNsFAVV' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=U6NJfX-1nfBQBvnS0V9Dy' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=4wCMf8EoK-2MoBNh0kiBK' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=4wCMf8EoK-2MoBNh0kiBK' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=OK377ASD1KGez3MlResCI' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=OK377ASD1KGez3MlResCI' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=QaXiKdUQ4DZ3Sho2IX07A' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=QaXiKdUQ4DZ3Sho2IX07A' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=4lQUTQDHaaCm_DUftTJdL' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=bLmlPdqAE-uKweXKWgAEb' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=bLmlPdqAE-uKweXKWgAEb' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=a8edqCyhCwjL1GbuLla1r' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=txz_MNGgjl_a0YBfQLgh8' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=txz_MNGgjl_a0YBfQLgh8' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=SKjyzMlSR3wUQwOUTMtqA' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=SKjyzMlSR3wUQwOUTMtqA' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Vy-WC8mgYXfBChNEvkYiv' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Vy-WC8mgYXfBChNEvkYiv' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=vwxCuXhooinq0MO9BGY5x' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=aUs45tsnXcad5ik1C5MTW' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Jj8HMzu7h0Aspio5E44f6' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=Jj8HMzu7h0Aspio5E44f6' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=m8VDlYcgqsfjovgq6V0zg' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=m8VDlYcgqsfjovgq6V0zg' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=uG2h6rnVrVpN7d_9ZRVdB' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=7vzvnHZ89UlG842zOpRos' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=7vzvnHZ89UlG842zOpRos' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=X5dzGBUpQDUjqBJvgYmdp' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=8ISXqxS2j8IThWQsu2c1q' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=cLvlMsQOe_oMtx_QWnoqh' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=cLvlMsQOe_oMtx_QWnoqh' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)",
+    "WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=cLvlMsQOe_oMtx_QWnoqh' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+  ],
+  "notFound": {
+    "status": 404,
+    "rendered": true,
+    "narrow": {
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "bodyScrollWidth": 390
+    }
+  }
+}

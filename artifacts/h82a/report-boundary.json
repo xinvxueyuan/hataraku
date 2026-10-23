@@ -1,0 +1,25 @@
+{
+  "runs": [
+    {
+      "width": 1440,
+      "shown": false,
+      "text": "",
+      "metrics": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "shot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\error-1440.png"
+    },
+    {
+      "width": 390,
+      "shown": false,
+      "text": "",
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "shot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\error-390.png"
+    }
+  ],
+  "rewrites": []
+}

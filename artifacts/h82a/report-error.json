@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "width": 1440,
+      "status": 404,
+      "shown": 0,
+      "metrics": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "shot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\error-1440.png",
+      "text": "404\n\n这一页不存在\n\n链接可能过期了，或者地址打错了一个字。搜一下关键词，或者从下面挑个入口继续读。\n\n搜索关键词\n搜索\n常用入口\n首页\n从最新一篇读起。\n写作\n按时间排列的全部文章。\n文档\n站点的实现说明。\n归档\n按发布月份往回翻。"
+    },
+    {
+      "width": 390,
+      "status": 404,
+      "shown": 0,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "shot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\error-390.png",
+      "text": "404\n\n这一页不存在\n\n链接可能过期了，或者地址打错了一个字。搜一下关键词，或者从下面挑个入口继续读。\n\n搜索关键词\n搜索\n常用入口\n首页\n从最新一篇读起。\n写作\n按时间排列的全部文章。\n文档\n站点的实现说明。\n归档\n按发布月份往回翻。"
+    }
+  ],
+  "notFound390": {
+    "scrollWidth": 390,
+    "clientWidth": 390
+  }
+}

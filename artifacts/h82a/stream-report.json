@@ -1,0 +1,125 @@
+{
+  "stream": [
+    {
+      "key": "blog",
+      "route": "/blog",
+      "status": 200,
+      "bytes": 73156,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 4
+    },
+    {
+      "key": "archive",
+      "route": "/blog/archive",
+      "status": 200,
+      "bytes": 260925,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 9
+    },
+    {
+      "key": "taxonomy",
+      "route": "/blog/taxonomy",
+      "status": 200,
+      "bytes": 294655,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 10
+    },
+    {
+      "key": "docs",
+      "route": "/docs",
+      "status": 200,
+      "bytes": 74255,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 3
+    },
+    {
+      "key": "notes",
+      "route": "/notes",
+      "status": 200,
+      "bytes": 54508,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 3
+    },
+    {
+      "key": "projects",
+      "route": "/projects",
+      "status": 200,
+      "bytes": 76362,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 3
+    },
+    {
+      "key": "albums",
+      "route": "/albums",
+      "status": 200,
+      "bytes": 55511,
+      "hasSkeleton": true,
+      "skeletonBeforeResolve": true,
+      "chunkCount": 3
+    }
+  ],
+  "navigations": [
+    {
+      "key": "blog",
+      "route": "/blog",
+      "clicked": true,
+      "appeared": 19813,
+      "landed": "http://127.0.0.1:3100/blog",
+      "screenshot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\skeleton-blog-1440.png"
+    },
+    {
+      "key": "archive",
+      "route": "/blog/archive",
+      "clicked": true,
+      "appeared": null,
+      "landed": "http://127.0.0.1:3100/blog/archive",
+      "screenshot": null
+    },
+    {
+      "key": "taxonomy",
+      "route": "/blog/taxonomy",
+      "clicked": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('link', { name: '分类', exact: true }).first()\u001b[22m\n",
+      "appeared": null,
+      "landed": "http://127.0.0.1:3100/",
+      "screenshot": null
+    },
+    {
+      "key": "docs",
+      "route": "/docs",
+      "clicked": true,
+      "appeared": 20525,
+      "landed": "http://127.0.0.1:3100/docs",
+      "screenshot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\skeleton-docs-1440.png"
+    },
+    {
+      "key": "notes",
+      "route": "/notes",
+      "clicked": true,
+      "appeared": 19905,
+      "landed": "http://127.0.0.1:3100/notes",
+      "screenshot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\skeleton-notes-1440.png"
+    },
+    {
+      "key": "projects",
+      "route": "/projects",
+      "clicked": true,
+      "appeared": 19855,
+      "landed": "http://127.0.0.1:3100/projects",
+      "screenshot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\skeleton-projects-1440.png"
+    },
+    {
+      "key": "albums",
+      "route": "/albums",
+      "clicked": true,
+      "appeared": 19974,
+      "landed": "http://127.0.0.1:3100/albums",
+      "screenshot": "C:\\dev\\dsh\\projects\\hataraku\\artifacts\\h82a\\skeleton-albums-1440.png"
+    }
+  ]
+}

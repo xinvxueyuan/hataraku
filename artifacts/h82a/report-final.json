@@ -1,0 +1,94 @@
+{
+  "routes": [
+    {
+      "route": "/blog",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/blog/39",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/blog/archive",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/blog/taxonomy",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/docs",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/docs/api",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/notes",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/projects",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/albums",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/albums/1",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/changelog",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/toolbox",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/about",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/search",
+      "status": 200,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    },
+    {
+      "route": "/nope",
+      "status": 404,
+      "scrollWidth": 390,
+      "clientWidth": 390
+    }
+  ]
+}
