@@ -1,0 +1,13 @@
+[
+  {
+    "file": "page.png",
+    "state": null,
+    "size": "390x844",
+    "zoom": 1,
+    "animationWaitMs": 0,
+    "issues": [
+      "加载错误：WebSocket connection to 'ws://127.0.0.1:3000/_next/hmr?id=D8Y0e9J3txU3qYteiXihS' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE http://127.0.0.1:3000/_next/static/chunks/0exv_next_dist_client_0iy4v9fiese5e._.js"
+    ],
+    "lint": []
+  }
+]

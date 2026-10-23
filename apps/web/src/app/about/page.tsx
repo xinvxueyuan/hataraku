@@ -2,8 +2,8 @@ import { ORPCError } from "@orpc/client";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { focusRing } from "@hataraku/components/focus-ring";
 import { Badge } from "@hataraku/ui/components/badge";
-import { Card, CardContent } from "@hataraku/ui/components/card";
 
 import { formatDisplayDate } from "#src/components/display-date.ts";
 import { MediaImage } from "#src/components/media-image.tsx";
@@ -11,10 +11,12 @@ import { loadAllRows } from "#src/components/site.ts";
 import { serverCall } from "#src/server/query.ts";
 
 /**
- * About the site: the single profile row, what the site currently holds, and where to go next.
+ * About the site: who writes it, what it holds, and where to go next.
  *
- * Counts are read from the same procedures the index pages use, so this page never advertises a
- * number the archive or taxonomy page contradicts.
+ * The page is one subject, so it stays one route; the hierarchy carries the weight the split would
+ * have carried elsewhere. The first screen is identity and one sentence, the counts are a single
+ * line of numbers rather than four tiles, and a section with nothing in it (the timeline, today)
+ * renders nothing at all instead of leaving an empty heading standing.
  */
 
 export const metadata: Metadata = {
@@ -51,8 +53,9 @@ const loadProfile = async () => {
   }
 };
 
-const focusRing =
-  "rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none";
+/** A section that is secondary to the identity: small caps, no card, no border. */
+const SECTION_HEADING =
+  "text-muted-foreground text-sm font-semibold tracking-wide uppercase";
 
 const PLACES = [
   {
@@ -105,202 +108,200 @@ const AboutPage = async () => {
 
   const avatarSource = profile?.avatarUrl ?? profile?.avatarKey ?? null;
 
+  const hasContact =
+    profile !== null && (socials.length > 0 || profile.email !== null);
+
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-6 py-12">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold tracking-tight">关于</h1>
-        <p className="text-muted-foreground">这个站点是谁在写，写了些什么。</p>
-      </header>
-
-      {profile === null ? (
-        <p className="text-muted-foreground rounded-lg border border-dashed p-6">
-          站点资料还没有写入。等它准备好后，这里会介绍作者与站点的来龙去脉——先去{" "}
-          <Link className={`${focusRing} underline`} href="/blog/archive">
-            归档
-          </Link>{" "}
-          读几篇文章。
-        </p>
-      ) : (
-        <Card>
-          <CardContent>
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-              <span className="bg-muted relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl">
-                {avatarSource === null ? (
-                  <span
-                    aria-hidden="true"
-                    className="text-muted-foreground text-2xl font-semibold"
-                  >
-                    {profile.name.slice(0, 1)}
+    <div
+      className="mx-auto flex w-full max-w-3xl flex-col px-6"
+      data-slot="about"
+    >
+      <header className="flex min-h-svh flex-col justify-center gap-6 py-16">
+        {profile === null ? (
+          <h1 className="text-3xl font-semibold tracking-tight">关于</h1>
+        ) : (
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+            <span className="bg-muted relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl sm:size-24">
+              {avatarSource === null ? (
+                <span
+                  aria-hidden="true"
+                  className="text-muted-foreground text-3xl font-semibold"
+                >
+                  {profile.name.slice(0, 1)}
+                </span>
+              ) : (
+                <MediaImage
+                  alt={`${profile.name} 的头像`}
+                  assetKey={profile.avatarKey}
+                  fill
+                  src={profile.avatarUrl}
+                />
+              )}
+            </span>
+            <div className="flex min-w-0 flex-col gap-2">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+                  {profile.name}
+                </h1>
+                {profile.nameEn === null ? null : (
+                  <span className="text-muted-foreground text-sm">
+                    {profile.nameEn}
                   </span>
-                ) : (
-                  <MediaImage
-                    alt={`${profile.name} 的头像`}
-                    assetKey={profile.avatarKey}
-                    fill
-                    src={profile.avatarUrl}
-                  />
                 )}
-              </span>
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-wrap items-baseline gap-x-3">
-                  <h2 className="text-2xl font-semibold tracking-tight">
-                    {profile.name}
-                  </h2>
-                  {profile.nameEn === null ? null : (
-                    <span className="text-muted-foreground text-sm">
-                      {profile.nameEn}
-                    </span>
-                  )}
-                </div>
-                {profile.tagline === null ? null : (
-                  <p className="text-sm">{profile.tagline}</p>
-                )}
-                {profile.description === null ? null : (
-                  <p className="text-muted-foreground">{profile.description}</p>
-                )}
-                <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                  {profile.author === null ? null : (
-                    <span>作者：{profile.author}</span>
-                  )}
-                  {profile.email === null ? null : (
-                    <a
-                      className={`${focusRing} underline-offset-4 hover:underline`}
-                      href={`mailto:${profile.email}`}
-                    >
-                      {profile.email}
-                    </a>
-                  )}
-                </div>
               </div>
+              {profile.tagline === null ? null : (
+                <p className="text-sm">{profile.tagline}</p>
+              )}
+              {profile.description === null ? null : (
+                <p className="text-muted-foreground">{profile.description}</p>
+              )}
+              {profile.author === null ? null : (
+                <p className="text-muted-foreground text-xs">
+                  作者 {profile.author}
+                </p>
+              )}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        )}
 
-      <section aria-labelledby="stats-heading" className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold" id="stats-heading">
-          站点数据
-        </h2>
+        {profile === null ? (
+          <p className="text-muted-foreground rounded-lg border border-dashed p-6">
+            站点资料还没有写入。等它准备好后，这里会介绍作者与站点的来龙去脉——先去{" "}
+            <Link className={`${focusRing} underline`} href="/blog/archive">
+              归档
+            </Link>{" "}
+            读几篇文章。
+          </p>
+        ) : null}
         <ul
-          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+          className="flex flex-wrap items-baseline gap-x-6 gap-y-2"
           data-slot="site-stats"
         >
           {stats.map((stat) => (
             <li key={stat.label}>
               <Link
-                className={`${focusRing} hover:bg-accent flex h-full items-center justify-between gap-3 rounded-lg border p-3 transition-colors`}
+                className={`${focusRing} inline-flex items-baseline gap-1.5 hover:underline`}
                 href={stat.href}
               >
+                <span className="text-lg font-semibold tabular-nums">
+                  {stat.value}
+                </span>
                 <span className="text-muted-foreground text-sm">
                   {stat.label}
                 </span>
-                <Badge variant="secondary">{stat.value}</Badge>
               </Link>
             </li>
           ))}
         </ul>
-      </section>
+      </header>
 
-      <section
-        aria-labelledby="timeline-heading"
-        className="flex flex-col gap-4"
-      >
-        <h2 className="text-xl font-semibold" id="timeline-heading">
-          时间线
-        </h2>
-        {timeline.length === 0 ? (
-          <p className="text-muted-foreground rounded-lg border border-dashed p-6">
-            时间线还没有记录。等站点走过第一个节点后，会在这里按时间排开——先去{" "}
-            <Link className={`${focusRing} underline`} href="/blog/archive">
-              归档
-            </Link>{" "}
-            读几篇最近的文章。
-          </p>
-        ) : (
-          <ol
-            className="flex flex-col gap-5 border-l pl-6"
-            data-slot="site-timeline"
+      <div className="flex flex-col gap-12 pb-20">
+        {timeline.length === 0 ? null : (
+          <section
+            aria-labelledby="timeline-heading"
+            className="flex flex-col gap-3"
           >
-            {timeline.map((entry) => (
-              <li className="relative flex flex-col gap-1" key={entry.id}>
-                <span
-                  aria-hidden="true"
-                  className="bg-primary absolute top-1.5 -left-[31px] size-2.5 rounded-full"
-                />
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <time
-                    className="text-muted-foreground font-mono text-xs"
-                    dateTime={entry.date ?? undefined}
-                  >
-                    {entry.date === null
-                      ? dateFormatter.format(entry.createdAt)
-                      : (formatDisplayDate(entry.date) ?? entry.date)}
-                  </time>
-                  <span className="font-medium">{entry.title}</span>
-                  {entry.highlight ? <Badge>里程碑</Badge> : null}
-                  <Badge variant="outline">{entry.category}</Badge>
-                </div>
-                {entry.description === null ? null : (
-                  <p className="text-muted-foreground text-sm">
-                    {entry.description}
-                  </p>
-                )}
-                {entry.link === null ? null : (
-                  <a
-                    className={`${focusRing} w-fit text-sm underline underline-offset-4`}
-                    href={entry.link}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {entry.link}
-                  </a>
-                )}
-              </li>
-            ))}
-          </ol>
+            <h2 className={SECTION_HEADING} id="timeline-heading">
+              时间线
+            </h2>
+            <ol
+              className="flex flex-col gap-5 border-l pl-6"
+              data-slot="site-timeline"
+            >
+              {timeline.map((entry) => (
+                <li className="relative flex flex-col gap-1" key={entry.id}>
+                  <span
+                    aria-hidden="true"
+                    className="bg-primary absolute top-1.5 -left-[31px] size-2.5 rounded-full"
+                  />
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <time
+                      className="text-muted-foreground font-mono text-xs"
+                      dateTime={entry.date ?? undefined}
+                    >
+                      {entry.date === null
+                        ? dateFormatter.format(entry.createdAt)
+                        : (formatDisplayDate(entry.date) ?? entry.date)}
+                    </time>
+                    <span className="font-medium">{entry.title}</span>
+                    {entry.highlight ? <Badge>里程碑</Badge> : null}
+                    <Badge variant="outline">{entry.category}</Badge>
+                  </div>
+                  {entry.description === null ? null : (
+                    <p className="text-muted-foreground text-sm">
+                      {entry.description}
+                    </p>
+                  )}
+                  {entry.link === null ? null : (
+                    <a
+                      className={`${focusRing} w-fit text-sm underline underline-offset-4`}
+                      href={entry.link}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {entry.link}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
         )}
-      </section>
 
-      <section aria-labelledby="places-heading" className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold" id="places-heading">
-          逛逛
-        </h2>
-        <ul className="grid gap-3 sm:grid-cols-2" data-slot="site-places">
-          {PLACES.map((place) => (
-            <li key={place.href}>
-              <Link
-                className={`${focusRing} hover:bg-accent flex h-full flex-col gap-1 rounded-lg border p-4 transition-colors`}
-                href={place.href}
-              >
-                <span className="font-medium">{place.label}</span>
-                <span className="text-muted-foreground text-sm">
-                  {place.description}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {profile === null ? null : (
         <section
-          aria-labelledby="contact-heading"
+          aria-labelledby="places-heading"
           className="flex flex-col gap-3"
         >
-          <h2 className="text-xl font-semibold" id="contact-heading">
-            联系方式
+          <h2 className={SECTION_HEADING} id="places-heading">
+            逛逛
           </h2>
-          {socials.length === 0 ? (
-            <p className="text-muted-foreground text-sm">
-              还没有公开的社交链接。想留言的话，发邮件给{" "}
-              {profile.email ?? "作者"}。
-            </p>
-          ) : (
-            <ul className="flex flex-wrap gap-2 text-sm">
+          <ul className="grid gap-2 sm:grid-cols-2" data-slot="site-places">
+            {PLACES.map((place) => (
+              <li key={place.href}>
+                <Link
+                  className={`${focusRing} flex flex-col gap-0.5 rounded-sm py-0.5`}
+                  href={place.href}
+                >
+                  <span className="text-sm font-medium underline-offset-4 hover:underline">
+                    {place.label}
+                  </span>
+                  <span className="text-muted-foreground text-xs">
+                    {place.description}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {profile === null ? null : (
+          <section
+            aria-labelledby="contact-heading"
+            className="flex flex-col gap-3"
+          >
+            <h2 className={SECTION_HEADING} id="contact-heading">
+              联系方式
+            </h2>
+            {hasContact ? null : (
+              <p className="text-muted-foreground text-sm">
+                还没有公开的联系方式。
+              </p>
+            )}
+            <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              {profile.email === null ? null : (
+                <li>
+                  <a
+                    className={`${focusRing} underline-offset-4 hover:underline`}
+                    href={`mailto:${profile.email}`}
+                  >
+                    {profile.email}
+                  </a>
+                </li>
+              )}
               {socials.map(([key, url]) => (
                 <li key={key}>
                   <a
-                    className={`${focusRing} hover:bg-accent inline-flex items-center rounded-full border px-3 py-1 transition-colors`}
+                    className={`${focusRing} underline-offset-4 hover:underline`}
                     href={url}
                     rel="noopener noreferrer"
                     target="_blank"
@@ -310,12 +311,12 @@ const AboutPage = async () => {
                 </li>
               ))}
             </ul>
-          )}
-          <p className="text-muted-foreground text-xs">
-            站点资料更新于 {dateFormatter.format(profile.updatedAt)}
-          </p>
-        </section>
-      )}
+            <p className="text-muted-foreground text-xs">
+              站点资料更新于 {dateFormatter.format(profile.updatedAt)}
+            </p>
+          </section>
+        )}
+      </div>
     </div>
   );
 };

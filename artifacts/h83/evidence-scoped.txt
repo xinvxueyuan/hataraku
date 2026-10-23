@@ -1,0 +1,89 @@
+### vp fmt --check
+Checking formatting...
+
+All matched files use the correct format.
+Finished in 1169ms on 8 files using 8 threads.
+FMT_EXIT=0
+### vp check (scope)
+note: You are running `vp check` as a Vite+ built-in command. If you meant to run the check npm script, use `vpr check` instead.
+pass: All 8 files are correctly formatted (1298ms, 8 threads)
+pass: Found no warnings, lint errors, or type errors in 8 files (5.9s, 8 threads)
+CHECK_EXIT=0
+### check:design
+allow packages/ui/src/components/button.tsx:24 bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] - token-derived expression
+allow packages/ui/src/components/card.tsx:27 grid-cols-[1fr_auto] - layout geometry, not a theme value
+allow packages/ui/src/components/card.tsx:27 grid-rows-[auto_auto] - layout geometry, not a theme value
+allow packages/ui/src/components/dropdown-menu.tsx:143 min-w-[96px] - menu minimum width geometry; H53 owns the token replacement
+allow packages/ui/src/lib/recipes.ts:57 rounded-[min(var(--radius-md),12px)] - token-derived expression
+allow packages/ui/src/lib/recipes.ts:59 rounded-[min(var(--radius-md),10px)] - token-derived expression
+allow packages/ui/src/styles/globals.css - raw colours are declared here
+allow apps/web/src/app/about/page.tsx:215 left-[31px] - layout geometry, not a theme value
+allow apps/web/src/app/albums/loading.tsx:23 aspect-[16/9] - layout geometry, not a theme value
+allow apps/web/src/app/albums/page.tsx:71 aspect-[16/9] - layout geometry, not a theme value
+allow apps/web/src/app/albums/[segment]/loading.tsx:2 aspect-[4/3] - layout geometry, not a theme value
+allow apps/web/src/app/albums/[segment]/loading.tsx:3 aspect-[3/4] - layout geometry, not a theme value
+allow apps/web/src/app/albums/[segment]/loading.tsx:5 aspect-[4/3] - layout geometry, not a theme value
+allow apps/web/src/app/albums/[segment]/page.tsx:145 scale-[1.01] - layout geometry, not a theme value
+allow apps/web/src/app/api/og/route.tsx - raw colours are declared here
+allow apps/web/src/app/blog/[segment]/loading.tsx:35 aspect-[2/1] - layout geometry, not a theme value
+allow apps/web/src/app/blog/[segment]/page.tsx:156 aspect-[2/1] - layout geometry, not a theme value
+allow apps/web/src/app/notes/page.tsx:164 min-h-[45vh] - layout geometry, not a theme value
+allow apps/web/src/app/settings/layout.tsx:14 grid-cols-[13rem_minmax(0,1fr)] - layout geometry, not a theme value
+allow apps/web/src/app/toolbox/devices/page.tsx:102 grid-cols-[auto_1fr] - layout geometry, not a theme value
+allow apps/web/src/components/admin-nav.tsx:133 max-h-[70vh] - layout geometry, not a theme value
+allow apps/web/src/components/admin-nav.tsx:133 max-w-[calc(100vw-2rem)] - responsive drawer width is layout geometry, not a theme value
+allow apps/web/src/components/api-token-detail.tsx:43 grid-cols-[7rem_1fr] - layout geometry, not a theme value
+allow apps/web/src/components/api-token-list.tsx:124 grid-cols-[5rem_1fr] - layout geometry, not a theme value
+allow apps/web/src/components/docs-sidebar.tsx:85 max-h-[70vh] - layout geometry, not a theme value
+allow apps/web/src/components/markdown-editor.tsx:82 min-h-[22rem] - layout geometry, not a theme value
+allow apps/web/src/components/portal-hero.tsx:214 grid-cols-[minmax(0,520px)_1fr] - layout geometry, not a theme value
+allow apps/web/src/app/layout.tsx:1 - the single application stylesheet entry
+design check passed.
+DESIGN_EXIT=0
+### check:compat
+allow docs/ - documentation may explain a compatibility path
+allow artifacts/ - historical evidence, not source
+allow AGENTS.md - the rule itself
+allow CHANGELOG - release history
+allow packages/db/src/migrations/ - generated SQL keeps its historical naming
+allow apps/web/src/compat/ - the compatibility module itself
+allow packages/compat/ - the compatibility module itself
+allow no compatibility module — nothing to declare (add one only for a verified external constraint)
+compatibility check passed: 212 source file(s), no compatibility code outside the module.
+COMPAT_EXIT=0
+### knip
+$ knip ⊘ cache disabled
+
+KNIP_EXIT=0
+### vp test
+   ✓ login attempt audit resilience (1)
+     ✓ keeps the sign-in result when the audit row cannot be written 960ms
+ ✓ |integration| packages/api/tests/integration/search.test.ts (30 tests) 3449ms
+ ✓ |integration| packages/api/tests/integration/api-tokens.test.ts (8 tests) 3740ms
+   ✓ api tokens (8)
+     ✓ creates a token, returns the plaintext once, and never lists it 401ms
+     ✓ resolves the created token to its principal 357ms
+     ✓ lets a scoped token create a post 649ms
+     ✓ returns 403 for a token without the required scope 362ms
+     ✓ keeps post removal session-only 357ms
+ ✓ |unit| packages/api/src/openapi-public.test.ts (30 tests) 51ms
+ ✓ |integration| packages/api/tests/integration/posts.test.ts (28 tests) 1508ms
+ ✓ |unit| packages/api/src/search/plain-text.test.ts (5 tests) 20ms
+ ✓ |unit| packages/api/src/r2.test.ts (10 tests) 102ms
+ ✓ |unit| packages/api/src/mdx-guard.test.ts (19 tests) 24ms
+ ✓ |unit| apps/web/src/components/site-analytics-settings.test.ts (7 tests) 15ms
+ ✓ |unit| packages/api/src/slug.test.ts (9 tests) 20ms
+ ✓ |unit| apps/mobile/src/lib/api-url.test.ts (5 tests) 14ms
+ ✓ |unit| apps/web/src/server/portal.test.ts (3 tests) 15ms
+ ✓ |unit| packages/auth/src/allowlist.test.ts (4 tests) 14ms
+ ✓ |unit| packages/api/src/tokens.test.ts (11 tests) 22ms
+ ✓ |integration| packages/api/tests/integration/content.test.ts (13 tests) 799ms
+ ✓ |integration| packages/api/tests/integration/media.test.ts (13 tests) 351ms
+ ✓ |integration| packages/api/tests/integration/site.test.ts (2 tests) 350ms
+
+ Test Files  27 passed (27)
+      Tests  308 passed (308)
+   Start at  16:41:17
+   Duration  48.02s (import 70%, tests 29%, transform 1%)
+
+TEST_EXIT=0
