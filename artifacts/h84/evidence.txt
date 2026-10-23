@@ -1,0 +1,37 @@
+H84 — 登录回跳段前缀白名单实测
+时间: 2026-10-23 (Asia/Shanghai)
+
+== 未登录 307（无 cookie fetch） ==
+/settings/admin/changelog → 307 /login?redirect=%2Fsettings%2Fadmin%2Fchangelog
+/settings/admin/micro → 307 /login?redirect=%2Fsettings%2Fadmin%2Fmicro
+/settings/admin/projects → 307 /login?redirect=%2Fsettings%2Fadmin%2Fprojects
+/settings/api/new → 307 /login?redirect=%2Fsettings%2Fapi%2Fnew
+
+== 登录后回跳（已登录访问 /login?redirect=… 的最终 URL） ==
+/settings/admin/changelog → http://localhost:3000/settings/admin/changelog (200)
+/settings/admin/micro → http://localhost:3000/settings/admin/micro (200)
+/settings/admin/projects → http://localhost:3000/settings/admin/projects (200)
+/settings/admin/posts/39 → .../settings/admin/posts/39 (200)
+/settings/admin/changelog/<uuid> → 原 URL (200)
+/settings/api/new → .../settings/api/new (200)
+/settings/api/<uuid> → 原 URL (200)
+/todos → .../todos；/ → /（兼容原行为）
+
+== 安全反例（必须回落 /todos；实际最终 URL） ==
+//evil.com → http://localhost:3000/todos
+https://evil.com → http://localhost:3000/todos
+/settings/../.. → http://localhost:3000/todos
+\/evil.com → http://localhost:3000/todos
+/any-other-page → http://localhost:3000/todos
+
+实现：先拒绝非字符串/数组/空/trim 变化/非单斜杠/协议相对/反斜杠，再 decodeURIComponent 检查 //、反斜杠、..、scheme；最后用 new URL(value, http://local.invalid) 校验 origin 并用规范化 pathname 做 /todos、/settings 段前缀判断；返回时用运行时 type guard 收窄到 Route，保留 typedRoutes。
+
+== 门禁 ==
+pnpm run ready → EXIT=0（evidence-ready.txt）
+pnpm run check:design → EXIT=0
+pnpm run check:compat → EXIT=0
+pnpm exec knip → EXIT=0
+e2e 7/7（含原有 ?redirect=%2Ftodos 用例，断言未改）。
+
+== 范围说明 ==
+H84 的 settings layout 不在原写范围；为了让 /settings/api/new 与动态 id 真正回到自身（而不仅是 API 基址），将 loginTargetFor 改为透传实际 settings pathname（一行行为修正），已在任务报告标注。

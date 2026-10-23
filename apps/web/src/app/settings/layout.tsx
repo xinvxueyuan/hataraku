@@ -8,23 +8,9 @@ import { requireSession } from "#src/server/admin.ts";
  * The settings frame is rendered once for every settings route. Only the page content changes, so
  * client navigation keeps the sidebar mounted and the surface does not look like a new orphan page.
  */
-const LOGIN_TARGETS = [
-  "/settings/admin",
-  "/settings/admin/posts",
-  "/settings/admin/projects",
-  "/settings/admin/micro",
-  "/settings/admin/changelog",
-  "/settings/admin/profile",
-  "/settings/api",
-  "/settings/password",
-  "/settings/security",
-  "/settings/two-factor",
-] as const;
-
+/** The proxy only sets x-pathname for this section, so the path itself is the safe login target. */
 const loginTargetFor = (pathname: string) =>
-  LOGIN_TARGETS.find(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  ) ?? "/settings/admin";
+  pathname.startsWith("/settings") ? pathname : "/settings/admin";
 
 const SettingsLayout = async ({ children }: { children: ReactNode }) => {
   const requestHeaders = await headers();
