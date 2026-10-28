@@ -55,3 +55,30 @@ Nothing else in `apps/` or `packages/` contains a domain. Two details make that 
   cookie-less `curl` reports success while the browser form fails with `Invalid origin`. If it does,
   `BETTER_AUTH_URL` is stale — check that step 3 actually created a new deployment.
 - An album page renders its covers from the new media host.
+
+## 2026-10-28 实际迁移记录（xinvstar.xyz → hikarilink.org）
+
+`xinvstar.xyz` 到期日 2026-11-26，不续费。实际落点与结果：
+
+| 层 | 旧 | 新 | 结果 |
+| --- | --- | --- | --- |
+| 站点主域 | `https://www.xinvstar.xyz` | `https://blog.hikarilink.org` | Vercel 项目 `hataraku` 加域 + CF CNAME（DNS-only）；apex `xinvstar.xyz` 仍 308 到旧 `www`，随域名到期消失 |
+| 媒体域 | `https://cdn.xinvstar.xyz` | `https://cdn.hikarilink.org` | R2 桶 `nightstack-assets` 的第二个自定义域（两个域并存），CF 自动生成 CNAME→`public.r2.dev` |
+| 发信人 | `noreply@xinvstar.xyz` | `noreply@hikarilink.org` | Resend 侧 `hikarilink.org` 早已验证通过，只改 `EMAIL_FROM` |
+| 文档站 | `docs.xinvstar.xyz`（Mintlify） | — | 本次下线：删除 CF CNAME；Mintlify 侧自定义域由站长在控制台移除 |
+| 统计图 | `github-readme-state.xinvstar.xyz` | `readme-stats.hikarilink.org` | Vercel 项目 `github-readme-stats` 加域 + CF CNAME→`cname.vercel-dns.com` |
+
+改动清单（除本文件所在仓库外）：
+
+- Vercel 环境变量（项目 `hataraku`，production/preview/development 同一值）：`NEXT_PUBLIC_SITE_URL`、`BETTER_AUTH_URL`、`SERVER_URL` → `https://blog.hikarilink.org`；`NEXT_PUBLIC_MEDIA_BASE_URL`、`R2_PUBLIC_BASE_URL` → `https://cdn.hikarilink.org`；`EMAIL_FROM` → `夜行栈 <noreply@hikarilink.org>`。
+- Cloudflare Turnstile widget `0x4AAAAAAFbe8nL7wv5ZWRG1`：`domains` 增加 `blog.hikarilink.org`。
+- R2 桶 `nightstack-assets` CORS：PUT 规则 origins 增加 `https://blog.hikarilink.org`。
+- 数据库 `projects`（slug=`xinvstar`）：`link` 改为 `https://blog.hikarilink.org/`。
+- 生产库是 Neon 的 **`hataraku_v2`**；`C:\dev\env.toml` 里的 `NEON_DATABASE_URL` 指向旧的 `neondb`，改数据前必须用 Vercel 环境变量里的 `DATABASE_URL`（已解密核对）。
+
+两条实测教训，后续换域别重犯：
+
+1. **Vercel 的「Redeploy」不会重新构建**（复用旧构建产物），静态生成的路由（`/llms.txt` 等）会继续吐旧域名。必须走 git 来源的部署（`gitSource` 或推送提交）。
+2. `next build` 期生成的页面读的是**构建时**数据库状态；改完内容要再构建一次才反映到静态产物上。
+
+

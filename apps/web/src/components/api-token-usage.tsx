@@ -11,14 +11,14 @@ import {
 import { CopyButton } from "#src/components/api-token-copy.tsx";
 
 const POST_CURL = [
-  "curl -X POST https://www.xinvstar.xyz/api/posts \\",
+  "curl -X POST https://blog.hikarilink.org/api/posts \\",
   '  -H "Authorization: Bearer $HATARAKU_TOKEN" \\',
   '  -H "Content-Type: application/json" \\',
   '  -d \'{"title":"标题","bodyMd":"正文"}\'',
 ].join("\n");
 
 const NOTE_CURL = [
-  "curl -X POST https://www.xinvstar.xyz/api/notes \\",
+  "curl -X POST https://blog.hikarilink.org/api/notes \\",
   '  -H "Authorization: Bearer $HATARAKU_TOKEN" \\',
   '  -H "Content-Type: application/json" \\',
   '  -d \'{"content":"一条微言"}\'',
@@ -51,7 +51,7 @@ export const ApiTokenUsage = () => (
         <p className="text-sm">
           接口基地址：{" "}
           <code className="bg-muted rounded px-1.5 py-0.5 font-mono text-xs">
-            https://www.xinvstar.xyz/api
+            https://blog.hikarilink.org/api
           </code>
         </p>
 
